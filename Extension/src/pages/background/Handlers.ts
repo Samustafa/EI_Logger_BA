@@ -5,9 +5,9 @@ import {
     DetachInfo,
     OnActivatedActiveInfoType,
     OnCompletedDetailsType,
-    OnUpdatedChangeInfoType,
+    OnUpdatedChangeInfoType, QueryAndSearchEngineName,
     QueryKeyWord,
-    RemoveInfo,
+    RemoveInfo, SearchEngineName,
     Tab,
     TabAction,
     TabWithGroupId
@@ -32,54 +32,65 @@ export function handleOnCompleted(details: OnCompletedDetailsType) {
     if (details.frameId !== tabFinishedLoading) return
 
     tabs.get(details.tabId)
-        .then(tab => {
-            handleSaveAfterNewTabOrNewUrl(tab, "TAB:CREATED");
-            logSerp_Query_Html_IfSerp(tab.url ?? "", tab.id ?? -1);
-        })
+        .then(tab => logTabAndLogHtmlIfSerp(tab))
         .catch(e => console.error("handleOnCompleted " + JSON.stringify(e)));
 
 
-    function logSerp_Query_Html_IfSerp(url: string, tabId: number) {
+    function logTabAndLogHtmlIfSerp(tab: Tab) {
 
-        let queryKeyWord: QueryKeyWord | undefined = undefined;
+        const {query, searchEngineName} = getSeNameAndQueryIfSerp(tab.url as string, tab.id as number);
 
-        getQueryKeyWordIfExists(url);
+        handleSaveTabAfterNewTabOrNewUrl(tab, "TAB:CREATED", query, searchEngineName);
 
-        if (!queryKeyWord) return;
+        const isSerp = !!query && !!searchEngineName
+        if (!isSerp) return;
 
-        logNeededDataIfSerp(url, tabId, queryKeyWord);
+        const port = connectToCSPort("logHTML", tab.id as number);
+        sendMessages(port, "LOG_HTML_OF_SERP");
+        port.disconnect();
 
-        function getQueryKeyWordIfExists(url: string) {
-            queryKeyWords.some(keyword => {
-                console.log("trying ", keyword)
-                const isQuery = url.includes(keyword);
+        function getSeNameAndQueryIfSerp(url: string, tabId: number): QueryAndSearchEngineName {
 
-                if (!isQuery) return false;
+            let queryKeyWord: QueryKeyWord | undefined = undefined;
 
-                console.log("bingo");
-                queryKeyWord = keyword;
-                return true;
-            });
+            getQueryKeyWordIfExists(url);
+
+            if (!queryKeyWord) return {query: undefined, searchEngineName: undefined};
+
+            return extractSeNameAndQuery(url, tabId, queryKeyWord);
+
+            function getQueryKeyWordIfExists(url: string) {
+                queryKeyWords.some(keyword => {
+                    console.log("trying ", keyword)
+                    const isQuery = url.includes(keyword);
+
+                    if (!isQuery) return false;
+
+                    console.log("bingo");
+                    queryKeyWord = keyword;
+                    return true;
+                });
+            }
+
+            function extractSeNameAndQuery(url: string, tanId: number, queryKeyWord: QueryKeyWord): QueryAndSearchEngineName {
+                let query: string | undefined = undefined;
+                let searchEngineName: SearchEngineName | undefined = undefined;
+                searchEngineSerpInfos.get(queryKeyWord)?.some((searchEngineSerpInfo) => {
+                    const isSerp = searchEngineSerpInfo.isUrlSERP(url);
+                    console.log("isSerp: " + isSerp)
+
+                    if (!isSerp) return false;
+
+                    console.log("")
+                    query = searchEngineSerpInfo.getQuery(url);
+                    searchEngineName = searchEngineSerpInfo.searchEngineName;
+                    console.log(query)
+                    return true;
+                })
+                return {query, searchEngineName};
+            }
         }
 
-        function logNeededDataIfSerp(url: string, tanId: number, queryKeyWord: QueryKeyWord) {
-            searchEngineSerpInfos.get(queryKeyWord)?.some((searchEngineSerpInfo) => {
-                const isSerp = searchEngineSerpInfo.isUrlSERP(url);
-                console.log("isSerp: " + isSerp)
-
-                if (!isSerp) return false;
-
-                console.log("")
-                const query = searchEngineSerpInfo.getQuery(url);
-                console.log(query)
-
-                const port = connectToCSPort("logHTML", tabId);
-                sendMessages(port, "LOG_HTML_OF_SERP");
-                port.disconnect();
-
-                return true;
-            })
-        }
     }
 }
 
@@ -88,7 +99,7 @@ export function handleTabUpdated(id: number, changeInfo: OnUpdatedChangeInfoType
     const urlFromTabId = openedTabsCache.get(id);
     const isNewURL = (changeInfo.url !== undefined) && (urlFromTabId !== undefined) && (changeInfo.url !== urlFromTabId);
 
-    if (isNewURL) handleSaveAfterNewTabOrNewUrl(tab, "TAB:URL_CHANGED")
+    if (isNewURL) handleSaveTabAfterNewTabOrNewUrl(tab, "TAB:URL_CHANGED")
     else if (changeInfo.pinned !== undefined) {
         const iTab = prePareITabFromTab(tab, changeInfo.pinned ? "TAB:PINNED" : "TAB:UNPINNED");
         dataBase.saveTabInfo(iTab);
@@ -111,7 +122,7 @@ export function handleTabActivated(onActivatedActiveInfoType: OnActivatedActiveI
             if (iTab) {
                 dataBase.saveTabInfo(prePareITabFromITab(iTab, "TAB:ACTIVATED"))
             } else {
-                tabs.get(onActivatedActiveInfoType.tabId).then(tab => handleSaveAfterNewTabOrNewUrl(tab, "TAB:CREATED"))
+                tabs.get(onActivatedActiveInfoType.tabId).then(tab => handleSaveTabAfterNewTabOrNewUrl(tab, "TAB:CREATED"))
             }
 
         })
@@ -168,7 +179,7 @@ export async function handleTabDetached(tabId: number, detachInfo: DetachInfo) {
 
 
 //Helper Functions
-function prePareITabFromTab(tab: Tab, tabAction: TabAction): ITab {
+function prePareITabFromTab(tab: Tab, tabAction: TabAction, query?: string, searchEngineName?: SearchEngineName): ITab {
     const tabExtended = tab as TabWithGroupId;
 
     return {
@@ -183,6 +194,8 @@ function prePareITabFromTab(tab: Tab, tabAction: TabAction): ITab {
         windowId: tab?.windowId ?? -1,
         title: tab?.title ?? "",
         url: tab?.pendingUrl ?? tab?.url ?? "",
+        query: query,
+        searchEngineName: searchEngineName,
     }
 }
 
@@ -224,8 +237,8 @@ function prepareITabFromBookMark(bookmark: BookMark, tabAction: "TAB:BOOKMARK:RE
     }
 }
 
-function handleSaveAfterNewTabOrNewUrl(tab: Tab, tabAction: TabAction) {
-    const iTab = prePareITabFromTab(tab, tabAction);
+function handleSaveTabAfterNewTabOrNewUrl(tab: Tab, tabAction: TabAction, query?: string, searchEngineName?: SearchEngineName) {
+    const iTab = prePareITabFromTab(tab, tabAction, query, searchEngineName);
     dataBase.saveTabInfo(iTab);
     openedTabsCache.set(iTab.tabId, iTab.url)
 }

@@ -118,5 +118,9 @@ export type QueryKeyWord =
 
 export type QueryStringSeparator = '+' | '%20' | '_';
 
+export type QueryAndSearchEngineName = {
+    query?: string,
+    searchEngineName?: SearchEngineName
+}
 
 

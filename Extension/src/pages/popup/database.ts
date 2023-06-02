@@ -50,7 +50,7 @@ class DataBase extends Dexie {
             rangeQuestion: 'questionId, questionText, type, range',
             textQuestion: 'questionId, questionText, type, maxCharacters',
             demographics: 'id, birthDate, job, sex',
-            answers: 'questionId, userId, studyId, taskId, answer',
+            answers: 'questionId, userId, studyId, taskId, answer, query, searchEngineName',
             tabs: '++id, tabId, action, timeStamp, userId, studyId, taskId, groupId, tabIndex, windowId, title, url',
             userExtensionInteraction: '++id, action, timeStamp, userId, studyId, taskId',
             currentTaskId: 'id, taskId',

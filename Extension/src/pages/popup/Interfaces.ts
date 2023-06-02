@@ -1,4 +1,11 @@
-import {ExtensionState, QuestionTypeAsString, SexType, TabAction, UserExtensionAction} from "@pages/popup/Types";
+import {
+    ExtensionState,
+    QuestionTypeAsString,
+    SearchEngineName,
+    SexType,
+    TabAction,
+    UserExtensionAction
+} from "@pages/popup/Types";
 
 export interface IApiException {
     httpStatus: string
@@ -96,6 +103,8 @@ export interface ITab {
     windowId: number;
     title: string;
     url: string;
+    query?: string;
+    searchEngineName?: SearchEngineName;
 }
 
 export interface IUserExtensionInteraction {
