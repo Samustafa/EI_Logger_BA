@@ -97,7 +97,8 @@ export type SearchEngineName = 'google'
     | 'mojeek'
     | 'sogou'
     | 'zoo'
-    | 'swisscows';
+    | 'swisscows'
+    | 'archive way back machine';
 
 export type QueryKeyWord =
     '?q='
@@ -109,9 +110,11 @@ export type QueryKeyWord =
     | 'search_query='
     | '?p='
     | 'web?query='
-    | '/'
+    | '20230000000000*/'
+    | 'search?query='
+    | 'wiki/'
 
-export type QueryStringSeparator = '+' | '%20';
+export type QueryStringSeparator = '+' | '%20' | '_';
 
 
 

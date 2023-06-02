@@ -32,8 +32,11 @@ class SearchEngineSerpInfo {
 }
 
 
-const archiveInfo = new SearchEngineSerpInfo("archive", false, "/", "+");
-const wikipediaInfo = new SearchEngineSerpInfo("wikipedia", false, "/", "+");
+const archiveWayBackMachineInfo = new SearchEngineSerpInfo("archive way back machine", false, "20230000000000*/", "%20");
+
+const archiveIsInfo = new SearchEngineSerpInfo("archive", false, "search?query=", "+");
+
+const wikipediaInfo = new SearchEngineSerpInfo("wikipedia", false, "wiki/", "_");
 
 const googleInfo = new SearchEngineSerpInfo("google", true, "?q=", "+");
 const bingInfo = new SearchEngineSerpInfo("bing", true, "?q=", "+");
@@ -72,16 +75,18 @@ const sogouInfo = new SearchEngineSerpInfo("sogou", true, "web?query=", "+");
 const swisscowsInfo = new SearchEngineSerpInfo("swisscows", false, "web?query=", "+");
 
 export const searchEngineSerpInfos = new Map<QueryKeyWord, SearchEngineSerpInfo[]>([
-
-    ["/", [archiveInfo, wikipediaInfo]],
     ["?q=", [googleInfo, bingInfo, redditInfo, qwantInfo, searchInfo, ecosiaInfo, gibiruInfo, braveInfo, aolInfo,
         mojeekInfo, givewaterInfo, dogpileInfo, exciteInfo, metacrawlerInfo, zooInfo, askInfo,]],
-    ["?p=", [yahooInfo]],
     ["&q=", [ekoruInfo, duckduckgoInfo]],
-    ["&text=", [yandexInfo]],
-    ["baidu&wd=", [baiduInfo]],
-    ["eingabe=", [metagerInfo]],
-    ["input?i=", [wolframalphaInfo]],
+    ["wiki/", [wikipediaInfo]],
     ["search_query=", [youtubeInfo]],
-    ["web?query=", [sogouInfo, swisscowsInfo]]
+    ["eingabe=", [metagerInfo]],
+    ["&text=", [yandexInfo]],
+    ["?p=", [yahooInfo]],
+    ["20230000000000*/", [archiveWayBackMachineInfo]],
+    ["search?query=", [archiveIsInfo]],
+    ["baidu&wd=", [baiduInfo]],
+    ["web?query=", [sogouInfo, swisscowsInfo]],
+    ["input?i=", [wolframalphaInfo]],
 ]);
+export const queryKeyWords = Array.from(searchEngineSerpInfos.keys());
