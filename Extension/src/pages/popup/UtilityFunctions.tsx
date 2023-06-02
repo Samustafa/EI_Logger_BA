@@ -1,5 +1,5 @@
 import {IApiException, IQuestionAnswer} from "@pages/popup/Interfaces";
-import {MessageType, Port, PortNameBG, QuestionType} from "@pages/popup/Types";
+import {MessageType, Port, PortNameBG, PortNameCS, QuestionType} from "@pages/popup/Types";
 import {MultipleChoiceQuestion} from "@pages/popup/model/question/MultipleChoiceQuestion";
 import {RangeQuestion} from "@pages/popup/model/question/RangeQuestion";
 import {TextQuestion} from "@pages/popup/model/question/TextQuestion";
@@ -56,8 +56,21 @@ export function getUTCDateTime(): string {
     return dayjs.utc().format("YYYY-MM-DD HH:mm:ss");
 }
 
-export function connectToPort(portName: PortNameBG): Port {
+/**
+ * connect to background port
+ * @param portName
+ */
+export function connectToBGPort(portName: PortNameBG): Port {
     return browser.runtime.connect({name: portName});
+}
+
+/**
+ * connect to content script port
+ * @param portName
+ * @param tabId id of the tab to connect to its content script
+ */
+export function connectToCSPort(portName: PortNameCS, tabId: number): Port {
+    return browser.tabs.connect(tabId, {name: portName});
 }
 
 export function sendMessages(port: Port, message: MessageType) {

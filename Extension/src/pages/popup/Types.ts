@@ -7,10 +7,12 @@ import {IQuestionAnswer} from "@pages/popup/Interfaces";
 export type QuestionTypeAsString = "TextQuestion" | "MultipleChoiceQuestion" | "RangeQuestion";
 export type QuestionType = TextQuestion | MultipleChoiceQuestion | RangeQuestion;
 
-export type MessageType = LoggingMessage | LoggingConstantsMessage;
+export type MessageType = LoggingMessage | LoggingConstantsMessage | ContentScriptMessage;
 export type LoggingMessage = "START_LOGGING" | "STOP_LOGGING";
 export type LoggingConstantsMessage = { studyId?: string, userId?: string, taskId?: string };
+export type ContentScriptMessage = "LOG_HTML_OF_SERP"
 export type PortNameBG = "loggingPort" | "loggingConstantsPort";
+export type PortNameCS = "logHTML";
 
 export type SexType = "m" | "f" | "sex";
 

@@ -6,7 +6,7 @@ import {dataBase} from "@pages/popup/database";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {useLocation, useNavigate} from "react-router-dom";
 import Paths from "@pages/popup/Consts/Paths";
-import {connectToPort, extractAndSetError} from "@pages/popup/UtilityFunctions";
+import {connectToBGPort, extractAndSetError} from "@pages/popup/UtilityFunctions";
 import {Port} from "@pages/popup/Types";
 import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
 import WarningDialog from "@pages/popup/SharedComponents/WarningDialog";
@@ -23,7 +23,7 @@ export function LoggerReadyPage() {
     const warningText = "Are you sure you want to finish the task?\n Once finished you won't be able to log anymore";
 
     useEffect(function connectPort() {
-        const port = connectToPort("loggingPort");
+        const port = connectToBGPort("loggingPort");
         setPort(port);
     }, [])
 

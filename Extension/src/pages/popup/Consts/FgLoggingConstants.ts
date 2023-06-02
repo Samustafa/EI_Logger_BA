@@ -1,5 +1,5 @@
 import {Port} from "@pages/popup/Types";
-import {connectToPort, sendMessages} from "@pages/popup/UtilityFunctions";
+import {connectToBGPort, sendMessages} from "@pages/popup/UtilityFunctions";
 
 /**
  * Foreground logging constants
@@ -23,7 +23,7 @@ class LoggingConstants {
 
     set studyId(value: string) {
         this._studyId = value;
-        const port = this._port ?? connectToPort('loggingConstantsPort');
+        const port = this._port ?? connectToBGPort('loggingConstantsPort');
         sendMessages(port, {studyId: value});
     }
 
@@ -33,7 +33,7 @@ class LoggingConstants {
 
     set userId(value: string) {
         this._userId = value;
-        const port = this._port ?? connectToPort('loggingConstantsPort');
+        const port = this._port ?? connectToBGPort('loggingConstantsPort');
         sendMessages(port, {userId: value})
     }
 
@@ -43,12 +43,12 @@ class LoggingConstants {
 
     set taskId(value: string) {
         this._taskId = value;
-        const port = this._port ?? connectToPort('loggingConstantsPort');
+        const port = this._port ?? connectToBGPort('loggingConstantsPort');
         sendMessages(port, {taskId: value})
     }
 
     private _initializePort() {
-        this._port = connectToPort('loggingConstantsPort');
+        this._port = connectToBGPort('loggingConstantsPort');
     }
 
 

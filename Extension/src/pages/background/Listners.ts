@@ -42,7 +42,7 @@ function connectBGPort(port: Port) {
 async function loggingPortMR(message: MessageType) {
     message = message as LoggingMessage;
     if (message === "START_LOGGING") {
-        await handleLogAllExistingTabs();
+        handleLogAllExistingTabs();
         activateAllListens();
         setBadgeText('ON');
     } else if (message === "STOP_LOGGING") {

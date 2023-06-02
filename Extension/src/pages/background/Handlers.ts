@@ -15,7 +15,7 @@ import {
 import {ITab} from "@pages/popup/Interfaces";
 import {dataBase} from "@pages/popup/database";
 import browser, {tabs} from "webextension-polyfill";
-import {getUTCDateTime} from "@pages/popup/UtilityFunctions";
+import {connectToCSPort, getUTCDateTime, sendMessages} from "@pages/popup/UtilityFunctions";
 import {bgLoggingConstants} from "@pages/background/BGLoggingConstants";
 import {queryKeyWords, searchEngineSerpInfos} from "@pages/popup/model/SearchEngineSerpInfo";
 
@@ -32,12 +32,14 @@ export function handleOnCompleted(details: OnCompletedDetailsType) {
     if (details.frameId !== tabFinishedLoading) return
 
     tabs.get(details.tabId)
-        .then(tab => handleSaveAfterNewTabOrNewUrl(tab, "TAB:CREATED"))
+        .then(tab => {
+            handleSaveAfterNewTabOrNewUrl(tab, "TAB:CREATED");
+            logSerp_Query_Html_IfSerp(tab.url ?? "", tab.id ?? -1);
+        })
         .catch(e => console.error("handleOnCompleted " + JSON.stringify(e)));
 
-    logSerp_Query_Html_IfSerp(details.url);
 
-    function logSerp_Query_Html_IfSerp(url: string) {
+    function logSerp_Query_Html_IfSerp(url: string, tabId: number) {
 
         let queryKeyWord: QueryKeyWord | undefined = undefined;
 
@@ -45,7 +47,7 @@ export function handleOnCompleted(details: OnCompletedDetailsType) {
 
         if (!queryKeyWord) return;
 
-        logNeededDataIfSerp(url, queryKeyWord);
+        logNeededDataIfSerp(url, tabId, queryKeyWord);
 
         function getQueryKeyWordIfExists(url: string) {
             queryKeyWords.some(keyword => {
@@ -60,7 +62,7 @@ export function handleOnCompleted(details: OnCompletedDetailsType) {
             });
         }
 
-        function logNeededDataIfSerp(url: string, queryKeyWord: QueryKeyWord) {
+        function logNeededDataIfSerp(url: string, tanId: number, queryKeyWord: QueryKeyWord) {
             searchEngineSerpInfos.get(queryKeyWord)?.some((searchEngineSerpInfo) => {
                 const isSerp = searchEngineSerpInfo.isUrlSERP(url);
                 console.log("isSerp: " + isSerp)
@@ -70,6 +72,11 @@ export function handleOnCompleted(details: OnCompletedDetailsType) {
                 console.log("")
                 const query = searchEngineSerpInfo.getQuery(url);
                 console.log(query)
+
+                const port = connectToCSPort("logHTML", tabId);
+                sendMessages(port, "LOG_HTML_OF_SERP");
+                port.disconnect();
+
                 return true;
             })
         }
