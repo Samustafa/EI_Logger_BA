@@ -6,6 +6,7 @@ import {
     OnActivatedActiveInfoType,
     OnCompletedDetailsType,
     OnUpdatedChangeInfoType,
+    QueryKeyWord,
     RemoveInfo,
     Tab,
     TabAction,
@@ -16,6 +17,7 @@ import {dataBase} from "@pages/popup/database";
 import browser, {tabs} from "webextension-polyfill";
 import {getUTCDateTime} from "@pages/popup/UtilityFunctions";
 import {bgLoggingConstants} from "@pages/background/BGLoggingConstants";
+import {queryKeyWords, searchEngineSerpInfos} from "@pages/popup/model/SearchEngineSerpInfo";
 
 
 const openedTabsCache = new Map<number, string>();
@@ -32,6 +34,46 @@ export function handleOnCompleted(details: OnCompletedDetailsType) {
     tabs.get(details.tabId)
         .then(tab => handleSaveAfterNewTabOrNewUrl(tab, "TAB:CREATED"))
         .catch(e => console.error("handleOnCompleted " + JSON.stringify(e)));
+
+    logSerp_Query_Html_IfSerp(details.url);
+
+    function logSerp_Query_Html_IfSerp(url: string) {
+
+        let queryKeyWord: QueryKeyWord | undefined = undefined;
+
+        getQueryKeyWordIfExists(url);
+
+        if (!queryKeyWord) return;
+
+        logNeededDataIfSerp(url, queryKeyWord);
+
+        function getQueryKeyWordIfExists(url: string) {
+            queryKeyWords.some(keyword => {
+                console.log("trying ", keyword)
+                const isQuery = url.includes(keyword);
+
+                if (!isQuery) return false;
+
+                console.log("bingo");
+                queryKeyWord = keyword;
+                return true;
+            });
+        }
+
+        function logNeededDataIfSerp(url: string, queryKeyWord: QueryKeyWord) {
+            searchEngineSerpInfos.get(queryKeyWord)?.some((searchEngineSerpInfo) => {
+                const isSerp = searchEngineSerpInfo.isUrlSERP(url);
+                console.log("isSerp: " + isSerp)
+
+                if (!isSerp) return false;
+
+                console.log("")
+                const query = searchEngineSerpInfo.getQuery(url);
+                console.log(query)
+                return true;
+            })
+        }
+    }
 }
 
 export function handleTabUpdated(id: number, changeInfo: OnUpdatedChangeInfoType, tab: Tab) {
