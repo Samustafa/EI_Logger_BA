@@ -1,24 +1,32 @@
-import React from 'react';
-import logo from '@assets/img/logo.svg';
+import {Route, Routes} from "react-router-dom";
+import React from "react";
+import LandingPage from "@pages/popup/Components/Not_Authenticated/LandingPage";
+import Paths from "@pages/popup/Consts/Paths";
+import {generalStyle} from "@pages/popup/Consts/Styles";
+import {IdDisplayPage} from "@pages/popup/Components/Authenticated/IdDisplayPage";
+import {TasksPage} from "@pages/popup/Components/Authenticated/TasksPage";
+import {FetchingStudyData} from "@pages/popup/Components/Authenticated/FetchingStudyData";
+import {DemographicsPage} from "@pages/popup/Components/Authenticated/DemographicsPage";
+import {LoggerReadyPage} from "@pages/popup/Components/Authenticated/LoggerReady/LoggerReadyPage";
+import {QuestionnairePage} from "@pages/popup/Components/Authenticated/Questions/QuestionnairePage";
+import {InitializationPage} from "@pages/popup/Components/InitializationPage";
 
-export default function Popup(): JSX.Element {
-  return (
-    <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 bg-gray-800">
-      <header className="flex flex-col items-center justify-center text-white">
-        <img src={logo} className="h-36 pointer-events-none animate-spin-slow" alt="logo" />
-        <p>
-          Edit <code>src/pages/popup/Popup.jsx</code> and save to reload.
-        </p>
-        <a
-          className="text-blue-400"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React!
-        </a>
-        <p>Popup styled with TailwindCSS!</p>
-      </header>
-    </div>
-  );
+export default function Popup() {
+
+    console.log("Popup");
+
+    return (
+        <div className={generalStyle} style={{overflowY: "scroll"}}>
+            <Routes>
+                <Route path={Paths.initializationPage} element={<InitializationPage/>}/>
+                <Route path={Paths.landingPage} element={<LandingPage/>}/>
+                <Route path={Paths.idDisplayPage} element={<IdDisplayPage/>}/>
+                <Route path={Paths.demographicsPage} element={<DemographicsPage/>}/>
+                <Route path={Paths.tasksPage} element={<TasksPage/>}/>
+                <Route path={Paths.fetchingStudyData} element={<FetchingStudyData/>}/>
+                <Route path={Paths.defaultQuestionnaire} element={<QuestionnairePage/>}/>
+                <Route path={Paths.loggerPage} element={<LoggerReadyPage/>}/>
+            </Routes>
+        </div>
+    );
 }
