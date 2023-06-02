@@ -12,13 +12,17 @@ import {
     handleTabUpdated,
     setBadgeText
 } from "@pages/background/Handlers";
-import {LoggingConstantsMessage, LoggingMessage, MessageType, Port, PortName} from "@pages/popup/Types";
+import {LoggingConstantsMessage, LoggingMessage, MessageType, Port, PortNameBG} from "@pages/popup/Types";
 import {bgLoggingConstants} from "@pages/background/BGLoggingConstants";
 
 
 //--------------- Communication functions ---------------//
-function connectPort(port: Port) {
-    const portName = port.name as PortName;
+/**
+ * accept connections to background ports
+ * @param port
+ */
+function connectBGPort(port: Port) {
+    const portName = port.name as PortNameBG;
     console.log(`service worker connected to port ${portName}`);
 
     switch (portName) {
@@ -38,7 +42,7 @@ function connectPort(port: Port) {
 async function loggingPortMR(message: MessageType) {
     message = message as LoggingMessage;
     if (message === "START_LOGGING") {
-        handleLogAllExistingTabs();
+        await handleLogAllExistingTabs();
         activateAllListens();
         setBadgeText('ON');
     } else if (message === "STOP_LOGGING") {
@@ -61,21 +65,23 @@ function loggingConstantsMR(message: MessageType) {
 
 //--------------- end Communication functions ---------------//
 
-
-export function startListening() {
+/**
+ * start listening to events in back ground
+ */
+export function startListeningBG() {
     browser.runtime.onInstalled.addListener(() => handleOnInstalled());
-    browser.runtime.onConnect.addListener(connectPort);
+    browser.runtime.onConnect.addListener(connectBGPort);
 }
 
 function activateAllListens() {
     listenOnCompleted();
-    listenTabActivated();
-    listenTabRemoved();
-    listenTabUpdated();
-    listenBookmarkCreated();
-    listenBookmarkRemoved();
-    listenTabAttached();
-    listenTabDetached();
+    // listenTabActivated();
+    // listenTabRemoved();
+    // listenTabUpdated();
+    // listenBookmarkCreated();
+    // listenBookmarkRemoved();
+    // listenTabAttached();
+    // listenTabDetached();
 
 }
 

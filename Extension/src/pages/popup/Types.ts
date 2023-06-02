@@ -10,7 +10,7 @@ export type QuestionType = TextQuestion | MultipleChoiceQuestion | RangeQuestion
 export type MessageType = LoggingMessage | LoggingConstantsMessage;
 export type LoggingMessage = "START_LOGGING" | "STOP_LOGGING";
 export type LoggingConstantsMessage = { studyId?: string, userId?: string, taskId?: string };
-export type PortName = "loggingPort" | "loggingConstantsPort";
+export type PortNameBG = "loggingPort" | "loggingConstantsPort";
 
 export type SexType = "m" | "f" | "sex";
 

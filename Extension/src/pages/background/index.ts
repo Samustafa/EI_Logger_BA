@@ -1,4 +1,4 @@
-import {startListening} from "@pages/background/Listners";
+import {startListeningBG} from "@pages/background/Listners";
 
-startListening();
+startListeningBG();
 console.log("background initialized");

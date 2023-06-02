@@ -1,5 +1,5 @@
 import {IApiException, IQuestionAnswer} from "@pages/popup/Interfaces";
-import {MessageType, Port, PortName, QuestionType} from "@pages/popup/Types";
+import {MessageType, Port, PortNameBG, QuestionType} from "@pages/popup/Types";
 import {MultipleChoiceQuestion} from "@pages/popup/model/question/MultipleChoiceQuestion";
 import {RangeQuestion} from "@pages/popup/model/question/RangeQuestion";
 import {TextQuestion} from "@pages/popup/model/question/TextQuestion";
@@ -56,7 +56,7 @@ export function getUTCDateTime(): string {
     return dayjs.utc().format("YYYY-MM-DD HH:mm:ss");
 }
 
-export function connectToPort(portName: PortName): Port {
+export function connectToPort(portName: PortNameBG): Port {
     return browser.runtime.connect({name: portName});
 }
 
