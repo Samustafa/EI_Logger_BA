@@ -69,3 +69,49 @@ export type AnswersContextType = {
     answers: IQuestionAnswer[],
     updateAnswers: (questionId: string, value: string) => void;
 }
+
+export type SearchEngineName = 'google'
+    | 'bing'
+    | 'yahoo'
+    | 'yandex'
+    | 'duckduckgo'
+    | 'brave'
+    | 'aol'
+    | 'gibiru'
+    | 'wikipedia'
+    | 'ekoru'
+    | 'archive'
+    | 'ecosia'
+    | 'reddit'
+    | 'youtube'
+    | 'givewater'
+    | 'wolframalpha'
+    | 'baidu'
+    | 'ask'
+    | 'qwant'
+    | 'search.ch'
+    | 'dogpile'
+    | 'metager'
+    | 'excite'
+    | 'metacrawler'
+    | 'mojeek'
+    | 'sogou'
+    | 'zoo'
+    | 'swisscows';
+
+export type QueryKeyWord =
+    '?q='
+    | '&q='
+    | '&text='
+    | 'baidu&wd='
+    | 'eingabe='
+    | 'input?i='
+    | 'search_query='
+    | '?p='
+    | 'web?query='
+    | '/'
+
+export type QueryStringSeparator = '+' | '%20';
+
+
+
