@@ -66,7 +66,7 @@ function loggingConstantsMR(message: MessageType) {
 //--------------- end Communication functions ---------------//
 
 /**
- * start listening to events in back ground
+ * start listening to events in background
  */
 export function startListeningBG() {
     browser.runtime.onInstalled.addListener(() => handleOnInstalled());
@@ -75,13 +75,13 @@ export function startListeningBG() {
 
 function activateAllListens() {
     listenOnCompleted();
-    // listenTabActivated();
-    // listenTabRemoved();
-    // listenTabUpdated();
-    // listenBookmarkCreated();
-    // listenBookmarkRemoved();
-    // listenTabAttached();
-    // listenTabDetached();
+    listenTabActivated();
+    listenTabRemoved();
+    listenTabUpdated();
+    listenBookmarkCreated();
+    listenBookmarkRemoved();
+    listenTabAttached();
+    listenTabDetached();
 
 }
 

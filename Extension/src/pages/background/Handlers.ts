@@ -34,67 +34,8 @@ export function handleOnCompleted(details: OnCompletedDetailsType) {
     if (details.frameId !== tabFinishedLoading) return
 
     tabs.get(details.tabId)
-        .then(tab => logTabAndLogHtmlIfSerp(tab))
+        .then(tab => logTabAndLogHtmlIfSerp(tab, "TAB:CREATED"))
         .catch(e => console.error("handleOnCompleted " + JSON.stringify(e)));
-
-
-    function logTabAndLogHtmlIfSerp(tab: Tab) {
-
-        const {query, searchEngineName} = getSeNameAndQueryIfSerp(tab.url as string, tab.id as number);
-
-        handleSaveTabAfterNewTabOrNewUrl(tab, "TAB:CREATED", query, searchEngineName);
-
-        const isSerp = !!query && !!searchEngineName
-        if (!isSerp) return;
-
-        logHtmlOfSerp();
-
-        function getSeNameAndQueryIfSerp(url: string, tabId: number): QueryAndSearchEngineName {
-
-            let queryKeyWord: QueryKeyWord | undefined = undefined;
-
-            getQueryKeyWordIfExists(url);
-
-            if (!queryKeyWord) return {query: undefined, searchEngineName: undefined};
-
-            return extractSeNameAndQuery(url, tabId, queryKeyWord);
-
-            function getQueryKeyWordIfExists(url: string) {
-                queryKeyWords.some(keyword => {
-                    console.log("trying ", keyword)
-                    const isQuery = url.includes(keyword);
-
-                    if (!isQuery) return false;
-
-                    console.log("bingo");
-                    queryKeyWord = keyword;
-                    return true;
-                });
-            }
-
-            function extractSeNameAndQuery(url: string, tanId: number, queryKeyWord: QueryKeyWord): QueryAndSearchEngineName {
-                let query: string | undefined = undefined;
-                let searchEngineName: SearchEngineName | undefined = undefined;
-                searchEngineSerpInfos.get(queryKeyWord)?.some((searchEngineSerpInfo) => {
-                    const isSerp = searchEngineSerpInfo.isUrlSERP(url);
-                    console.log("isSerp: " + isSerp)
-
-                    if (!isSerp) return false;
-
-                    console.log("")
-                    query = searchEngineSerpInfo.getQuery(url);
-                    searchEngineName = searchEngineSerpInfo.searchEngineName;
-                    console.log(query)
-                    return true;
-                })
-                return {query, searchEngineName};
-            }
-        }
-
-        function logHtmlOfSerp() {
-            sendMessageToCS(tab.id as number, "LOG_HTML_OF_SERP");
-        }
-    }
 }
 
 export function handleTabUpdated(id: number, changeInfo: OnUpdatedChangeInfoType, tab: Tab) {
@@ -102,7 +43,7 @@ export function handleTabUpdated(id: number, changeInfo: OnUpdatedChangeInfoType
     const urlFromTabId = openedTabsCache.get(id);
     const isNewURL = (changeInfo.url !== undefined) && (urlFromTabId !== undefined) && (changeInfo.url !== urlFromTabId);
 
-    if (isNewURL) handleSaveTabAfterNewTabOrNewUrl(tab, "TAB:URL_CHANGED")
+    if (isNewURL) logTabAndLogHtmlIfSerp(tab, "TAB:URL_CHANGED")
     else if (changeInfo.pinned !== undefined) {
         const iTab = prePareITabFromTab(tab, changeInfo.pinned ? "TAB:PINNED" : "TAB:UNPINNED");
         dataBase.saveTabInfo(iTab);
@@ -182,6 +123,64 @@ export async function handleTabDetached(tabId: number, detachInfo: DetachInfo) {
 
 
 //Helper Functions
+function logTabAndLogHtmlIfSerp(tab: Tab, tabAction: TabAction) {
+
+    const {query, searchEngineName} = getSeNameAndQueryIfSerp(tab.url as string, tab.id as number);
+
+    handleSaveTabAfterNewTabOrNewUrl(tab, tabAction, query, searchEngineName);
+
+    const isSerp = !!query && !!searchEngineName
+    if (!isSerp) return;
+
+    logHtmlOfSerp();
+
+    function getSeNameAndQueryIfSerp(url: string, tabId: number): QueryAndSearchEngineName {
+
+        let queryKeyWord: QueryKeyWord | undefined = undefined;
+
+        getQueryKeyWordIfExists(url);
+
+        if (!queryKeyWord) return {query: undefined, searchEngineName: undefined};
+
+        return extractSeNameAndQuery(url, tabId, queryKeyWord);
+
+        function getQueryKeyWordIfExists(url: string) {
+            queryKeyWords.some(keyword => {
+                console.log("trying ", keyword)
+                const isQuery = url.includes(keyword);
+
+                if (!isQuery) return false;
+
+                console.log("bingo");
+                queryKeyWord = keyword;
+                return true;
+            });
+        }
+
+        function extractSeNameAndQuery(url: string, tanId: number, queryKeyWord: QueryKeyWord): QueryAndSearchEngineName {
+            let query: string | undefined = undefined;
+            let searchEngineName: SearchEngineName | undefined = undefined;
+            searchEngineSerpInfos.get(queryKeyWord)?.some((searchEngineSerpInfo) => {
+                const isSerp = searchEngineSerpInfo.isUrlSERP(url);
+                console.log("isSerp: " + isSerp)
+
+                if (!isSerp) return false;
+
+                console.log("")
+                query = searchEngineSerpInfo.getQuery(url);
+                searchEngineName = searchEngineSerpInfo.searchEngineName;
+                console.log(query)
+                return true;
+            })
+            return {query, searchEngineName};
+        }
+    }
+
+    function logHtmlOfSerp() {
+        sendMessageToCS(tab.id as number, "LOG_HTML_OF_SERP");
+    }
+}
+
 function prePareITabFromTab(tab: Tab, tabAction: TabAction, query?: string, searchEngineName?: SearchEngineName): ITab {
     const tabExtended = tab as TabWithGroupId;
 
