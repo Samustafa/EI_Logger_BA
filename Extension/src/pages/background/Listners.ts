@@ -75,14 +75,13 @@ export function startListeningBG() {
 
 function activateAllListens() {
     listenOnCompleted();
+    listenTabUpdated();
     listenTabActivated();
     listenTabRemoved();
-    listenTabUpdated();
     listenBookmarkCreated();
     listenBookmarkRemoved();
     listenTabAttached();
     listenTabDetached();
-
 }
 
 function disRegardAllListeners() {

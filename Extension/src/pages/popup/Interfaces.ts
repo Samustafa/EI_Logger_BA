@@ -93,6 +93,7 @@ export interface IDemographics {
 
 export interface ITab {
     tabId: number;
+    tabUuid: string;
     action: TabAction;
     timeStamp: string;
     userId: string

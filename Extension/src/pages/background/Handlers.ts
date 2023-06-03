@@ -12,6 +12,7 @@ import {
     SearchEngineName,
     Tab,
     TabAction,
+    TabCacheInfo,
     TabWithGroupId
 } from "@pages/popup/Types";
 import {ITab} from "@pages/popup/Interfaces";
@@ -20,9 +21,9 @@ import browser, {tabs} from "webextension-polyfill";
 import {getUTCDateTime, sendMessageToCS} from "@pages/popup/UtilityFunctions";
 import {bgLoggingConstants} from "@pages/background/BGLoggingConstants";
 import {queryKeyWords, searchEngineSerpInfos} from "@pages/popup/model/SearchEngineSerpInfo";
+import {v4 as uuid} from 'uuid';
 
-
-const openedTabsCache = new Map<number, string>();
+const openedTabsCache = new Map<number, TabCacheInfo>();
 
 export function handleOnInstalled() {
     setBadgeText('OFF');
@@ -34,21 +35,15 @@ export function handleOnCompleted(details: OnCompletedDetailsType) {
     if (details.frameId !== tabFinishedLoading) return
 
     tabs.get(details.tabId)
-        .then(tab => logTabAndLogHtmlIfSerp(tab, "TAB:CREATED"))
+        .then(tab => logTabAndLogHtmlIfSerp(tab))
         .catch(e => console.error("handleOnCompleted " + JSON.stringify(e)));
 }
 
 export function handleTabUpdated(id: number, changeInfo: OnUpdatedChangeInfoType, tab: Tab) {
-
-    const urlFromTabId = openedTabsCache.get(id);
-    const isNewURL = (changeInfo.url !== undefined) && (urlFromTabId !== undefined) && (changeInfo.url !== urlFromTabId);
-
-    if (isNewURL) logTabAndLogHtmlIfSerp(tab, "TAB:URL_CHANGED")
-    else if (changeInfo.pinned !== undefined) {
+    if (changeInfo.pinned !== undefined) {
         const iTab = prePareITabFromTab(tab, changeInfo.pinned ? "TAB:PINNED" : "TAB:UNPINNED");
         dataBase.saveTabInfo(iTab);
     }
-
 }
 
 export function handleTabRemoved(tabId: number) {
@@ -72,16 +67,15 @@ export function handleTabActivated(onActivatedActiveInfoType: OnActivatedActiveI
 
         })
         .catch((e) => console.error("handleTabActivated " + e))
-
 }
 
-export function handleBookmarkCreated(id: string, bookmark: BookMark) {
-    const iTab = prepareITabFromBookMark(bookmark, "TAB:BOOKMARK:ADDED");
+export async function handleBookmarkCreated(id: string, bookmark: BookMark) {
+    const iTab = await prepareITabFromBookMark(bookmark, "TAB:BOOKMARK:ADDED");
     dataBase.saveTabInfo(iTab);
 }
 
-export function handleBookmarkRemoved(id: string, removeInfo: RemoveInfo) {
-    const iTab = prepareITabFromBookMark(removeInfo.node, "TAB:BOOKMARK:REMOVED");
+export async function handleBookmarkRemoved(id: string, removeInfo: RemoveInfo) {
+    const iTab = await prepareITabFromBookMark(removeInfo.node, "TAB:BOOKMARK:REMOVED");
     dataBase.saveTabInfo(iTab);
 }
 
@@ -89,9 +83,10 @@ export async function handleTabAttached(tabId: number, attachInfo: AttachInfo) {
     const tab = await tabs.get(tabId);
     const iTab: ITab = {
         action: "TAB:ATTACHED:TO:WINDOW",
+        tabId: tabId,
+        tabUuid: openedTabsCache.get(tabId)?.tabUuid ?? "",
         groupId: -1,
         studyId: bgLoggingConstants.studyId,
-        tabId: tabId,
         tabIndex: attachInfo.newPosition,
         taskId: bgLoggingConstants.taskId,
         timeStamp: getUTCDateTime(),
@@ -108,9 +103,10 @@ export async function handleTabDetached(tabId: number, detachInfo: DetachInfo) {
     const tab = await tabs.get(tabId);
     const iTab: ITab = {
         action: "TAB:DETACHED:FROM:WINDOW",
+        tabId: tabId,
+        tabUuid: openedTabsCache.get(tabId)?.tabUuid ?? "",
         groupId: -1,
         studyId: bgLoggingConstants.studyId,
-        tabId: tabId,
         tabIndex: detachInfo.oldPosition,
         taskId: bgLoggingConstants.taskId,
         timeStamp: getUTCDateTime(),
@@ -124,8 +120,8 @@ export async function handleTabDetached(tabId: number, detachInfo: DetachInfo) {
 
 
 //Helper Functions
-function logTabAndLogHtmlIfSerp(tab: Tab, tabAction: TabAction) {
-
+function logTabAndLogHtmlIfSerp(tab: Tab) {
+    const tabAction: TabAction = openedTabsCache.has(tab?.id ?? -1) ? "TAB:URL_CHANGED" : "TAB:CREATED";
     const {query, searchEngineName} = getSeNameAndQueryIfSerp(tab.url as string, tab.id as number);
 
     handleSaveTabAfterNewTabOrNewUrl(tab, tabAction, query, searchEngineName);
@@ -187,12 +183,13 @@ function prePareITabFromTab(tab: Tab, tabAction: TabAction, query?: string, sear
 
     return {
         action: tabAction,
+        tabId: tab?.id ?? -1,
+        tabUuid: openedTabsCache.get(tab?.id ?? -1)?.tabUuid ?? uuid(),
         timeStamp: getUTCDateTime(),
         userId: bgLoggingConstants.userId,
         studyId: bgLoggingConstants.studyId,
         taskId: bgLoggingConstants.taskId,
         groupId: tabExtended.groupId,
-        tabId: tab?.id ?? -1,
         tabIndex: tab.index,
         windowId: tab?.windowId ?? -1,
         title: tab?.title ?? "",
@@ -206,12 +203,13 @@ function prePareITabFromITab(tab: ITab, tabAction: TabAction): ITab {
 
     return {
         action: tabAction,
+        tabId: tab.tabId,
+        tabUuid: openedTabsCache.get(tab.tabId)?.tabUuid ?? uuid(),
         timeStamp: getUTCDateTime(),
         userId: bgLoggingConstants.userId,
         studyId: bgLoggingConstants.studyId,
         taskId: bgLoggingConstants.taskId,
         groupId: tab.groupId,
-        tabId: tab.tabId,
         tabIndex: tab.tabIndex,
         windowId: tab.windowId,
         title: tab.title,
@@ -224,26 +222,31 @@ function prePareITabFromITab(tab: ITab, tabAction: TabAction): ITab {
  * @param bookmark the bookmark node
  * @param tabAction
  */
-function prepareITabFromBookMark(bookmark: BookMark, tabAction: "TAB:BOOKMARK:REMOVED" | "TAB:BOOKMARK:ADDED"): ITab {
+async function prepareITabFromBookMark(bookmark: BookMark, tabAction: "TAB:BOOKMARK:REMOVED" | "TAB:BOOKMARK:ADDED"): Promise<ITab> {
+    const activeTabs = await tabs.query({currentWindow: true, active: true});
+    const tab = activeTabs[0] as TabWithGroupId;
+    const tabId = tab.id ?? -1;
+
     return {
         action: tabAction,
+        tabId: tabId,
+        tabUuid: openedTabsCache.get(tabId)?.tabUuid ?? uuid(),
         timeStamp: getUTCDateTime(),
         userId: bgLoggingConstants.userId,
         studyId: bgLoggingConstants.studyId,
         taskId: bgLoggingConstants.taskId,
-        groupId: -1,
-        tabId: -1,
-        tabIndex: -1,
-        windowId: -1,
+        groupId: tab.groupId ?? -1,
+        tabIndex: tab.index ?? -1,
+        windowId: tab.windowId ?? -1,
         title: bookmark.title,
         url: bookmark.url ?? "",
-    }
+    };
 }
 
 function handleSaveTabAfterNewTabOrNewUrl(tab: Tab, tabAction: TabAction, query?: string, searchEngineName?: SearchEngineName) {
     const iTab = prePareITabFromTab(tab, tabAction, query, searchEngineName);
     dataBase.saveTabInfo(iTab);
-    openedTabsCache.set(iTab.tabId, iTab.url)
+    openedTabsCache.set(iTab.tabId, {url: iTab.url, tabUuid: iTab.tabUuid});
 }
 
 export function handleLogAllExistingTabs() {

@@ -126,3 +126,7 @@ export type QueryAndSearchEngineName = {
 export type ContentScriptResponse = { innerHTML: string, innerText: string }
 
 
+export type TabCacheInfo = {
+    url: string;
+    tabUuid: string;
+}
