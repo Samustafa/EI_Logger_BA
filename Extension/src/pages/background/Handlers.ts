@@ -5,9 +5,11 @@ import {
     DetachInfo,
     OnActivatedActiveInfoType,
     OnCompletedDetailsType,
-    OnUpdatedChangeInfoType, QueryAndSearchEngineName,
+    OnUpdatedChangeInfoType,
+    QueryAndSearchEngineName,
     QueryKeyWord,
-    RemoveInfo, SearchEngineName,
+    RemoveInfo,
+    SearchEngineName,
     Tab,
     TabAction,
     TabWithGroupId
@@ -15,7 +17,7 @@ import {
 import {ITab} from "@pages/popup/Interfaces";
 import {dataBase} from "@pages/popup/database";
 import browser, {tabs} from "webextension-polyfill";
-import {connectToCSPort, getUTCDateTime, sendMessages} from "@pages/popup/UtilityFunctions";
+import {getUTCDateTime, sendMessageToCS} from "@pages/popup/UtilityFunctions";
 import {bgLoggingConstants} from "@pages/background/BGLoggingConstants";
 import {queryKeyWords, searchEngineSerpInfos} from "@pages/popup/model/SearchEngineSerpInfo";
 
@@ -45,9 +47,7 @@ export function handleOnCompleted(details: OnCompletedDetailsType) {
         const isSerp = !!query && !!searchEngineName
         if (!isSerp) return;
 
-        const port = connectToCSPort("logHTML", tab.id as number);
-        sendMessages(port, "LOG_HTML_OF_SERP");
-        port.disconnect();
+        logHtmlOfSerp();
 
         function getSeNameAndQueryIfSerp(url: string, tabId: number): QueryAndSearchEngineName {
 
@@ -91,6 +91,9 @@ export function handleOnCompleted(details: OnCompletedDetailsType) {
             }
         }
 
+        function logHtmlOfSerp() {
+            sendMessageToCS(tab.id as number, "LOG_HTML_OF_SERP");
+        }
     }
 }
 

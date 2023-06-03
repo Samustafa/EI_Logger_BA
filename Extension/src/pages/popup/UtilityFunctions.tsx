@@ -1,5 +1,12 @@
 import {IApiException, IQuestionAnswer} from "@pages/popup/Interfaces";
-import {MessageType, Port, PortNameBG, PortNameCS, QuestionType} from "@pages/popup/Types";
+import {
+    ContentScriptMessage,
+    ContentScriptResponse,
+    MessageType,
+    Port,
+    PortNameBG,
+    QuestionType
+} from "@pages/popup/Types";
 import {MultipleChoiceQuestion} from "@pages/popup/model/question/MultipleChoiceQuestion";
 import {RangeQuestion} from "@pages/popup/model/question/RangeQuestion";
 import {TextQuestion} from "@pages/popup/model/question/TextQuestion";
@@ -7,6 +14,7 @@ import {Question} from "@pages/popup/model/question/Question";
 import utc from "dayjs/plugin/utc";
 import dayjs from "dayjs";
 import browser from "webextension-polyfill";
+import {dataBase} from "@pages/popup/database";
 
 dayjs.extend(utc);
 
@@ -64,13 +72,18 @@ export function connectToBGPort(portName: PortNameBG): Port {
     return browser.runtime.connect({name: portName});
 }
 
-/**
- * connect to content script port
- * @param portName
- * @param tabId id of the tab to connect to its content script
- */
-export function connectToCSPort(portName: PortNameCS, tabId: number): Port {
-    return browser.tabs.connect(tabId, {name: portName});
+export function sendMessageToCS(tabId: number, message: ContentScriptMessage) {
+
+    if (message === "LOG_HTML_OF_SERP") {
+        browser.tabs.sendMessage(tabId, message)
+            .then((response: ContentScriptResponse) => handleContentMessageResponse(response));
+    }
+
+    function handleContentMessageResponse(response: ContentScriptResponse) {
+        const innerHTML = response.innerHTML;
+        const innerText = response.innerText;
+        dataBase.addSerpHtml(innerHTML, innerText);
+    }
 }
 
 export function sendMessages(port: Port, message: MessageType) {

@@ -7,7 +7,7 @@ import {IQuestionAnswer} from "@pages/popup/Interfaces";
 export type QuestionTypeAsString = "TextQuestion" | "MultipleChoiceQuestion" | "RangeQuestion";
 export type QuestionType = TextQuestion | MultipleChoiceQuestion | RangeQuestion;
 
-export type MessageType = LoggingMessage | LoggingConstantsMessage | ContentScriptMessage;
+export type MessageType = LoggingMessage | LoggingConstantsMessage;
 export type LoggingMessage = "START_LOGGING" | "STOP_LOGGING";
 export type LoggingConstantsMessage = { studyId?: string, userId?: string, taskId?: string };
 export type ContentScriptMessage = "LOG_HTML_OF_SERP"
@@ -122,5 +122,7 @@ export type QueryAndSearchEngineName = {
     query?: string,
     searchEngineName?: SearchEngineName
 }
+
+export type ContentScriptResponse = { innerHTML: string, innerText: string }
 
 

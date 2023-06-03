@@ -8,6 +8,7 @@ import {
     IMultipleChoiceQuestion,
     IQuestion,
     IRangeQuestion,
+    ISerpHtml,
     IStudy,
     ITab,
     ITask,
@@ -37,6 +38,7 @@ class DataBase extends Dexie {
     userExtensionInteraction!: Table<IUserExtensionInteraction, string>;
     currentTaskId!: Table<ICurrentTaskId, string>;
     extensionState!: Table<IExtensionState, string>;
+    serpHtml!: Table<ISerpHtml, string>;
 
     //...other tables goes here...
 
@@ -54,7 +56,8 @@ class DataBase extends Dexie {
             tabs: '++id, tabId, action, timeStamp, userId, studyId, taskId, groupId, tabIndex, windowId, title, url',
             userExtensionInteraction: '++id, action, timeStamp, userId, studyId, taskId',
             currentTaskId: 'id, taskId',
-            extensionState: 'id, state'
+            extensionState: 'id, state',
+            serpHtml: '++id,timeStamp, innerHtml, innerText'
         });
     }
 
@@ -238,6 +241,15 @@ class DataBase extends Dexie {
 
     setTaskStarted(taskId: string) {
         this.task.update(taskId, {isStarted: true});
+    }
+
+    addSerpHtml(innerHtml: string, innerText: string) {
+        const iHtml: ISerpHtml = {
+            timeStamp: getUTCDateTime(),
+            innerHtml: innerHtml,
+            innerText: innerText
+        }
+        this.serpHtml.add(iHtml);
     }
 }
 

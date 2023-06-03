@@ -1,4 +1,4 @@
-import {Port, PortNameCS} from "@pages/popup/Types";
+import {ContentScriptMessage, ContentScriptResponse} from "@pages/popup/Types";
 import browser from "webextension-polyfill";
 
 
@@ -6,24 +6,22 @@ import browser from "webextension-polyfill";
  *start listening in content script
  */
 function startListeningInCS() {
-    browser.runtime.onConnect.addListener(connectCSPort);
     console.log("content script initialized");
-}
+    browser.runtime.onMessage.addListener((message: ContentScriptMessage) => handleMessage(message));
 
-/**
- * accept connections to content script ports
- * @param port
- */
-function connectCSPort(port: Port) {
-    const portName = port.name as PortNameCS;
-    console.log(`service worker connected to port ${portName}`);
+    function handleMessage(message: ContentScriptMessage) {
+        if (message === "LOG_HTML_OF_SERP") {
+            const body = document.body;
+            const innerText = body.innerText;
+            const innerHTML = body.innerHTML;
 
-    switch (portName) {
-        case 'logHTML':
-            port.onMessage.addListener((message) => {
-                console.log("loggingPort message received", message)
-            })
-            break;
+            const response: ContentScriptResponse = {
+                innerText: innerText,
+                innerHTML: innerHTML,
+            }
+            return Promise.resolve(response);
+        }
+
     }
 }
 

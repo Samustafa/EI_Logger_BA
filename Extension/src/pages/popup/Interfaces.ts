@@ -114,3 +114,9 @@ export interface IUserExtensionInteraction {
     studyId?: string;
     taskId?: string;
 }
+
+export interface ISerpHtml {
+    timeStamp: string;
+    innerHtml: string;
+    innerText: string;
+}
