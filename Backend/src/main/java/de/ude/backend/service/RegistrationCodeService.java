@@ -22,7 +22,7 @@ public class RegistrationCodeService {
      * @return RegistrationCode as JSON String
      * @throws JsonProcessingException: if JSON could not be processed
      */
-    public String createRegistrationCode(int numberOfRegistrationCodes) throws JsonProcessingException {
+    public String createAnonymousRegistrationCodes(int numberOfRegistrationCodes) throws JsonProcessingException {
         ArrayList<RegistrationCode> registrationCodes = new ArrayList<>();
         for (int i = 0; i < numberOfRegistrationCodes; i++) {
             registrationCodes.add(Utils.createUniversillyUniqueRegistrationCode());

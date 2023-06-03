@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @AllArgsConstructor
 @Slf4j
 @RestController
@@ -45,13 +48,20 @@ public class BackendController {
         }
     }
 
-    @GetMapping("/createRegistrationCode/{numberOfRegistrationCode}")
-    public ResponseEntity<String> createRegistrationCodes(@PathVariable int numberOfRegistrationCode) throws JsonProcessingException {
-        String userJson = registrationCodeService.createRegistrationCode(numberOfRegistrationCode);
-        log.info("Created {} pending users: {}.", numberOfRegistrationCode, userJson);
+    @GetMapping("/createAnonymousRegistrationCodes/{numberOfRegistrationCodes}")
+    public ResponseEntity<String> createAnonymousRegistrationCodes(@PathVariable int numberOfRegistrationCodes) throws JsonProcessingException {
+        String userJson = registrationCodeService.createAnonymousRegistrationCodes(numberOfRegistrationCodes);
+        log.info("Created {} pending users: {}.", numberOfRegistrationCodes, userJson);
         return new ResponseEntity<>(userJson, HttpStatus.OK);
     }
 
+    @GetMapping("/createUsers/{numberOfUsers}")
+    public ResponseEntity<List<String>> createdUserIds(@PathVariable int numberOfUsers) throws JsonProcessingException {
+        ArrayList<String> users = (ArrayList<String>) userService.createUserIds(numberOfUsers);
+
+        log.info("Created {} new users: {}.", numberOfUsers, users);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
     @PostMapping("/createStudy")
     public ResponseEntity<Study> createStudy(@RequestBody Study study) {
         return new ResponseEntity<>(studyService.createStudy(study), HttpStatus.OK);
