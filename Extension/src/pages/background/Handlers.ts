@@ -56,6 +56,7 @@ export function handleTabRemoved(tabId: number) {
         .then((iTab) => {
             if (!iTab) throw new Error(`handleTabRemoved: Couldn't fetch tab with the ID ${tabId}`)
             dataBase.saveTabInfo(prePareITabFromITab(iTab, "TAB:CLOSED"));
+            openedTabsCache.delete(tabId);
         })
         .catch((e) => console.error("handleTabRemoved " + JSON.stringify(e)))
 }
