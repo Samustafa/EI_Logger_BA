@@ -20,6 +20,8 @@ public class Study {
     //@Indexed(unique = true)
     private String name;
 
+    private boolean hasDemographics;
+
     @NonNull
     private List<Task> tasks;
 }
