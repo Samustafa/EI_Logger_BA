@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,7 +24,7 @@ public class RegistrationCodeService {
      * @return RegistrationCode as JSON String
      * @throws JsonProcessingException: if JSON could not be processed
      */
-    public String createAnonymousRegistrationCodes(int numberOfRegistrationCodes) throws JsonProcessingException {
+    public List<RegistrationCode> createAnonymousRegistrationCodes(int numberOfRegistrationCodes) {
         ArrayList<RegistrationCode> registrationCodes = new ArrayList<>();
 
         UUID uuid = UUID.randomUUID();
@@ -32,7 +33,7 @@ public class RegistrationCodeService {
             registrationCodes.add(registrationCode);
         }
         registrationCodeRepo.saveAll(registrationCodes);
-        return Utils.mapRegistrationCodeToJSON(registrationCodes);
+        return registrationCodes;
     }
 
     public boolean isRegistrationCodeExist(String id) {
