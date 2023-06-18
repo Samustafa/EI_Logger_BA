@@ -29,12 +29,13 @@ public class UserService {
 
     public List<User> createUserIds(int numberOfUsers) {
         ArrayList<User> users = new ArrayList<>();
-        UUID uuid = UUID.randomUUID();
 
         for (int i = 0; i < numberOfUsers; i++) {
+            UUID uuid = UUID.randomUUID();
             User user = new User(uuid.toString());
             users.add(user);
         }
+
         userRepo.saveAll(users);
         return users;
     }

@@ -1,6 +1,5 @@
 package de.ude.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import de.ude.backend.model.RegistrationCode;
 import de.ude.backend.service.repository.RegistrationCodeRepo;
 import lombok.AllArgsConstructor;
@@ -22,16 +21,16 @@ public class RegistrationCodeService {
      *
      * @param numberOfRegistrationCodes to create
      * @return RegistrationCode as JSON String
-     * @throws JsonProcessingException: if JSON could not be processed
      */
     public List<RegistrationCode> createAnonymousRegistrationCodes(int numberOfRegistrationCodes) {
         ArrayList<RegistrationCode> registrationCodes = new ArrayList<>();
 
-        UUID uuid = UUID.randomUUID();
         for (int i = 0; i < numberOfRegistrationCodes; i++) {
+            UUID uuid = UUID.randomUUID();
             var registrationCode = new RegistrationCode(uuid.toString());
             registrationCodes.add(registrationCode);
         }
+
         registrationCodeRepo.saveAll(registrationCodes);
         return registrationCodes;
     }
