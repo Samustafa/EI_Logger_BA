@@ -21,6 +21,7 @@ export interface IUser {
 export interface IStudy {
     studyId: string;
     name: string;
+    hasDemographics: boolean;
 }
 
 export interface ITask {

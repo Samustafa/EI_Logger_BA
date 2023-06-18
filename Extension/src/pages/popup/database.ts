@@ -46,7 +46,7 @@ class DataBase extends Dexie {
         super('DataBase');
         this.version(1).stores({
             user: 'id, userId',
-            study: 'studyId',
+            study: 'studyId, hasDemographics',
             task: 'taskId, text, iPreQuestions, iPostQuestions, isStarted, isCompleted, isPreQuestionsSubmitted, isPostQuestionsSubmitted',
             multipleChoiceQuestion: 'questionId, questionText, type, choices',
             rangeQuestion: 'questionId, questionText, type, range',

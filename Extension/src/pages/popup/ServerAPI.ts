@@ -23,7 +23,7 @@ export async function getStudy(): Promise<Study> {
         new RangeQuestion("5", "fifth: range question", 5)], [new TextQuestion("6", "sixth: text question", 1000)]);
 
     const tasks: Task[] = [task1, task2, task3, task4];
-    return new Study("64456e83d6b1e3463ca52923", "study 1", tasks);
+    return new Study("64456e83d6b1e3463ca52923", "study 1", true, tasks);
 }
 
 /**

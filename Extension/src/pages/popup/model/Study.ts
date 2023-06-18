@@ -3,11 +3,13 @@ import {Task} from "@pages/popup/model/Task";
 export class Study {
     private _studyId: string;
     private _name: string;
+    private _hasDemographics: boolean;
     private _tasks: Task[];
 
-    constructor(studyId: string, name: string, tasks: Task[]) {
+    constructor(studyId: string, name: string, hasDemographics: boolean, tasks: Task[]) {
         this._studyId = studyId;
         this._name = name;
+        this._hasDemographics = hasDemographics;
         this._tasks = tasks.map((task: Task) => new Task(task.taskId, task.text, task.preQuestions, task.postQuestions));
     }
 
@@ -37,5 +39,13 @@ export class Study {
 
     set tasks(value: Task[]) {
         this._tasks = value;
+    }
+
+    get hasDemographics(): boolean {
+        return this._hasDemographics;
+    }
+
+    set hasDemographics(value: boolean) {
+        this._hasDemographics = value;
     }
 }

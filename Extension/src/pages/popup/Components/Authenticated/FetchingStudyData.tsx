@@ -33,9 +33,9 @@ export function FetchingStudyData() {
             .catch(error => extractAndSetError(error, setError))
             .finally(() => setLoading(false));
 
-        function handlePostGet(response: Study) {
-            saveStudyInDatabase(new Study(response.studyId, response.name, response.tasks));
-            fgLoggingConstants.studyId = response.studyId;
+        function handlePostGet(study: Study) {
+            saveStudyInDatabase(new Study(study.studyId, study.name, study.hasDemographics, study.tasks));
+            fgLoggingConstants.studyId = study.studyId;
             navigate(Paths.tasksPage)
         }
 
@@ -55,6 +55,7 @@ export function FetchingStudyData() {
             const study: IStudy = {
                 studyId: studyData.studyId,
                 name: studyData.name,
+                hasDemographics: studyData.hasDemographics,
             }
 
             const tasks = studyData.tasks.map((task: Task): ITask => ({
