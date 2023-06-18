@@ -39,7 +39,7 @@ public class BackendController {
     }
 
     @GetMapping("/authenticateUser/{userId}")
-    public HttpStatus authenticateUSer(@PathVariable String userId) {
+    public HttpStatus authenticateUser(@PathVariable String userId) {
         if (userService.userExists(userId)) {
             log.info("authenticateUSer(): User authenticated: " + userId);
             return HttpStatus.OK;
