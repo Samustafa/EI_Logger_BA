@@ -21,7 +21,9 @@ public class UserService {
      * @return User as JSON String
      */
     public String registerUser() throws JsonProcessingException {
-        User user = Utils.createUniversillayUniqueUser();
+        UUID uuid = UUID.randomUUID();
+        User user = new User(uuid.toString());
+
         userRepo.save(user);
         return Utils.mapUserToJSON(user);
     }
