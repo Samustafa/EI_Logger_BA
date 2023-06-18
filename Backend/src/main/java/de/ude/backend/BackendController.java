@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import de.ude.backend.exceptions.custom_exceptions.NoUserFoundException;
 import de.ude.backend.exceptions.custom_exceptions.RegistrationCodeNotValid;
 import de.ude.backend.model.Study;
+import de.ude.backend.model.User;
 import de.ude.backend.service.RegistrationCodeService;
 import de.ude.backend.service.StudyService;
 import de.ude.backend.service.UserService;
@@ -51,13 +52,14 @@ public class BackendController {
     @GetMapping("/createAnonymousRegistrationCodes/{numberOfRegistrationCodes}")
     public ResponseEntity<String> createAnonymousRegistrationCodes(@PathVariable int numberOfRegistrationCodes) throws JsonProcessingException {
         String userJson = registrationCodeService.createAnonymousRegistrationCodes(numberOfRegistrationCodes);
+
         log.info("Created {} pending users: {}.", numberOfRegistrationCodes, userJson);
         return new ResponseEntity<>(userJson, HttpStatus.OK);
     }
 
     @GetMapping("/createUsers/{numberOfUsers}")
-    public ResponseEntity<List<String>> createdUserIds(@PathVariable int numberOfUsers) throws JsonProcessingException {
-        ArrayList<String> users = (ArrayList<String>) userService.createUserIds(numberOfUsers);
+    public ResponseEntity<List<User>> createdUserIds(@PathVariable int numberOfUsers) throws JsonProcessingException {
+        List<User> users =  userService.createUserIds(numberOfUsers);
 
         log.info("Created {} new users: {}.", numberOfUsers, users);
         return new ResponseEntity<>(users, HttpStatus.OK);

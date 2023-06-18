@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -24,14 +25,17 @@ public class UserService {
         userRepo.save(user);
         return Utils.mapUserToJSON(user);
     }
-    public List<String> createUserIds(int numberOfUsers) throws JsonProcessingException {
-        ArrayList<String> userIds = new ArrayList<>();
+
+    public List<User> createUserIds(int numberOfUsers) {
+        ArrayList<User> users = new ArrayList<>();
+        UUID uuid = UUID.randomUUID();
 
         for (int i = 0; i < numberOfUsers; i++) {
-            String user = registerUser();
-            userIds.add(user);
+            User user = new User(uuid.toString());
+            users.add(user);
         }
-        return userIds;
+        userRepo.saveAll(users);
+        return users;
     }
 
     public boolean userExists(String userId) {
