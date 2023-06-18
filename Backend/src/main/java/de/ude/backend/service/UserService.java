@@ -1,6 +1,5 @@
 package de.ude.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import de.ude.backend.model.User;
 import de.ude.backend.service.repository.UserRepo;
 import lombok.AllArgsConstructor;
@@ -20,12 +19,12 @@ public class UserService {
      *
      * @return User as JSON String
      */
-    public String registerUser() throws JsonProcessingException {
+    public User registerUser() {
         UUID uuid = UUID.randomUUID();
         User user = new User(uuid.toString());
 
         userRepo.save(user);
-        return Utils.mapUserToJSON(user);
+        return user;
     }
 
     public List<User> createUserIds(int numberOfUsers) {

@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -28,15 +27,15 @@ public class BackendController {
     private final StudyService studyService;
 
     @PostMapping("/registerUser/{registrationCode}")
-    public ResponseEntity<String> registerUser(@PathVariable String registrationCode) throws RegistrationCodeNotValid, JsonProcessingException {
+    public ResponseEntity<User> registerUser(@PathVariable String registrationCode) throws RegistrationCodeNotValid {
         if (!registrationCodeService.isRegistrationCodeExist(registrationCode))
             throw new RegistrationCodeNotValid("Registration Code not valid.");
 
         registrationCodeService.deleteRegistrationCode(registrationCode);
-        String userJson = userService.registerUser();
+        User user = userService.registerUser();
 
-        log.info("registerNewUserIfRegistrationCodeIsValid(): User added: " + userJson);
-        return new ResponseEntity<>(userJson, HttpStatus.OK);
+        log.info("registerNewUserIfRegistrationCodeIsValid(): User added: " + user.getUserId());
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/authenticateUser/{userId}")
@@ -59,11 +58,12 @@ public class BackendController {
 
     @GetMapping("/createUsers/{numberOfUsers}")
     public ResponseEntity<List<User>> createdUserIds(@PathVariable int numberOfUsers) throws JsonProcessingException {
-        List<User> users =  userService.createUserIds(numberOfUsers);
+        List<User> users = userService.createUserIds(numberOfUsers);
 
         log.info("Created {} new users: {}.", numberOfUsers, users);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
+
     @PostMapping("/createStudy")
     public ResponseEntity<Study> createStudy(@RequestBody Study study) {
         return new ResponseEntity<>(studyService.createStudy(study), HttpStatus.OK);
