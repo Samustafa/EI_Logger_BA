@@ -24,7 +24,6 @@ import {getUTCDateTime} from "@pages/popup/UtilityFunctions";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {Question} from "@pages/popup/model/question/Question";
 
-
 class DataBase extends Dexie {
     user!: Table<IUser, string>;
     study!: Table<IStudy, string>;
@@ -63,7 +62,8 @@ class DataBase extends Dexie {
 
     setUserId(userId: string) {
         const iUser: IUser = {id: 0, userId: userId}
-        dataBase.user.put(iUser);
+        dataBase.user.put(iUser)
+            .catch(error => console.error("dataBase setUserId", error));
     }
 
     async getITasks() {
@@ -240,11 +240,13 @@ class DataBase extends Dexie {
     }
 
     setTaskCompleted(taskId: string) {
-        this.task.update(taskId, {isCompleted: true});
+        this.task.update(taskId, {isCompleted: true})
+            .catch(error => console.error("dataBase setTaskCompleted: error while setting the task as completed:", taskId, "the error is", error));
     }
 
     setTaskStarted(taskId: string) {
-        this.task.update(taskId, {isStarted: true});
+        this.task.update(taskId, {isStarted: true})
+            .catch(error => console.error("dataBase setTaskStarted: error while setting the task as started:", taskId, "the error is", error));
     }
 
     addSerpHtml(innerHtml: string, innerText: string) {
@@ -253,7 +255,7 @@ class DataBase extends Dexie {
             innerHtml: innerHtml,
             innerText: innerText
         }
-        this.serpHtml.add(iHtml);
+        this.serpHtml.add(iHtml).catch(error => console.error("dataBase addSerpHtml: error while adding the serp html:", "the error is", error));
     }
 
     async getHasDemographics() {
