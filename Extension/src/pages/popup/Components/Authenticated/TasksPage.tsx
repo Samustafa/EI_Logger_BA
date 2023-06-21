@@ -19,7 +19,7 @@ export function TasksPage() {
 
     const [iTasks, setITasks] = useState<ITask[]>([]);
     const [open, setOpen] = useState(false);
-    const [messageToClipboard, setMessageToClipboard] = useState<string>("");
+    const [messageToClipboard, setSnackBarMessage] = useState<string>("");
     const [hasDemographics, setHasDemographics] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -28,14 +28,19 @@ export function TasksPage() {
         dataBase.getITasks().then((iTasks) => {
             setITasks(iTasks);
         })
-            .catch(error => handleError(error, 'Couldn\'t fetch tasks'));
+            .catch(error => handleErrorFromAsync(error, 'Couldn\'t fetch tasks'));
     }, []);
 
     useEffect(function checkIfShouldOpenDemographics() {
         dataBase.getHasDemographics()
             .then(hasDemographics => setHasDemographics(hasDemographics))
-            .catch(error => handleError(error, 'Couldn\'t fetch hasDemographics'));
+            .catch(error => handleErrorFromAsync(error, 'Couldn\'t fetch hasDemographics'));
     }, []);
+
+    function activateSnackBarWithMessage(message: string) {
+        setSnackBarMessage(message)
+        setOpen(true);
+    }
 
     function goToDemographics() {
         dataBase.setExtensionState('DEMOGRAPHICS');
@@ -43,18 +48,16 @@ export function TasksPage() {
     }
 
     function handleLogOut() {
-        setMessageToClipboard("Not implemented yet");
-        setOpen(true);
+        activateSnackBarWithMessage("Not implemented yet");
     }
 
     function handleUpload() {
-        setMessageToClipboard("Not implemented yet");
-        setOpen(true);
+        activateSnackBarWithMessage("Not implemented yet");
     }
 
-    function handleError(caughtError: any, displayMessage: string) {
+    function handleErrorFromAsync(caughtError: any, displayMessage: string) {
         extractAndSetError(caughtError, setError);
-        setMessageToClipboard(displayMessage + error);
+        activateSnackBarWithMessage(displayMessage + error);
     }
 
     function renderDemographicsButton(hasDemographics: boolean) {
@@ -65,7 +68,7 @@ export function TasksPage() {
     return (
         <div>
             <h1>Tasks</h1>
-            <Tasks iTasks={iTasks}/>
+            <Tasks iTasks={iTasks} handleErrorFromAsync={handleErrorFromAsync}/>
             <button className={buttonStyle} onClick={() => handleLogOut()}>log Out</button>
             <button className={buttonStyle} onClick={() => handleUpload()}>Upload</button>
             {renderDemographicsButton(hasDemographics)}
@@ -84,55 +87,58 @@ export function TasksPage() {
 
 interface Props {
     iTasks: ITask[];
+    handleErrorFromAsync: (caughtError: any, displayMessage: string) => void;
 }
 
-export function Tasks({iTasks}: Props) {
+export function Tasks({iTasks, handleErrorFromAsync}: Props) {
     const navigate = useNavigate();
 
-    async function handleListItemClick(taskId: string, index: number) {
-        fgLoggingConstants.taskId = taskId;
-        await dataBase.setCurrentTaskId(taskId);
+    function handleListItemClick(taskId: string, index: number) {
 
-        if (!iTasks[index].isStarted) {
-            dataBase.setTaskStarted(taskId);
-            dataBase.logUserExtensionInteraction("STARTED:TASK");
-        }
+        dataBase.setCurrentTaskId(taskId)
+            .then(() => handlePostSet())
+            .catch(error => handleErrorFromAsync(error, 'Couldn\'t set current task id'));
 
-        const shouldGoToPreQuestionnaire = computeShouldGoToPreQuestionnaire(taskId);
-        (shouldGoToPreQuestionnaire) ? goToPreQuestionnaire() : goToLogger();
+        function handlePostSet() {
 
-        function computeShouldGoToPreQuestionnaire(taskId: string) {
-            const iTask = iTasks.find((task) => task.taskId === taskId);
+            fgLoggingConstants.taskId = taskId;
 
-            const hasPreQuestionnaire = (iTask?.iPreQuestions?.length ?? 0) > 0;
-            const isPreQuestionsSubmitted = iTask?.isPreQuestionsSubmitted;
+            if (!iTasks[index].isStarted) {
+                dataBase.setTaskStarted(taskId);
+                dataBase.logUserExtensionInteraction("STARTED:TASK");
+            }
 
-            return hasPreQuestionnaire && !isPreQuestionsSubmitted;
-        }
+            const shouldGoToPreQuestionnaire = computeShouldGoToPreQuestionnaire(taskId);
+            (shouldGoToPreQuestionnaire) ? goToPreQuestionnaire() : goToLogger();
 
-        function goToPreQuestionnaire() {
-            dataBase.logUserExtensionInteraction("OPENED:PRE_QUESTIONNAIRE");
-            dataBase.setExtensionState('PRE_QUESTIONNAIRE');
-            navigate(Paths.questionnairePage('pre'));
-        }
+            function computeShouldGoToPreQuestionnaire(taskId: string) {
+                const iTask = iTasks.find((task) => task.taskId === taskId);
 
-        function goToLogger() {
-            dataBase.setExtensionState('LOGGER_READY');
-            navigate(Paths.loggerPage);
+                const hasPreQuestionnaire = (iTask?.iPreQuestions?.length ?? 0) > 0;
+                const isPreQuestionsSubmitted = iTask?.isPreQuestionsSubmitted;
+
+                return hasPreQuestionnaire && !isPreQuestionsSubmitted;
+            }
+
+            function goToPreQuestionnaire() {
+                dataBase.logUserExtensionInteraction("OPENED:PRE_QUESTIONNAIRE");
+                dataBase.setExtensionState('PRE_QUESTIONNAIRE');
+                navigate(Paths.questionnairePage('pre'));
+            }
+
+            function goToLogger() {
+                dataBase.setExtensionState('LOGGER_READY');
+                navigate(Paths.loggerPage);
+            }
+
         }
     }
 
-    return (
-        <>
-            <List component="nav" aria-label="main mailbox folders">
-                {iTasks.map((iTask: ITask, index) =>
-                    (<ListItemButton key={iTask.taskId} disabled={iTask.isCompleted}
-                                     onClick={() => handleListItemClick(iTask.taskId, index)}>
-                        <ListItemText primary={iTask.text}/><RightArrowIcon/>
-                    </ListItemButton>))}
-            </List>
-
-
-        </>
-    );
+    return (<List component="nav" aria-label="main mailbox folders">
+        {iTasks.map((iTask: ITask, index) =>
+            (<ListItemButton key={iTask.taskId} disabled={iTask.isCompleted}
+                             onClick={() => handleListItemClick(iTask.taskId, index)}>
+                <ListItemText primary={iTask.text}/><RightArrowIcon/>
+            </ListItemButton>))}
+    </List>);
 }
