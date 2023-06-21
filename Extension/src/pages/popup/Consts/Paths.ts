@@ -8,7 +8,7 @@ const demographicsPage = '/demographicsPage';
 const idDisplayPage = '/idDisplayPage';
 const defaultQuestionnaire = '/questionnairePage/:questionnaireType';
 const loggerPage = '/loggerPage';
-
+const uploadPage = '/uploadPage'; //this upload page should only be seen when the study has no tasks and the searcher finishes logging
 
 function questionnairePage(questionnaireType: QuestionnaireType) {
     return `/questionnairePage/${questionnaireType}`;
@@ -24,5 +24,6 @@ export default {
     questionnairePage,
     loggerPage,
     demographicsPage,
-    defaultQuestionnaire
+    defaultQuestionnaire,
+    uploadPage
 }

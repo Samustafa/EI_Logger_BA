@@ -1,5 +1,6 @@
 import {Logging} from "./Logging/Logging";
 import {Paused} from "@pages/popup/Components/Authenticated/LoggerReady/Paused/Paused";
+import * as React from "react";
 import {useEffect, useState} from "react";
 import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
 import {dataBase} from "@pages/popup/database";
@@ -19,20 +20,31 @@ export function LoggerReadyPage() {
     const [port, setPort] = useState<Port | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [openWarningDialog, setOpenWarningDialog] = useState<boolean>(false);
+    const [hasTasks, setHasTasks] = useState<boolean>(false);
 
-    const warningText = "Are you sure you want to finish the task?\n Once finished you won't be able to log anymore";
+    const warningText = "Are you sure you want to finish?\n Once finished you won't be able to log anymore";
 
     useEffect(function connectPort() {
         const port = connectToBGPort("loggingPort");
         setPort(port);
     }, [])
 
-    function handleFinishedTask() {
-        dataBase.setTaskCompleted(fgLoggingConstants.taskId);
+    useEffect(function fetchHasTasks() {
+        dataBase.getHasTasks()
+            .then(setHasTasks)
+            .catch(error => console.error("LoggerReadyPage fetchHasTasks", error));
+    }, []);
 
-        dataBase.doesTaskHasQuestionnaire(fgLoggingConstants.taskId, 'post')
-            .then((hasPostQuestionnaire) => changeStateAndNavigate(hasPostQuestionnaire))
-            .catch((error) => extractAndSetError(error, setError));
+    function handleFinishedTask() {
+        if (hasTasks) {
+            dataBase.setTaskCompleted(fgLoggingConstants.taskId);
+
+            dataBase.doesTaskHasQuestionnaire(fgLoggingConstants.taskId, 'post')
+                .then((hasPostQuestionnaire) => changeStateAndNavigate(hasPostQuestionnaire))
+                .catch((error) => extractAndSetError(error, setError));
+        } else {
+            navigate(Paths.uploadPage)
+        }
 
         async function changeStateAndNavigate(hasPostQuestionnaire: boolean) {
             (hasPostQuestionnaire) ? await goToPostQuestionnairePage() : await goToTasksPage();
@@ -49,6 +61,7 @@ export function LoggerReadyPage() {
                 navigate(Paths.tasksPage);
             }
         }
+
     }
 
     function handleBackButton() {
@@ -58,6 +71,15 @@ export function LoggerReadyPage() {
 
     }
 
+    function renderBackButton(hasTasks: boolean) {
+        return (<>{hasTasks &&
+            <button className={logging ? buttonDisabledStyle : buttonStyle}
+                    disabled={logging}
+                    onClick={() => handleBackButton()}>
+                Back
+            </button>}</>);
+    }
+
     return (
         <div>
             {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
@@ -65,11 +87,7 @@ export function LoggerReadyPage() {
             {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
             {!logging && <Paused setLogging={setLogging} setError={setError} port={port!}/>}
             <div>
-                <button className={logging ? buttonDisabledStyle : buttonStyle}
-                        disabled={logging}
-                        onClick={() => handleBackButton()}>
-                    Back
-                </button>
+                {renderBackButton(hasTasks)}
                 <button className={logging ? buttonDisabledStyle : buttonStyle}
                         disabled={logging}
                         onClick={() => setOpenWarningDialog(true)}>

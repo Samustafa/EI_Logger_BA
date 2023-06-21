@@ -10,11 +10,9 @@ import {DemographicsPage} from "@pages/popup/Components/Authenticated/Demographi
 import {LoggerReadyPage} from "@pages/popup/Components/Authenticated/LoggerReady/LoggerReadyPage";
 import {QuestionnairePage} from "@pages/popup/Components/Authenticated/Questions/QuestionnairePage";
 import {InitializationPage} from "@pages/popup/Components/InitializationPage";
+import {UploadPage} from "@pages/popup/Components/Authenticated/UploadPage";
 
 export default function Popup() {
-
-    console.log("Popup");
-
     return (
         <div className={generalStyle} style={{overflowY: "scroll"}}>
             <Routes>
@@ -26,6 +24,7 @@ export default function Popup() {
                 <Route path={Paths.fetchingStudyData} element={<FetchingStudyData/>}/>
                 <Route path={Paths.defaultQuestionnaire} element={<QuestionnairePage/>}/>
                 <Route path={Paths.loggerPage} element={<LoggerReadyPage/>}/>
+                <Route path={Paths.uploadPage} element={<UploadPage/>}/>
             </Routes>
         </div>
     );
