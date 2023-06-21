@@ -163,7 +163,7 @@ class DataBase extends Dexie {
 
     async setCurrentTaskId(taskId: string) {
         const iCurrentTaskId: ICurrentTaskId = {id: 0, taskId: taskId};
-        dataBase.currentTaskId.put(iCurrentTaskId);
+        await dataBase.currentTaskId.put(iCurrentTaskId);
     }
 
     async getExtensionState(): Promise<ExtensionState | undefined> {
