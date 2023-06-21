@@ -50,7 +50,7 @@ export function FetchingStudyData() {
             }
         }
 
-        function saveStudyInDatabase(studyData: Study) {
+        async function saveStudyInDatabase(studyData: Study) {
             const {
                 study,
                 tasks,
