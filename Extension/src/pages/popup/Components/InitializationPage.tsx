@@ -18,9 +18,9 @@ export function InitializationPage() {
 
     useEffect(function assignStates() {
         dataBase.getLoggingConstants()
-            .then((response) => fgLoggingConstants.initialize(response.userId, response.studyId, response.taskId))
-            .then(() => dataBase.getExtensionState())
-            .then((response) => navigateBasedOnExtensionState(response))
+            .then((response) => fgLoggingConstants.initialize(response))
+            .then(dataBase.getExtensionState)
+            .then(navigateBasedOnExtensionState)
             .catch((err) => extractAndSetError(err, setError))
             .finally(() => setIsLoading(false));
 
@@ -54,7 +54,6 @@ export function InitializationPage() {
                     navigate(Paths.landingPage);
             }
         }
-
 
     }, [retryFlag]);
 

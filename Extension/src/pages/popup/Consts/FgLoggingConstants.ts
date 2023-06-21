@@ -52,7 +52,7 @@ class LoggingConstants {
     }
 
 
-    initialize(userId: string, studyId: string, taskId: string) {
+    initialize({userId, studyId, taskId}: { userId: string, studyId: string, taskId: string }) {
         if (!this._port) this._initializePort();
         this.userId = userId;
         this.studyId = studyId;
