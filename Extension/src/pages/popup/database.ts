@@ -176,11 +176,12 @@ class DataBase extends Dexie {
         dataBase.extensionState.put(iExtensionState);
     }
 
-    async setQuestionnaireSubmitted(taskId: string, questionnaireType: string | undefined) {
+    setQuestionnaireSubmitted(taskId: string, questionnaireType: string | undefined) {
         const isQuestionnaireTypeLegal = questionnaireType === 'pre' || questionnaireType === 'post';
         if (!isQuestionnaireTypeLegal) throw new Error("questionnaireType is not legal");
         const updatedItem = questionnaireType === 'pre' ? {isPreQuestionsSubmitted: true} : {isPostQuestionsSubmitted: true};
-        dataBase.task.update(taskId, updatedItem);
+        dataBase.task.update(taskId, updatedItem)
+            .catch(error => console.error(error));
     }
 
     async getLoggingConstants() {
