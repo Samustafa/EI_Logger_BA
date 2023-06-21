@@ -84,7 +84,7 @@ export function DemographicsPage() {
     useEffect(function fetchHasTasks() {
         dataBase.getHasTasks()
             .then(setHasTasks)
-            .then(error => extractAndSetError(error, setGeneralError));
+            .catch(error => extractAndSetError(error, setGeneralError));
     }, []);
 
     function isFormValid() {
