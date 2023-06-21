@@ -65,6 +65,7 @@ export function DemographicsPage() {
         <CustomizedMenus sex={sex} setSex={setSex} error={Boolean(sexError)}/>
     </>
 
+
     useEffect(function logOpenedDemographics() {
         dataBase.logUserExtensionInteraction('OPENED:DEMOGRAPHICS')
     }, []);

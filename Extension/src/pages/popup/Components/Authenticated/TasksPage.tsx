@@ -11,6 +11,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import {RightArrowIcon} from "@pages/popup/svg/RightArrowIcon";
 import {buttonStyle} from "@pages/popup/Consts/Styles";
+import {extractAndSetError} from "@pages/popup/UtilityFunctions";
 
 
 export function TasksPage() {
@@ -19,12 +20,22 @@ export function TasksPage() {
     const [iTasks, setITasks] = useState<ITask[]>([]);
     const [open, setOpen] = useState(false);
     const [messageToClipboard, setMessageToClipboard] = useState<string>("");
+    const [hasDemographics, setHasDemographics] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+
     useEffect(function fetchTasks() {
         dataBase.getITasks().then((iTasks) => {
             setITasks(iTasks);
-        }).catch((error) => console.log(error));
+        })
+            .catch(error => handleError(error, 'Couldn\'t fetch tasks'));
     }, []);
 
+    useEffect(function checkIfShouldOpenDemographics() {
+        dataBase.getHasDemographics()
+            .then(hasDemographics => setHasDemographics(hasDemographics))
+            .catch(error => handleError(error, 'Couldn\'t fetch hasDemographics'));
+    }, []);
 
     function goToDemographics() {
         dataBase.setExtensionState('DEMOGRAPHICS');
@@ -41,6 +52,15 @@ export function TasksPage() {
         setOpen(true);
     }
 
+    function handleError(caughtError: any, displayMessage: string) {
+        extractAndSetError(caughtError, setError);
+        setMessageToClipboard(displayMessage + error);
+    }
+
+    function renderDemographicsButton(hasDemographics: boolean) {
+        return (<>{hasDemographics &&
+            <button className={buttonStyle} onClick={() => goToDemographics()}>Edit Demographics</button>}</>);
+    }
 
     return (
         <div>
@@ -48,7 +68,7 @@ export function TasksPage() {
             <Tasks iTasks={iTasks}/>
             <button className={buttonStyle} onClick={() => handleLogOut()}>log Out</button>
             <button className={buttonStyle} onClick={() => handleUpload()}>Upload</button>
-            <button className={buttonStyle} onClick={() => goToDemographics()}>Edit Demographics</button>
+            {renderDemographicsButton(hasDemographics)}
             <Snackbar
                 message={messageToClipboard}
                 anchorOrigin={{vertical: "bottom", horizontal: "center"}}

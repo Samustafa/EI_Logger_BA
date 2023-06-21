@@ -251,6 +251,12 @@ class DataBase extends Dexie {
         }
         this.serpHtml.add(iHtml);
     }
+
+    async getHasDemographics() {
+        const Studies = await this.study.toArray();
+        return Studies[0]?.hasDemographics;
+
+    }
 }
 
 export const dataBase = new DataBase();

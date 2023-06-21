@@ -29,14 +29,25 @@ export function FetchingStudyData() {
         setLoading(true);
 
         getStudy()
-            .then((response) => handlePostGet(response))
+            .then((response) => saveStudy(response))
+            .then(() => dataBase.getHasDemographics())
+            .then((hasDemographics) => handleTransitionToNextPage(hasDemographics))
             .catch(error => extractAndSetError(error, setError))
             .finally(() => setLoading(false));
 
-        function handlePostGet(study: Study) {
+        function saveStudy(study: Study) {
             saveStudyInDatabase(new Study(study.studyId, study.name, study.hasDemographics, study.tasks));
             fgLoggingConstants.studyId = study.studyId;
-            navigate(Paths.tasksPage)
+        }
+
+        function handleTransitionToNextPage(hasDemographics: boolean) {
+            if (hasDemographics) {
+                dataBase.setExtensionState('DEMOGRAPHICS');
+                navigate(Paths.demographicsPage)
+            } else {
+                dataBase.setExtensionState('TASKS_PAGE');
+                navigate(Paths.tasksPage)
+            }
         }
 
         function saveStudyInDatabase(studyData: Study) {

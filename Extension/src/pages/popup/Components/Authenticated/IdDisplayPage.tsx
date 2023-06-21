@@ -11,8 +11,8 @@ export function IdDisplayPage() {
     const navigate = useNavigate();
 
     function handleNext() {
-        dataBase.setExtensionState('TASKS_PAGE');
-        navigate(Paths.demographicsPage);
+        dataBase.setExtensionState('FETCHING_STUDY');
+        navigate(Paths.fetchingStudyData);
     }
 
     return (
