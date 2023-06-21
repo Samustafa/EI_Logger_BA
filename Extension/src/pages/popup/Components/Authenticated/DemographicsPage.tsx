@@ -131,9 +131,9 @@ export function DemographicsPage() {
             .then(() => handlePostSave())
             .catch((error) => extractAndSetError(error, setGeneralError))
 
-        function handlePostSave() {
+        async function handlePostSave() {
             dataBase.logUserExtensionInteraction('SUBMITTED:DEMOGRAPHICS');
-            dataBase.setExtensionState('TASKS_PAGE');
+            await dataBase.setExtensionState('TASKS_PAGE');
             navigate(isStudyExists ? Paths.tasksPage : Paths.fetchingStudyData);
         }
     }

@@ -171,9 +171,9 @@ class DataBase extends Dexie {
         return states[0]?.state;
     }
 
-    setExtensionState(state: ExtensionState) {
+    async setExtensionState(state: ExtensionState) {
         const iExtensionState: IExtensionState = {id: 0, state: state};
-        dataBase.extensionState.put(iExtensionState);
+        await dataBase.extensionState.put(iExtensionState);
     }
 
     setQuestionnaireSubmitted(taskId: string, questionnaireType: string | undefined) {

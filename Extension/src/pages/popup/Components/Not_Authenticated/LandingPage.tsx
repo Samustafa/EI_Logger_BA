@@ -54,13 +54,17 @@ export default function LandingPage() {
         }
 
         function handlePostRegister(userId: string) {
-            dataBase.setUserId(userId)
-            dataBase.logUserExtensionInteraction("SIGNED:UP");
-            dataBase.setExtensionState('DISPLAYING_ID');
-            fgLoggingConstants.userId = userId;
-            navigate(Paths.idDisplayPage);
-        }
+            dataBase.setExtensionState('DISPLAYING_ID')
+                .then(saveStateAndNavigate)
+                .catch(error => extractAndSetError(error, setRegistrationError));
 
+            function saveStateAndNavigate() {
+                dataBase.setUserId(userId)
+                dataBase.logUserExtensionInteraction("SIGNED:UP");
+                fgLoggingConstants.userId = userId;
+                navigate(Paths.idDisplayPage);
+            }
+        }
     }
 
     function handleLogin(event: FormEvent<HTMLFormElement>) {
@@ -79,11 +83,16 @@ export default function LandingPage() {
         }
 
         function handlePostLogIn() {
-            dataBase.setUserId(userId);
-            dataBase.logUserExtensionInteraction("SIGNED:IN");
-            dataBase.setExtensionState('TASKS_PAGE');
-            fgLoggingConstants.userId = userId;
-            navigate(Paths.fetchingStudyData)
+            dataBase.setExtensionState('TASKS_PAGE')
+                .then(saveStateAndNavigate)
+                .catch(error => extractAndSetError(error, setLoginError));
+
+            function saveStateAndNavigate() {
+                dataBase.setUserId(userId);
+                dataBase.logUserExtensionInteraction("SIGNED:IN");
+                fgLoggingConstants.userId = userId;
+                navigate(Paths.fetchingStudyData)
+            }
         }
     }
 

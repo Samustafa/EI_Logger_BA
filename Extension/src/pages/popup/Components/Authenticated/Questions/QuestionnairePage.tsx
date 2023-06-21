@@ -83,7 +83,7 @@ export function QuestionnairePage() {
         const iAnswers = answers.map(answer => mapIQuestionAnswerToIAnswer(answer, studyId, userId));
         dataBase.submitQuestionnaire(taskId, iAnswers, questionnaireType)
             .then(() => dataBase.setQuestionnaireSubmitted(taskId, questionnaireType))
-            .then(() => handlePostSubmit())
+            .then(handlePostSubmit)
             .catch((error) => extractAndSetError(error, setError))
             .finally(() => setIsValidating(false));
 
@@ -94,32 +94,48 @@ export function QuestionnairePage() {
     }
 
     function handleBack() {
-        if (questionnaireType === 'pre') {
-            dataBase.setExtensionState('TASKS_PAGE');
-            navigate(Paths.tasksPage);
-        } else {
-            dataBase.setExtensionState('LOGGER_READY');
-            navigate(Paths.loggerPage);
+        (questionnaireType === 'pre') ? goToTasksPage() : goToLoggerPage();
+
+        function goToTasksPage() {
+            dataBase.setExtensionState('TASKS_PAGE')
+                .then(() => navigate(Paths.tasksPage))
+                .catch(error => extractAndSetError(error, setError));
+        }
+
+        function goToLoggerPage() {
+            dataBase.setExtensionState('LOGGER_READY')
+                .then(() => navigate(Paths.loggerPage))
+                .catch(error => extractAndSetError(error, setError));
         }
     }
 
     function handleNext() {
 
-        (questionnaireType === 'pre') ? goToLoggerPage() : goToTasksPage();
+        (questionnaireType === 'pre') ? handleGoToLoggerPage() : handleGoToTasksPage();
 
-        function goToLoggerPage() {
-            dataBase.logUserExtensionInteraction('SUBMITTED:PRE_QUESTIONNAIRE')
-            dataBase.setExtensionState('LOGGER_READY');
-            navigate(Paths.loggerPage);
+        function handleGoToLoggerPage() {
+            dataBase.setExtensionState('LOGGER_READY')
+                .then(goToLoggerPage)
+                .catch(error => extractAndSetError(error, setError));
+
+            function goToLoggerPage() {
+                dataBase.logUserExtensionInteraction('SUBMITTED:PRE_QUESTIONNAIRE')
+                navigate(Paths.loggerPage)
+            }
         }
 
-        function goToTasksPage() {
-            dataBase.logUserExtensionInteraction('SUBMITTED:PRE_QUESTIONNAIRE')
-            dataBase.logUserExtensionInteraction("FINISHED:TASK");
-            dataBase.setExtensionState('TASKS_PAGE');
-            navigate(Paths.tasksPage);
-        }
+        function handleGoToTasksPage() {
+            dataBase.setExtensionState('TASKS_PAGE')
+                .then(goToTasksPage)
+                .catch(error => extractAndSetError(error, setError));
 
+            function goToTasksPage() {
+                dataBase.logUserExtensionInteraction('SUBMITTED:PRE_QUESTIONNAIRE')
+                dataBase.logUserExtensionInteraction("FINISHED:TASK");
+                navigate(Paths.tasksPage);
+            }
+
+        }
     }
 
     function getTitle(questionnaireType: string | undefined) {

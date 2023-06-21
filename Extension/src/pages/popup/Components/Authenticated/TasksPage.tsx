@@ -43,8 +43,9 @@ export function TasksPage() {
     }
 
     function goToDemographics() {
-        dataBase.setExtensionState('DEMOGRAPHICS');
-        navigate(Paths.demographicsPage);
+        dataBase.setExtensionState('DEMOGRAPHICS')
+            .then(() => navigate(Paths.demographicsPage))
+            .catch(error => handleErrorFromAsync(error, 'Couldn\'t set extension state to DEMOGRAPHICS'));
     }
 
     function handleLogOut() {
@@ -99,7 +100,7 @@ export function Tasks({iTasks, handleErrorFromAsync}: Props) {
             .then(() => handlePostSet())
             .catch(error => handleErrorFromAsync(error, 'Couldn\'t set current task id'));
 
-        function handlePostSet() {
+        async function handlePostSet() {
 
             fgLoggingConstants.taskId = taskId;
 
@@ -109,7 +110,7 @@ export function Tasks({iTasks, handleErrorFromAsync}: Props) {
             }
 
             const shouldGoToPreQuestionnaire = computeShouldGoToPreQuestionnaire(taskId);
-            (shouldGoToPreQuestionnaire) ? goToPreQuestionnaire() : goToLogger();
+            (shouldGoToPreQuestionnaire) ? await goToPreQuestionnaire() : await goToLogger();
 
             function computeShouldGoToPreQuestionnaire(taskId: string) {
                 const iTask = iTasks.find((task) => task.taskId === taskId);
@@ -120,14 +121,14 @@ export function Tasks({iTasks, handleErrorFromAsync}: Props) {
                 return hasPreQuestionnaire && !isPreQuestionsSubmitted;
             }
 
-            function goToPreQuestionnaire() {
+            async function goToPreQuestionnaire() {
                 dataBase.logUserExtensionInteraction("OPENED:PRE_QUESTIONNAIRE");
-                dataBase.setExtensionState('PRE_QUESTIONNAIRE');
+                await dataBase.setExtensionState('PRE_QUESTIONNAIRE');
                 navigate(Paths.questionnairePage('pre'));
             }
 
-            function goToLogger() {
-                dataBase.setExtensionState('LOGGER_READY');
+            async function goToLogger() {
+                await dataBase.setExtensionState('LOGGER_READY');
                 navigate(Paths.loggerPage);
             }
 

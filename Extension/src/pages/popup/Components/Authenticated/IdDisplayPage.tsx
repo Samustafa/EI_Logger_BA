@@ -11,8 +11,9 @@ export function IdDisplayPage() {
     const navigate = useNavigate();
 
     function handleNext() {
-        dataBase.setExtensionState('FETCHING_STUDY');
-        navigate(Paths.fetchingStudyData);
+        dataBase.setExtensionState('FETCHING_STUDY')
+            .then(() => navigate(Paths.fetchingStudyData))
+            .catch(error => console.log(error));
     }
 
     return (
@@ -29,7 +30,10 @@ export function IdDisplayPage() {
                 the study!</p>
             <p>You will need your ID, if you decide to log-in from another device!</p>
             <p>You&lsquo;ll be able to call your id from the app</p>
-            <button className={buttonStyle} onClick={() => handleNext()}>Next</button>
+            <button className={buttonStyle} onClick={() => {
+                handleNext()
+            }}>Next
+            </button>
         </>
     );
 }

@@ -40,12 +40,12 @@ export function FetchingStudyData() {
             fgLoggingConstants.studyId = study.studyId;
         }
 
-        function handleTransitionToNextPage(hasDemographics: boolean) {
+        async function handleTransitionToNextPage(hasDemographics: boolean) {
             if (hasDemographics) {
-                dataBase.setExtensionState('DEMOGRAPHICS');
+                await dataBase.setExtensionState('DEMOGRAPHICS');
                 navigate(Paths.demographicsPage)
             } else {
-                dataBase.setExtensionState('TASKS_PAGE');
+                await dataBase.setExtensionState('TASKS_PAGE');
                 navigate(Paths.tasksPage)
             }
         }

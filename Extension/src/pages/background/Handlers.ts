@@ -25,9 +25,9 @@ import {v4 as uuid} from 'uuid';
 
 const openedTabsCache = new Map<number, TabCacheInfo>();
 
-export function handleOnInstalled() {
+export async function handleOnInstalled() {
     setBadgeText('OFF');
-    dataBase.setExtensionState('NOT_AUTHENTICATED');
+    await dataBase.setExtensionState('NOT_AUTHENTICATED');
 }
 
 export function handleOnCompleted(details: OnCompletedDetailsType) {

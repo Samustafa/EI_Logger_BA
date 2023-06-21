@@ -13,14 +13,17 @@ interface Props {
 export function Paused({setLogging, port, setError}: Props) {
 
     function startLogging() {
-        try {
+
+        dataBase.setExtensionState('LOGGING')
+            .then(handlePostSet)
+            .catch(error => extractAndSetError(error, setError));
+
+        function handlePostSet() {
             setLogging(true);
             sendMessages(port, "START_LOGGING");
             dataBase.logUserExtensionInteraction("STARTED:LOGGING");
-            dataBase.setExtensionState('LOGGING');
-        } catch (e) {
-            extractAndSetError(e, setError);
         }
+
     }
 
     return (

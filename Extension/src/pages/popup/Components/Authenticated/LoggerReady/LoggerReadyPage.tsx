@@ -34,31 +34,35 @@ export function LoggerReadyPage() {
             .then((hasPostQuestionnaire) => changeStateAndNavigate(hasPostQuestionnaire))
             .catch((error) => extractAndSetError(error, setError));
 
-        function changeStateAndNavigate(hasPostQuestionnaire: boolean) {
-            (hasPostQuestionnaire) ? goToPostQuestionnairePage() : goToTasksPage();
+        async function changeStateAndNavigate(hasPostQuestionnaire: boolean) {
+            (hasPostQuestionnaire) ? await goToPostQuestionnairePage() : await goToTasksPage();
 
-            function goToPostQuestionnairePage() {
+            async function goToPostQuestionnairePage() {
                 dataBase.logUserExtensionInteraction('OPENED:POST_QUESTIONNAIRE');
-                dataBase.setExtensionState('POST_QUESTIONNAIRE');
+                await dataBase.setExtensionState('POST_QUESTIONNAIRE');
                 navigate(Paths.questionnairePage('post'));
             }
 
-            function goToTasksPage() {
+            async function goToTasksPage() {
                 dataBase.logUserExtensionInteraction('FINISHED:TASK')
-                dataBase.setExtensionState('TASKS_PAGE');
+                await dataBase.setExtensionState('TASKS_PAGE');
                 navigate(Paths.tasksPage);
             }
         }
     }
 
     function handleBackButton() {
-        dataBase.setExtensionState('TASKS_PAGE');
-        navigate(Paths.tasksPage);
+        dataBase.setExtensionState('TASKS_PAGE')
+            .then(() => navigate(Paths.tasksPage))
+            .catch(error => extractAndSetError(error, setError));
+
     }
 
     return (
         <div>
+            {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
             {logging && <Logging setLogging={setLogging} setError={setError} port={port!}/>}
+            {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
             {!logging && <Paused setLogging={setLogging} setError={setError} port={port!}/>}
             <div>
                 <button className={logging ? buttonDisabledStyle : buttonStyle}
