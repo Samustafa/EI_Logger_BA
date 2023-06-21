@@ -1,0 +1,130 @@
+{
+	"info": {
+		"_postman_id": "e08c4e2a-d03f-4484-925b-eb86420c0188",
+		"name": "EI_Logger",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26605841"
+	},
+	"item": [
+		{
+			"name": "Create Study",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"study 1\",\r\n    \"hasDemographics\": true,\r\n    \"tasks\": [\r\n        {\r\n            \"taskId\": \"1\",\r\n            \"text\": \"Task 1\",\r\n            \"preQuestions\": null,\r\n            \"postQuestions\": null\r\n        },\r\n        {\r\n            \"taskId\": \"2\",\r\n            \"text\": \"Task 2\",\r\n            \"preQuestions\": [\r\n                {\r\n                    \"questionId\": \"1\",\r\n                    \"questionText\": \"What is the first Question?\",\r\n                    \"maxCharacters\": 1000,\r\n                    \"type\": \"TextQuestion\"\r\n                }\r\n            ],\r\n            \"postQuestions\": null\r\n        },\r\n        {\r\n            \"taskId\": \"3\",\r\n            \"text\": \"Task 3\",\r\n            \"preQuestions\": null,\r\n            \"postQuestions\": [\r\n                {\r\n                    \"questionId\": \"2\",\r\n                    \"questionText\": \"What is the second Question?\",\r\n                    \"maxCharacters\": 1000,\r\n                    \"type\": \"TextQuestion\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"taskId\": \"4\",\r\n            \"text\": \"Task 4\",\r\n            \"preQuestions\": [\r\n                {\r\n                    \"questionId\": \"3\",\r\n                    \"questionText\": \"What is the third Question?\",\r\n                    \"maxCharacters\": 1000,\r\n                    \"type\": \"TextQuestion\"\r\n                },\r\n                {\r\n                    \"questionId\": \"4\",\r\n                    \"questionText\": \"What is the fourth Question?\",\r\n                    \"choices\": [\r\n                        \"choice 1\",\r\n                        \"choice 2\",\r\n                        \"choice 3\"\r\n                    ],\r\n                    \"type\": \"MultipleChoiceQuestion\"\r\n                },\r\n                {\r\n                    \"questionId\": \"5\",\r\n                    \"questionText\": \"What is the fifth Question?\",\r\n                    \"range\": 5,\r\n                    \"type\": \"RangeQuestion\"\r\n                }\r\n            ],\r\n            \"postQuestions\": [\r\n                {\r\n                    \"questionId\": \"6\",\r\n                    \"questionText\": \"What is the sixth Question?\",\r\n                    \"maxCharacters\": 1000,\r\n                    \"type\": \"TextQuestion\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/logger/createStudy",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"logger",
+						"createStudy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Study without tasks",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"study 2\",\r\n    \"hasDemographics\": false,\r\n    \"tasks\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/logger/createStudy",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"logger",
+						"createStudy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Study without demographics",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"study 1\",\r\n    \"hasDemographics\": false, //or can be omitted\r\n    \"tasks\": [\r\n        {\r\n            \"taskId\": \"1\",\r\n            \"text\": \"Task 1\",\r\n            \"preQuestions\": null,\r\n            \"postQuestions\": null\r\n        },\r\n        {\r\n            \"taskId\": \"2\",\r\n            \"text\": \"Task 2\",\r\n            \"preQuestions\": [\r\n                {\r\n                    \"questionId\": \"1\",\r\n                    \"questionText\": \"What is the first Question?\",\r\n                    \"maxCharacters\": 1000,\r\n                    \"type\": \"TextQuestion\"\r\n                }\r\n            ],\r\n            \"postQuestions\": null\r\n        },\r\n        {\r\n            \"taskId\": \"3\",\r\n            \"text\": \"Task 3\",\r\n            \"preQuestions\": null,\r\n            \"postQuestions\": [\r\n                {\r\n                    \"questionId\": \"2\",\r\n                    \"questionText\": \"What is the second Question?\",\r\n                    \"maxCharacters\": 1000,\r\n                    \"type\": \"TextQuestion\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"taskId\": \"4\",\r\n            \"text\": \"Task 4\",\r\n            \"preQuestions\": [\r\n                {\r\n                    \"questionId\": \"3\",\r\n                    \"questionText\": \"What is the third Question?\",\r\n                    \"maxCharacters\": 1000,\r\n                    \"type\": \"TextQuestion\"\r\n                },\r\n                {\r\n                    \"questionId\": \"4\",\r\n                    \"questionText\": \"What is the fourth Question?\",\r\n                    \"choices\": [\r\n                        \"choice 1\",\r\n                        \"choice 2\",\r\n                        \"choice 3\"\r\n                    ],\r\n                    \"type\": \"MultipleChoiceQuestion\"\r\n                },\r\n                {\r\n                    \"questionId\": \"5\",\r\n                    \"questionText\": \"What is the fifth Question?\",\r\n                    \"range\": 5,\r\n                    \"type\": \"RangeQuestion\"\r\n                }\r\n            ],\r\n            \"postQuestions\": [\r\n                {\r\n                    \"questionId\": \"6\",\r\n                    \"questionText\": \"What is the sixth Question?\",\r\n                    \"maxCharacters\": 1000,\r\n                    \"type\": \"TextQuestion\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/logger/createStudy",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"logger",
+						"createStudy"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
