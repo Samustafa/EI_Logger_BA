@@ -249,13 +249,16 @@ class DataBase extends Dexie {
             .catch(error => console.error("dataBase setTaskStarted: error while setting the task as started:", taskId, "the error is", error));
     }
 
-    addSerpHtml(innerHtml: string, innerText: string) {
+    addSerpHtml(tabId: number, tabUuid: string, innerHtml: string, innerText: string) {
         const iHtml: ISerpHtml = {
+            tabId: tabId,
+            tabUuid: tabUuid,
             timeStamp: getUTCDateTime(),
             innerHtml: innerHtml,
             innerText: innerText
         }
-        this.serpHtml.add(iHtml).catch(error => console.error("dataBase addSerpHtml: error while adding the serp html:", "the error is", error));
+        this.serpHtml.add(iHtml)
+            .catch(error => console.error("dataBase addSerpHtml: error while adding the serp html:", "the error is", error));
     }
 
     async getHasDemographics() {

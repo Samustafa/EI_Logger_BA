@@ -118,6 +118,8 @@ export interface IUserExtensionInteraction {
 }
 
 export interface ISerpHtml {
+    tabId: number;
+    tabUuid: string;
     timeStamp: string;
     innerHtml: string;
     innerText: string;

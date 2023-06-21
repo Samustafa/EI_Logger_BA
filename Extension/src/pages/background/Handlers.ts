@@ -62,7 +62,9 @@ export function handleTabActivated(onActivatedActiveInfoType: OnActivatedActiveI
             if (iTab) {
                 dataBase.saveTabInfo(prePareITabFromITab(iTab, "TAB:ACTIVATED"))
             } else {
-                tabs.get(onActivatedActiveInfoType.tabId).then(tab => handleSaveTabAfterNewTabOrNewUrl(tab, "TAB:CREATED"))
+                tabs.get(onActivatedActiveInfoType.tabId)
+                    .then(tab => handleSaveTabAfterNewTabOrNewUrl(tab, "TAB:CREATED"))
+                    .catch(error => console.error("handleTabActivated " + error));
             }
 
         })
@@ -174,7 +176,8 @@ function logTabAndLogHtmlIfSerp(tab: Tab) {
     }
 
     function logHtmlOfSerp() {
-        sendMessageToCS(tab.id as number, "LOG_HTML_OF_SERP");
+        const tabUuid = openedTabsCache.get(tab.id as number)?.tabUuid as string;
+        sendMessageToCS(tab.id as number, tabUuid, "LOG_HTML_OF_SERP");
     }
 }
 
@@ -250,15 +253,24 @@ function handleSaveTabAfterNewTabOrNewUrl(tab: Tab, tabAction: TabAction, query?
 }
 
 export function handleLogAllExistingTabs() {
-    tabs.query({}).then((tabs) => {
-        tabs.forEach((tab) => {
+
+    tabs.query({})
+        .then(saveAllTabs)
+        .catch(error => console.error("handleLogAllExistingTabs", error));
+
+    function saveAllTabs(tabs: Tab[]) {
+        tabs.forEach(saveTab)
+
+        function saveTab(tab: Tab) {
             const iTab = prePareITabFromTab(tab, "TAB:OLD");
             dataBase.saveTabInfo(iTab);
-        })
-    })
+        }
+    }
 }
 
 export function setBadgeText(badgeText: BadgeText) {
-    browser.action.setBadgeText({text: badgeText}).then(() => console.log("set badge to", badgeText));
+    browser.action.setBadgeText({text: badgeText})
+        .then(() => console.log("set badge to", badgeText))
+        .catch(error => console.error("setBadgeText", error));
 }
 

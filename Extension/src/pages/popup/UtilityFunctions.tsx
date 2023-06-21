@@ -72,17 +72,18 @@ export function connectToBGPort(portName: PortNameBG): Port {
     return browser.runtime.connect({name: portName});
 }
 
-export function sendMessageToCS(tabId: number, message: ContentScriptMessage) {
+export function sendMessageToCS(tabId: number, tabUuid: string, message: ContentScriptMessage) {
 
     if (message === "LOG_HTML_OF_SERP") {
         browser.tabs.sendMessage(tabId, message)
-            .then((response: ContentScriptResponse) => handleContentMessageResponse(response));
+            .then((response: ContentScriptResponse) => handleContentMessageResponse(response))
+            .catch((error) => console.error("sendMessageToCS", error));
     }
 
     function handleContentMessageResponse(response: ContentScriptResponse) {
         const innerHTML = response.innerHTML;
         const innerText = response.innerText;
-        dataBase.addSerpHtml(innerHTML, innerText);
+        dataBase.addSerpHtml(tabId, tabUuid, innerHTML, innerText);
     }
 }
 
