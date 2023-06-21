@@ -28,7 +28,8 @@ export type ExtensionState =
     | 'PRE_QUESTIONNAIRE' //taskId
     | 'LOGGER_READY'      //taskId
     | 'POST_QUESTIONNAIRE'//taskId
-    | 'LOGGING';          //taskId
+    | 'LOGGING'
+    | 'FETCHING_STUDY';          //taskId
 
 export type OnUpdatedChangeInfoType = browser.Tabs.OnUpdatedChangeInfoType;
 export type Tab = browser.Tabs.Tab;
