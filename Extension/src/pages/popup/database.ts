@@ -205,7 +205,7 @@ class DataBase extends Dexie {
         });
     }
 
-    logUserExtensionInteraction(action: UserExtensionAction): void {
+    logUserExtensionInteraction(action: UserExtensionAction) {
         const log = {
             action: action,
             timeStamp: getUTCDateTime(),
@@ -214,7 +214,9 @@ class DataBase extends Dexie {
             taskId: fgLoggingConstants.taskId
         }
 
-        dataBase.userExtensionInteraction.add(log);
+        dataBase.userExtensionInteraction.add(log)
+            .then()
+            .catch(error => console.error("dataBase logUserExtensionInteraction: error while logging the action:", action, "the error is", error));
     }
 
     saveStudyInfo(study: IStudy, tasks: ITask[], multipleChoiceQuestions: IMultipleChoiceQuestion[], textQuestions: ITextQuestion[], rangeQuestions: IRangeQuestion[]) {
