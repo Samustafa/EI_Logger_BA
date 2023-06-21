@@ -192,7 +192,8 @@ class DataBase extends Dexie {
     }
 
     saveTabInfo(iTab: ITab) {
-        dataBase.tabs.add(iTab);
+        dataBase.tabs.add(iTab)
+            .catch(error => console.error("dataBase saveTabInfo: error while saving the tab:", iTab, "the error is", error));
     }
 
     getLastTabWithId(tabId: number) {
