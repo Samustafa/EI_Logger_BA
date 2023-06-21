@@ -18,8 +18,7 @@ export function DemographicsPage() {
     const [isValidating,] = useState<boolean>(false);
     const demographicsPrimaryKey = '0';
     const [generalError, setGeneralError] = useState<string>('');
-    const [isStudyExists, setIsStudyExists] = useState<boolean>(false);
-
+    const [hasTasks, setHasTasks] = useState<boolean>(false);
 
     const birthDateInput = "birthDate";
     const [birthDate, setBirthDate] = useState<string>("");
@@ -70,12 +69,6 @@ export function DemographicsPage() {
         dataBase.logUserExtensionInteraction('OPENED:DEMOGRAPHICS')
     }, []);
 
-    useEffect(function checkIfStudyExists() {
-        dataBase.isStudyExists()
-            .then((isStudyExists) => setIsStudyExists(isStudyExists))
-            .catch((error) => extractAndSetError(error, setGeneralError))
-    }, []);
-
     useEffect(function loadSavedDataIfExists() {
         dataBase.getDemographics()
             .then((demographics) => initializeForms(demographics))
@@ -86,7 +79,13 @@ export function DemographicsPage() {
             setBirthDate(demographics.birthDate);
             setJob(demographics.job);
         }
-    }, [])
+    }, []);
+
+    useEffect(function fetchHasTasks() {
+        dataBase.getHasTasks()
+            .then(setHasTasks)
+            .then(error => extractAndSetError(error, setGeneralError));
+    }, []);
 
     function isFormValid() {
         return isDateValid(birthDate) && isSexSelected() && job !== '';
@@ -133,8 +132,13 @@ export function DemographicsPage() {
 
         async function handlePostSave() {
             dataBase.logUserExtensionInteraction('SUBMITTED:DEMOGRAPHICS');
-            await dataBase.setExtensionState('TASKS_PAGE');
-            navigate(isStudyExists ? Paths.tasksPage : Paths.fetchingStudyData);
+            if (hasTasks) {
+                await dataBase.setExtensionState('TASKS_PAGE');
+                navigate(Paths.tasksPage);
+            } else {
+                await dataBase.setExtensionState('LOGGER_READY');
+                navigate(Paths.loggerPage);
+            }
         }
     }
 

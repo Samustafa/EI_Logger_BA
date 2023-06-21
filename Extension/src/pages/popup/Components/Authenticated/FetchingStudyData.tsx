@@ -29,65 +29,73 @@ export function FetchingStudyData() {
         setLoading(true);
 
         getStudy()
-            .then(saveStudy)
-            .then(dataBase.getHasDemographics)
-            .then(handleTransitionToNextPage)
+            .then(saveStudyAndNavigate)
             .catch(error => extractAndSetError(error, setError))
             .finally(() => setLoading(false));
 
-        async function saveStudy(study: Study) {
-            await saveStudyInDatabase(new Study(study.studyId, study.name, study.hasDemographics, study.tasks));
-            fgLoggingConstants.studyId = study.studyId;
-        }
+        async function saveStudyAndNavigate(study: Study) {
+            await saveStudy(study)
 
-        async function handleTransitionToNextPage(hasDemographics: boolean) {
-            if (hasDemographics) {
-                await dataBase.setExtensionState('DEMOGRAPHICS');
-                navigate(Paths.demographicsPage)
-            } else {
-                await dataBase.setExtensionState('TASKS_PAGE');
-                navigate(Paths.tasksPage)
+            const hasTasks = study.tasks.length > 0;
+            const hasDemographics = await dataBase.getHasDemographics();
+            await transitionToNextPage(hasDemographics, hasTasks);
+
+            async function saveStudy(study: Study) {
+                await saveStudyInDatabase(new Study(study.studyId, study.name, study.hasDemographics, study.tasks));
+                fgLoggingConstants.studyId = study.studyId;
+
+                async function saveStudyInDatabase(studyData: Study) {
+                    const {
+                        study,
+                        tasks,
+                        multipleChoiceQuestions,
+                        textQuestions,
+                        rangeQuestions
+                    } = extractStudyData(studyData);
+
+                    await dataBase.saveStudyInfo(study, tasks, multipleChoiceQuestions, textQuestions, rangeQuestions);
+
+                    function extractStudyData(studyData: Study) {
+                        const study: IStudy = {
+                            studyId: studyData.studyId,
+                            name: studyData.name,
+                            hasDemographics: studyData.hasDemographics,
+                        }
+
+                        const tasks = studyData.tasks.map((task: Task): ITask => ({
+                            taskId: task.taskId,
+                            text: task.text,
+                            isStarted: false,
+                            isCompleted: false,
+                            isPreQuestionsSubmitted: false,
+                            isPostQuestionsSubmitted: false,
+                            iPreQuestions: task.getIPreQuestions(),
+                            iPostQuestions: task.getIPostQuestions(),
+                        }))
+
+                        const questions: IQuestion[] = studyData.getIQuestions();
+                        const multipleChoiceQuestions = questions.filter(question => question.type === "MultipleChoiceQuestion") as IMultipleChoiceQuestion[]
+                        const textQuestions = questions.filter(question => question.type === "TextQuestion") as ITextQuestion[]
+                        const rangeQuestions = questions.filter(question => question.type === "RangeQuestion") as IRangeQuestion[]
+
+                        return {study, tasks, multipleChoiceQuestions, textQuestions, rangeQuestions}
+                    }
+                }
+            }
+
+            async function transitionToNextPage(hasDemographics: boolean, hasTasks: boolean) {
+                if (hasDemographics) {
+                    await dataBase.setExtensionState('DEMOGRAPHICS');
+                    navigate(Paths.demographicsPage)
+                } else if (hasTasks) {
+                    await dataBase.setExtensionState('TASKS_PAGE');
+                    navigate(Paths.tasksPage)
+                } else {
+                    await dataBase.setExtensionState('LOGGER_READY');
+                    navigate(Paths.loggerPage)
+                }
             }
         }
-
-        async function saveStudyInDatabase(studyData: Study) {
-            const {
-                study,
-                tasks,
-                multipleChoiceQuestions,
-                textQuestions,
-                rangeQuestions
-            } = extractStudyData(studyData);
-
-            await dataBase.saveStudyInfo(study, tasks, multipleChoiceQuestions, textQuestions, rangeQuestions);
-        }
-
-        function extractStudyData(studyData: Study) {
-            const study: IStudy = {
-                studyId: studyData.studyId,
-                name: studyData.name,
-                hasDemographics: studyData.hasDemographics,
-            }
-
-            const tasks = studyData.tasks.map((task: Task): ITask => ({
-                taskId: task.taskId,
-                text: task.text,
-                isStarted: false,
-                isCompleted: false,
-                isPreQuestionsSubmitted: false,
-                isPostQuestionsSubmitted: false,
-                iPreQuestions: task.getIPreQuestions(),
-                iPostQuestions: task.getIPostQuestions(),
-            }))
-
-            const questions: IQuestion[] = studyData.getIQuestions();
-            const multipleChoiceQuestions = questions.filter(question => question.type === "MultipleChoiceQuestion") as IMultipleChoiceQuestion[]
-            const textQuestions = questions.filter(question => question.type === "TextQuestion") as ITextQuestion[]
-            const rangeQuestions = questions.filter(question => question.type === "RangeQuestion") as IRangeQuestion[]
-
-            return {study, tasks, multipleChoiceQuestions, textQuestions, rangeQuestions}
-        }
-
 
     }, [retryFlag]);
 

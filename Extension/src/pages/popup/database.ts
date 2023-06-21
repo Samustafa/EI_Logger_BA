@@ -228,11 +228,6 @@ class DataBase extends Dexie {
         await dataBase.rangeQuestion.bulkAdd(rangeQuestions);
     }
 
-    isStudyExists(): Promise<boolean> {
-        return dataBase.study.count().then(count => count > 0);
-    }
-
-
     async getDemographics() {
         const deFaultDemographics: IDemographics = {id: '0', job: "", sex: "sex", birthDate: ''};
         const demographics = await this.demographics.toArray()
@@ -262,9 +257,14 @@ class DataBase extends Dexie {
     }
 
     async getHasDemographics() {
-        const Studies = await this.study.toArray();
-        return Studies[0]?.hasDemographics;
+        const studies = await dataBase.study.toArray();
+        return studies[0]?.hasDemographics;
 
+    }
+
+    async getHasTasks() {
+        const tasks = await dataBase.task.toArray();
+        return tasks.length > 0;
     }
 }
 
