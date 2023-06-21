@@ -12,15 +12,14 @@ import ListItemText from "@mui/material/ListItemText";
 import {RightArrowIcon} from "@pages/popup/svg/RightArrowIcon";
 import {buttonStyle} from "@pages/popup/Consts/Styles";
 import {extractAndSetError} from "@pages/popup/UtilityFunctions";
+import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
 
 
 export function TasksPage() {
-    const navigate = useNavigate();
 
     const [iTasks, setITasks] = useState<ITask[]>([]);
     const [open, setOpen] = useState(false);
     const [messageToClipboard, setSnackBarMessage] = useState<string>("");
-    const [hasDemographics, setHasDemographics] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
 
@@ -31,21 +30,9 @@ export function TasksPage() {
             .catch(error => handleErrorFromAsync(error, 'Couldn\'t fetch tasks'));
     }, []);
 
-    useEffect(function checkIfShouldOpenDemographics() {
-        dataBase.getHasDemographics()
-            .then(hasDemographics => setHasDemographics(hasDemographics))
-            .catch(error => handleErrorFromAsync(error, 'Couldn\'t fetch hasDemographics'));
-    }, []);
-
     function activateSnackBarWithMessage(message: string) {
         setSnackBarMessage(message)
         setOpen(true);
-    }
-
-    function goToDemographics() {
-        dataBase.setExtensionState('DEMOGRAPHICS')
-            .then(() => navigate(Paths.demographicsPage))
-            .catch(error => handleErrorFromAsync(error, 'Couldn\'t set extension state to DEMOGRAPHICS'));
     }
 
     function handleLogOut() {
@@ -61,18 +48,13 @@ export function TasksPage() {
         activateSnackBarWithMessage(displayMessage + error);
     }
 
-    function renderDemographicsButton(hasDemographics: boolean) {
-        return (<>{hasDemographics &&
-            <button className={buttonStyle} onClick={() => goToDemographics()}>Edit Demographics</button>}</>);
-    }
-
     return (
         <div>
             <h1>Tasks</h1>
             <Tasks iTasks={iTasks} handleErrorFromAsync={handleErrorFromAsync}/>
             <button className={buttonStyle} onClick={() => handleLogOut()}>log Out</button>
             <button className={buttonStyle} onClick={() => handleUpload()}>Upload</button>
-            {renderDemographicsButton(hasDemographics)}
+            <DemographicsButton/>
             <Snackbar
                 message={messageToClipboard}
                 anchorOrigin={{vertical: "bottom", horizontal: "center"}}

@@ -11,6 +11,7 @@ import {connectToBGPort, extractAndSetError} from "@pages/popup/UtilityFunctions
 import {Port} from "@pages/popup/Types";
 import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
 import WarningDialog from "@pages/popup/SharedComponents/WarningDialog";
+import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
 
 export function LoggerReadyPage() {
     const location = useLocation();
@@ -24,15 +25,20 @@ export function LoggerReadyPage() {
 
     const warningText = "Are you sure you want to finish?\n Once finished you won't be able to log anymore";
 
-    useEffect(function connectPort() {
-        const port = connectToBGPort("loggingPort");
-        setPort(port);
-    }, [])
+    useEffect(function fetchHasTasksAndConnectPort() {
+        fetchHasTasks();
+        connectPort();
 
-    useEffect(function fetchHasTasks() {
-        dataBase.getHasTasks()
-            .then(setHasTasks)
-            .catch(error => console.error("LoggerReadyPage fetchHasTasks", error));
+        function fetchHasTasks() {
+            dataBase.getHasTasks()
+                .then(setHasTasks)
+                .catch(error => console.error("LoggerReadyPage fetchHasTasks", error));
+        }
+
+        function connectPort() {
+            const port = connectToBGPort("loggingPort");
+            setPort(port);
+        }
     }, []);
 
     function handleFinishedTask() {
@@ -93,6 +99,7 @@ export function LoggerReadyPage() {
                         onClick={() => setOpenWarningDialog(true)}>
                     Finished Task
                 </button>
+                {!hasTasks && <DemographicsButton isDisabled={logging}/>}
                 <ErrorMessage error={error}/>
             </div>
             <WarningDialog warningText={warningText} open={openWarningDialog} setOpen={setOpenWarningDialog}
