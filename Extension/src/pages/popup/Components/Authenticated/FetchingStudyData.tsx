@@ -29,14 +29,14 @@ export function FetchingStudyData() {
         setLoading(true);
 
         getStudy()
-            .then((response) => saveStudy(response))
-            .then(() => dataBase.getHasDemographics())
-            .then((hasDemographics) => handleTransitionToNextPage(hasDemographics))
+            .then(saveStudy)
+            .then(dataBase.getHasDemographics)
+            .then(handleTransitionToNextPage)
             .catch(error => extractAndSetError(error, setError))
             .finally(() => setLoading(false));
 
-        function saveStudy(study: Study) {
-            saveStudyInDatabase(new Study(study.studyId, study.name, study.hasDemographics, study.tasks));
+        async function saveStudy(study: Study) {
+            await saveStudyInDatabase(new Study(study.studyId, study.name, study.hasDemographics, study.tasks));
             fgLoggingConstants.studyId = study.studyId;
         }
 
@@ -59,7 +59,7 @@ export function FetchingStudyData() {
                 rangeQuestions
             } = extractStudyData(studyData);
 
-            dataBase.saveStudyInfo(study, tasks, multipleChoiceQuestions, textQuestions, rangeQuestions);
+            await dataBase.saveStudyInfo(study, tasks, multipleChoiceQuestions, textQuestions, rangeQuestions);
         }
 
         function extractStudyData(studyData: Study) {

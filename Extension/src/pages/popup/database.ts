@@ -220,12 +220,12 @@ class DataBase extends Dexie {
             .catch(error => console.error("dataBase logUserExtensionInteraction: error while logging the action:", action, "the error is", error));
     }
 
-    saveStudyInfo(study: IStudy, tasks: ITask[], multipleChoiceQuestions: IMultipleChoiceQuestion[], textQuestions: ITextQuestion[], rangeQuestions: IRangeQuestion[]) {
-        dataBase.study.add(study)
-        dataBase.task.bulkAdd(tasks)
-        dataBase.multipleChoiceQuestion.bulkAdd(multipleChoiceQuestions);
-        dataBase.textQuestion.bulkAdd(textQuestions);
-        dataBase.rangeQuestion.bulkAdd(rangeQuestions);
+    async saveStudyInfo(study: IStudy, tasks: ITask[], multipleChoiceQuestions: IMultipleChoiceQuestion[], textQuestions: ITextQuestion[], rangeQuestions: IRangeQuestion[]) {
+        await dataBase.study.add(study)
+        await dataBase.task.bulkAdd(tasks)
+        await dataBase.multipleChoiceQuestion.bulkAdd(multipleChoiceQuestions);
+        await dataBase.textQuestion.bulkAdd(textQuestions);
+        await dataBase.rangeQuestion.bulkAdd(rangeQuestions);
     }
 
     isStudyExists(): Promise<boolean> {
