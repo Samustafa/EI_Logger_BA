@@ -13,7 +13,7 @@ export function TextQuestionComponent({question, index, isValidating}: Props) {
 
     const [answer, setAnswer] = useState<string>("");
     const {updateAnswers} = useAnswersContext();
-    
+
     function handleChange(event: ChangeEvent<HTMLInputElement>) {
         const answer = event.target.value;
         setAnswer(answer);
@@ -25,11 +25,12 @@ export function TextQuestionComponent({question, index, isValidating}: Props) {
         <input
             className={inputDefaultStyle}
             type="text"
-            placeholder={"..."}
+            placeholder={"type your answer here"}
             required={true}
             value={answer}
             onChange={handleChange}
             disabled={isValidating}
+            maxLength={question.maxCharacters}
         />
     </>
 }

@@ -18,13 +18,13 @@ interface Mark {
 
 export function RangeQuestionComponent({question, index, isValidating}: Props) {
     const max = question.range;
-    const [value, setValue] = useState<number>(0);
+    const [value, setValue] = useState<number>(1);
 
     const {updateAnswers} = useAnswersContext();
 
     function getMarks(max: number): Mark[] {
         const arrayWithNumbers = Array.from(Array(max).keys());
-        return arrayWithNumbers.map((value): Mark => ({value, label: `${value}`}));
+        return arrayWithNumbers.map((value): Mark => ({value: value + 1, label: `${value + 1}`}));
     }
 
     function handleChange(value: number | number[]) {
@@ -37,12 +37,12 @@ export function RangeQuestionComponent({question, index, isValidating}: Props) {
         <div>
             <Slider
                 aria-label="answer-value"
-                defaultValue={0}
+                defaultValue={1}
                 getAriaValueText={(value,) => `${value}`}
                 valueLabelDisplay="auto"
                 step={1}
                 marks={getMarks(max)}
-                min={0}
+                min={1}
                 max={max}
                 value={value}
                 onChange={(event, value) => handleChange(value)}
