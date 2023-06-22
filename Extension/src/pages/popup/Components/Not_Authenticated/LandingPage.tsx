@@ -82,16 +82,10 @@ export default function LandingPage() {
         }
 
         function handlePostLogIn() {
-            dataBase.setExtensionState('TASKS_PAGE')
-                .then(saveStateAndNavigate)
-                .catch(error => extractAndSetError(error, setLoginError));
-
-            function saveStateAndNavigate() {
-                dataBase.setUserId(userId);
-                dataBase.logUserExtensionInteraction("SIGNED:IN");
-                fgLoggingConstants.userId = userId;
-                goToPage('FETCHING_STUDY', navigate);
-            }
+            dataBase.setUserId(userId);
+            dataBase.logUserExtensionInteraction("SIGNED:IN");
+            fgLoggingConstants.userId = userId;
+            goToPage('FETCHING_STUDY', navigate);
         }
     }
 

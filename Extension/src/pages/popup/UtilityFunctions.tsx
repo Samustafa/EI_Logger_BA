@@ -136,6 +136,16 @@ export function goToPage(extensionState: ExtensionState | undefined, navigate: N
                 .then(() => navigate(Paths.questionnairePage('post')))
                 .catch(error => console.error("goToPage", extensionState, error));
             break;
+        case "FETCHING_STUDY":
+            dataBase.setExtensionState(extensionState)
+                .then(() => navigate(Paths.fetchingStudyData))
+                .catch(error => console.error("goToPage", extensionState, error));
+            break;
+        case "UPLOAD_PAGE":
+            dataBase.setExtensionState(extensionState)
+                .then(() => navigate(Paths.uploadPage))
+                .catch(error => console.error("goToPage", extensionState, error));
+            break;
         default:
             dataBase.setExtensionState('NOT_AUTHENTICATED')
                 .then(() => navigate(Paths.landingPage))
