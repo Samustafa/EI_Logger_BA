@@ -13,6 +13,7 @@ import {RightArrowIcon} from "@pages/popup/svg/RightArrowIcon";
 import {buttonStyle} from "@pages/popup/Consts/Styles";
 import {extractAndSetError} from "@pages/popup/UtilityFunctions";
 import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
+import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
 
 
 export function TasksPage() {
@@ -55,6 +56,7 @@ export function TasksPage() {
             <button className={buttonStyle} onClick={() => handleLogOut()}>log Out</button>
             <button className={buttonStyle} onClick={() => handleUpload()}>Upload</button>
             <DemographicsButton/>
+            <DisplayIdButton/>
             <Snackbar
                 message={messageToClipboard}
                 anchorOrigin={{vertical: "bottom", horizontal: "center"}}

@@ -12,12 +12,13 @@ import {Port} from "@pages/popup/Types";
 import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
 import WarningDialog from "@pages/popup/SharedComponents/WarningDialog";
 import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
+import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
 
 export function LoggerReadyPage() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [logging, setLogging] = useState<boolean>(location.state as boolean);
+    const [isLogging, setIsLogging] = useState<boolean>(location.state as boolean);
     const [port, setPort] = useState<Port | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [openWarningDialog, setOpenWarningDialog] = useState<boolean>(false);
@@ -79,27 +80,33 @@ export function LoggerReadyPage() {
 
     function renderBackButton(hasTasks: boolean) {
         return (<>{hasTasks &&
-            <button className={logging ? buttonDisabledStyle : buttonStyle}
-                    disabled={logging}
+            <button className={isLogging ? buttonDisabledStyle : buttonStyle}
+                    disabled={isLogging}
                     onClick={() => handleBackButton()}>
                 Back
             </button>}</>);
     }
 
+    function demographicsButton(hasTasks: boolean) {
+        return (!hasTasks && <><DemographicsButton isDisabled={isLogging}/> <DisplayIdButton
+            isDisabled={isLogging}/></>)
+    }
+
     return (
         <div>
             {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-            {logging && <Logging setLogging={setLogging} setError={setError} port={port!}/>}
+            {isLogging && <Logging setLogging={setIsLogging} setError={setError} port={port!}/>}
             {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-            {!logging && <Paused setLogging={setLogging} setError={setError} port={port!}/>}
+            {!isLogging && <Paused setLogging={setIsLogging} setError={setError} port={port!}/>}
             <div>
                 {renderBackButton(hasTasks)}
-                <button className={logging ? buttonDisabledStyle : buttonStyle}
-                        disabled={logging}
+                <button className={isLogging ? buttonDisabledStyle : buttonStyle}
+                        disabled={isLogging}
                         onClick={() => setOpenWarningDialog(true)}>
                     Finished Task
                 </button>
-                {!hasTasks && <DemographicsButton isDisabled={logging}/>}
+                {demographicsButton(hasTasks)}
+
                 <ErrorMessage error={error}/>
             </div>
             <WarningDialog warningText={warningText} open={openWarningDialog} setOpen={setOpenWarningDialog}

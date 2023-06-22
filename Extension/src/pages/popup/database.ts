@@ -266,6 +266,11 @@ class DataBase extends Dexie {
         const tasks = await dataBase.task.toArray();
         return tasks.length > 0;
     }
+
+    async getDoesStudyExist() {
+        const studies = await dataBase.study.toArray();
+        return studies.length > 0;
+    }
 }
 
 export const dataBase = new DataBase();
