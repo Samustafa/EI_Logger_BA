@@ -2,6 +2,7 @@ import {IApiException, IQuestionAnswer} from "@pages/popup/Interfaces";
 import {
     ContentScriptMessage,
     ContentScriptResponse,
+    ExtensionState,
     MessageType,
     Port,
     PortNameBG,
@@ -15,6 +16,8 @@ import utc from "dayjs/plugin/utc";
 import dayjs from "dayjs";
 import browser from "webextension-polyfill";
 import {dataBase} from "@pages/popup/database";
+import Paths from "@pages/popup/Consts/Paths";
+import {NavigateFunction} from "react-router-dom";
 
 dayjs.extend(utc);
 
@@ -89,5 +92,54 @@ export function sendMessageToCS(tabId: number, tabUuid: string, message: Content
 
 export function sendMessages(port: Port, message: MessageType) {
     port.postMessage(message);
+}
+
+export function goToPage(extensionState: ExtensionState | undefined, navigate: NavigateFunction) {
+    switch (extensionState) {
+        case "NOT_AUTHENTICATED":
+            dataBase.setExtensionState(extensionState)
+                .then(() => navigate(Paths.landingPage))
+                .catch(error => console.error("goToPage", extensionState, error));
+            break;
+        case "DISPLAYING_ID":
+            dataBase.setExtensionState(extensionState)
+                .then(() => navigate(Paths.idDisplayPage))
+                .catch(error => console.error("goToPage", extensionState, error));
+            break;
+        case "DEMOGRAPHICS":
+            dataBase.setExtensionState(extensionState)
+                .then(() => navigate(Paths.demographicsPage))
+                .catch(error => console.error("goToPage", extensionState, error));
+            break;
+        case "TASKS_PAGE":
+            dataBase.setExtensionState(extensionState)
+                .then(() => navigate(Paths.tasksPage))
+                .catch(error => console.error("goToPage", extensionState, error));
+            break;
+        case "PRE_QUESTIONNAIRE":
+            dataBase.setExtensionState(extensionState)
+                .then(() => navigate(Paths.questionnairePage('pre')))
+                .catch(error => console.error("goToPage", extensionState, error));
+            break;
+        case "LOGGER_READY":
+            dataBase.setExtensionState(extensionState)
+                .then(() => navigate(Paths.loggerPage))
+                .catch(error => console.error("goToPage", extensionState, error));
+            break;
+        case "LOGGING":
+            dataBase.setExtensionState(extensionState)
+                .then(() => navigate(Paths.loggerPage, {state: true}))
+                .catch(error => console.error("goToPage", extensionState, error));
+            break;
+        case "POST_QUESTIONNAIRE":
+            dataBase.setExtensionState(extensionState)
+                .then(() => navigate(Paths.questionnairePage('post')))
+                .catch(error => console.error("goToPage", extensionState, error));
+            break;
+        default:
+            dataBase.setExtensionState('NOT_AUTHENTICATED')
+                .then(() => navigate(Paths.landingPage))
+                .catch(error => console.error("goToPage", extensionState, error));
+    }
 }
 

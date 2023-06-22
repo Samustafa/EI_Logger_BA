@@ -1,12 +1,11 @@
 import React, {FormEvent, useState} from "react";
 import {errorDivStyle, input36Style} from "@pages/popup/Consts/Styles";
 import {useNavigate} from "react-router-dom";
-import Paths from "@pages/popup/Consts/Paths";
 import {LoadingButton} from "@pages/popup/SharedComponents/LoadingButton";
 import {login, registerUser} from "@pages/popup/ServerAPI";
 import {dataBase} from "@pages/popup/database";
 import {Input36Component} from "@pages/popup/SharedComponents/Input36Component";
-import {extractAndSetError} from "@pages/popup/UtilityFunctions";
+import {extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 //99746344-7382-4d7c-9e60-6ed3a3cef427
 export default function LandingPage() {
@@ -62,7 +61,7 @@ export default function LandingPage() {
                 dataBase.setUserId(userId)
                 dataBase.logUserExtensionInteraction("SIGNED:UP");
                 fgLoggingConstants.userId = userId;
-                navigate(Paths.idDisplayPage);
+                goToPage('DISPLAYING_ID', navigate);
             }
         }
     }
@@ -91,7 +90,7 @@ export default function LandingPage() {
                 dataBase.setUserId(userId);
                 dataBase.logUserExtensionInteraction("SIGNED:IN");
                 fgLoggingConstants.userId = userId;
-                navigate(Paths.fetchingStudyData)
+                goToPage('FETCHING_STUDY', navigate);
             }
         }
     }

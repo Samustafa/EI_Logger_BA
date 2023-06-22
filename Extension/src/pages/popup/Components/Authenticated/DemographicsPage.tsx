@@ -6,8 +6,7 @@ import dayjs from "dayjs";
 import {IDemographics} from "@pages/popup/Interfaces";
 import {dataBase} from "@pages/popup/database";
 import {useNavigate} from "react-router-dom";
-import Paths from "@pages/popup/Consts/Paths";
-import {extractAndSetError} from "@pages/popup/UtilityFunctions";
+import {extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
 import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
 import {SexType} from "@pages/popup/Types";
 
@@ -130,16 +129,11 @@ export function DemographicsPage() {
             .then(() => handlePostSave())
             .catch((error) => extractAndSetError(error, setGeneralError))
 
-        async function handlePostSave() {
+        function handlePostSave() {
             dataBase.logUserExtensionInteraction('SUBMITTED:DEMOGRAPHICS');
-            if (hasTasks) {
-                await dataBase.setExtensionState('TASKS_PAGE');
-                navigate(Paths.tasksPage);
-            } else {
-                await dataBase.setExtensionState('LOGGER_READY');
-                navigate(Paths.loggerPage);
-            }
+            hasTasks ? goToPage('TASKS_PAGE', navigate) : goToPage('LOGGER_READY', navigate);
         }
+
     }
 
     return (

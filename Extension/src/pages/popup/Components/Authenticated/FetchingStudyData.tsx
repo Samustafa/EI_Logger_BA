@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {getStudy} from "@pages/popup/ServerAPI";
 import {Backdrop, CircularProgress} from "@mui/material";
-import {extractAndSetError} from "@pages/popup/UtilityFunctions";
+import {extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
 import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
 import {useNavigate} from "react-router-dom";
 import {dataBase} from "@pages/popup/database";
@@ -15,7 +15,6 @@ import {
 } from "@pages/popup/Interfaces";
 import {Study} from "@pages/popup/model/Study";
 import {Task} from "@pages/popup/model/Task";
-import Paths from "@pages/popup/Consts/Paths";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 
 export function FetchingStudyData() {
@@ -38,7 +37,7 @@ export function FetchingStudyData() {
 
             const hasTasks = study.tasks.length > 0;
             const hasDemographics = await dataBase.getHasDemographics();
-            await transitionToNextPage(hasDemographics, hasTasks);
+            transitionToNextPage(hasDemographics, hasTasks);
 
             async function saveStudy(study: Study) {
                 await saveStudyInDatabase(new Study(study.studyId, study.name, study.hasDemographics, study.tasks));
@@ -83,17 +82,9 @@ export function FetchingStudyData() {
                 }
             }
 
-            async function transitionToNextPage(hasDemographics: boolean, hasTasks: boolean) {
-                if (hasDemographics) {
-                    await dataBase.setExtensionState('DEMOGRAPHICS');
-                    navigate(Paths.demographicsPage)
-                } else if (hasTasks) {
-                    await dataBase.setExtensionState('TASKS_PAGE');
-                    navigate(Paths.tasksPage)
-                } else {
-                    await dataBase.setExtensionState('LOGGER_READY');
-                    navigate(Paths.loggerPage)
-                }
+            function transitionToNextPage(hasDemographics: boolean, hasTasks: boolean) {
+                hasDemographics ? goToPage('DEMOGRAPHICS', navigate)
+                    : hasTasks ? goToPage('TASKS_PAGE', navigate) : goToPage('LOGGER_READY', navigate)
             }
         }
 

@@ -6,8 +6,7 @@ import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
 import {dataBase} from "@pages/popup/database";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {useLocation, useNavigate} from "react-router-dom";
-import Paths from "@pages/popup/Consts/Paths";
-import {connectToBGPort, extractAndSetError} from "@pages/popup/UtilityFunctions";
+import {connectToBGPort, extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
 import {Port} from "@pages/popup/Types";
 import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
 import WarningDialog from "@pages/popup/SharedComponents/WarningDialog";
@@ -50,31 +49,22 @@ export function LoggerReadyPage() {
                 .then((hasPostQuestionnaire) => changeStateAndNavigate(hasPostQuestionnaire))
                 .catch((error) => extractAndSetError(error, setError));
         } else {
-            navigate(Paths.uploadPage)
+            goToPage('UPLOAD_PAGE', navigate);
         }
 
         async function changeStateAndNavigate(hasPostQuestionnaire: boolean) {
-            (hasPostQuestionnaire) ? await goToPostQuestionnairePage() : await goToTasksPage();
+            (hasPostQuestionnaire) ? goToPostQuestionnairePage() : goToTasksPage();
 
-            async function goToPostQuestionnairePage() {
+            function goToPostQuestionnairePage() {
                 dataBase.logUserExtensionInteraction('OPENED:POST_QUESTIONNAIRE');
-                await dataBase.setExtensionState('POST_QUESTIONNAIRE');
-                navigate(Paths.questionnairePage('post'));
+                goToPage('POST_QUESTIONNAIRE', navigate);
             }
 
-            async function goToTasksPage() {
+            function goToTasksPage() {
                 dataBase.logUserExtensionInteraction('FINISHED:TASK')
-                await dataBase.setExtensionState('TASKS_PAGE');
-                navigate(Paths.tasksPage);
+                goToPage('TASKS_PAGE', navigate);
             }
         }
-
-    }
-
-    function handleBackButton() {
-        dataBase.setExtensionState('TASKS_PAGE')
-            .then(() => navigate(Paths.tasksPage))
-            .catch(error => extractAndSetError(error, setError));
 
     }
 
@@ -82,7 +72,7 @@ export function LoggerReadyPage() {
         return (<>{hasTasks &&
             <button className={isLogging ? buttonDisabledStyle : buttonStyle}
                     disabled={isLogging}
-                    onClick={() => handleBackButton()}>
+                    onClick={() => goToPage('TASKS_PAGE', navigate)}>
                 Back
             </button>}</>);
     }

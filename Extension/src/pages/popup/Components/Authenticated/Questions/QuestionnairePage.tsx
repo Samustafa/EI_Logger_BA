@@ -4,9 +4,8 @@ import {dataBase} from "@pages/popup/database";
 import {IAnswer, IQuestionAnswer} from "@pages/popup/Interfaces";
 import {LoadingButton} from "@pages/popup/SharedComponents/LoadingButton";
 import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
-import {addOrUpdateAnswers, extractAndSetError} from "@pages/popup/UtilityFunctions";
+import {addOrUpdateAnswers, extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
 import {SuccessMessage} from "@pages/popup/SharedComponents/SuccessMessage";
-import Paths from "@pages/popup/Consts/Paths";
 import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {Question} from "@pages/popup/model/question/Question";
@@ -94,19 +93,7 @@ export function QuestionnairePage() {
     }
 
     function handleBack() {
-        (questionnaireType === 'pre') ? goToTasksPage() : goToLoggerPage();
-
-        function goToTasksPage() {
-            dataBase.setExtensionState('TASKS_PAGE')
-                .then(() => navigate(Paths.tasksPage))
-                .catch(error => extractAndSetError(error, setError));
-        }
-
-        function goToLoggerPage() {
-            dataBase.setExtensionState('LOGGER_READY')
-                .then(() => navigate(Paths.loggerPage))
-                .catch(error => extractAndSetError(error, setError));
-        }
+        (questionnaireType === 'pre') ? goToPage('TASKS_PAGE', navigate) : goToPage('LOGGER_READY', navigate);
     }
 
     function handleNext() {
@@ -120,7 +107,7 @@ export function QuestionnairePage() {
 
             function goToLoggerPage() {
                 dataBase.logUserExtensionInteraction('SUBMITTED:PRE_QUESTIONNAIRE')
-                navigate(Paths.loggerPage)
+                goToPage('LOGGER_READY', navigate)
             }
         }
 
@@ -132,7 +119,7 @@ export function QuestionnairePage() {
             function goToTasksPage() {
                 dataBase.logUserExtensionInteraction('SUBMITTED:PRE_QUESTIONNAIRE')
                 dataBase.logUserExtensionInteraction("FINISHED:TASK");
-                navigate(Paths.tasksPage);
+                goToPage('TASKS_PAGE', navigate);
             }
 
         }

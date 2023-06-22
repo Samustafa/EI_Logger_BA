@@ -2,9 +2,9 @@ import {useNavigate} from "react-router-dom";
 import CopyToClipboardButton from "@pages/popup/SharedComponents/CopyToClipboardButton";
 import React, {useEffect, useState} from "react";
 import {buttonStyle} from "@pages/popup/Consts/Styles";
-import Paths from "@pages/popup/Consts/Paths";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {dataBase} from "@pages/popup/database";
+import {goToPage} from "@pages/popup/UtilityFunctions";
 
 export function IdDisplayPage() {
 
@@ -25,13 +25,10 @@ export function IdDisplayPage() {
     }, [])
 
     function handleNext() {
-        if (doesStudyExist) {
-            hasTasks ? navigate(Paths.tasksPage) : navigate(Paths.loggerPage);
-        } else {
-            dataBase.setExtensionState('FETCHING_STUDY')
-                .then(() => navigate(Paths.fetchingStudyData))
-                .catch(error => console.log(error));
-        }
+        !doesStudyExist ? goToPage('FETCHING_STUDY', navigate)
+            : hasTasks ? goToPage('TASKS_PAGE', navigate) : goToPage('LOGGER_READY', navigate)
+
+
     }
 
     return (

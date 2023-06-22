@@ -1,7 +1,7 @@
 import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
 import * as React from "react";
 import {useNavigate} from "react-router-dom";
-import Paths from "@pages/popup/Consts/Paths";
+import {goToPage} from "@pages/popup/UtilityFunctions";
 
 interface Props {
     isDisabled?: boolean
@@ -13,7 +13,7 @@ export function DisplayIdButton({isDisabled}: Props) {
     return (
         <button className={isDisabled ? buttonDisabledStyle : buttonStyle}
                 disabled={isDisabled}
-                onClick={() => navigate(Paths.idDisplayPage)}>
+                onClick={() => goToPage('DISPLAYING_ID', navigate)}>
 
             View your ID
         </button>

@@ -4,14 +4,13 @@ import {useEffect, useState} from "react";
 import {ITask} from "@pages/popup/Interfaces";
 import {useNavigate} from "react-router-dom";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
-import Paths from "@pages/popup/Consts/Paths";
 import {Snackbar} from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import {RightArrowIcon} from "@pages/popup/svg/RightArrowIcon";
 import {buttonStyle} from "@pages/popup/Consts/Styles";
-import {extractAndSetError} from "@pages/popup/UtilityFunctions";
+import {extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
 import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
 import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
 
@@ -94,7 +93,7 @@ export function Tasks({iTasks, handleErrorFromAsync}: Props) {
             }
 
             const shouldGoToPreQuestionnaire = computeShouldGoToPreQuestionnaire(taskId);
-            (shouldGoToPreQuestionnaire) ? await goToPreQuestionnaire() : await goToLogger();
+            (shouldGoToPreQuestionnaire) ? goToPreQuestionnaire() : goToPage('LOGGER_READY', navigate);
 
             function computeShouldGoToPreQuestionnaire(taskId: string) {
                 const iTask = iTasks.find((task) => task.taskId === taskId);
@@ -105,17 +104,10 @@ export function Tasks({iTasks, handleErrorFromAsync}: Props) {
                 return hasPreQuestionnaire && !isPreQuestionsSubmitted;
             }
 
-            async function goToPreQuestionnaire() {
+            function goToPreQuestionnaire() {
                 dataBase.logUserExtensionInteraction("OPENED:PRE_QUESTIONNAIRE");
-                await dataBase.setExtensionState('PRE_QUESTIONNAIRE');
-                navigate(Paths.questionnairePage('pre'));
+                goToPage('PRE_QUESTIONNAIRE', navigate);
             }
-
-            async function goToLogger() {
-                await dataBase.setExtensionState('LOGGER_READY');
-                navigate(Paths.loggerPage);
-            }
-
         }
     }
 

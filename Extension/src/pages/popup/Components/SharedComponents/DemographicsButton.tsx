@@ -2,8 +2,8 @@ import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
 import * as React from "react";
 import {useEffect, useState} from "react";
 import {dataBase} from "@pages/popup/database";
-import Paths from "@pages/popup/Consts/Paths";
 import {useNavigate} from "react-router-dom";
+import {goToPage} from "@pages/popup/UtilityFunctions";
 
 export function DemographicsButton({isDisabled}: { isDisabled?: boolean }) {
     const [hasDemographics, setHasDemographics] = useState<boolean>(false);
@@ -16,14 +16,8 @@ export function DemographicsButton({isDisabled}: { isDisabled?: boolean }) {
             .catch(error => console.error("DemographicsButton Couldn't fetch hasDemographics", error));
     }, []);
 
-    function goToDemographics() {
-        dataBase.setExtensionState('DEMOGRAPHICS')
-            .then(() => navigate(Paths.demographicsPage))
-            .catch(error => console.error("DemographicsButton Couldn't set extension state", error));
-    }
-
     return (<>{hasDemographics &&
         <button className={isDisabled ? buttonDisabledStyle : buttonStyle} disabled={isDisabled}
-                onClick={() => goToDemographics()}>Edit
+                onClick={() => goToPage('DEMOGRAPHICS', navigate)}>Edit
             Demographics</button>}</>);
 }
