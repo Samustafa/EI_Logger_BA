@@ -1,6 +1,8 @@
 spring:
   data:
     mongodb:
-      user: ${PROD_MONGO_USER}
+      username: ${PROD_MONGO_USER}
       password: ${PROD_MONGO_PASSWORD}
-      uri: mongodb://${PROD_MONGO_HOST}:${PROD_MONGO_PORT}/${PROD_MONGO_DB}
+      database: ${PROD_MONGO_DB}
+      port: ${PROD_MONGO_PORT}
+      host: ${PROD_MONGO_HOST}
