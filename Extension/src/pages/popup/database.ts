@@ -34,7 +34,7 @@ class DataBase extends Dexie {
     demographics!: Table<IDemographics, string>;
     answers!: Table<IAnswer, string>;
     tabs!: Table<ITab, string>;
-    userExtensionInteraction!: Table<IUserExtensionInteraction, string>;
+    userExtensionInteractions!: Table<IUserExtensionInteraction, string>;
     currentTaskId!: Table<ICurrentTaskId, string>;
     extensionState!: Table<IExtensionState, string>;
     serpHtml!: Table<ISerpHtml, string>;
@@ -51,12 +51,12 @@ class DataBase extends Dexie {
             rangeQuestion: 'questionId, questionText, type, range',
             textQuestion: 'questionId, questionText, type, maxCharacters',
             demographics: 'id, birthDate, job, sex',
-            answers: 'questionId, userId, studyId, taskId, answer, query, searchEngineName',
-            tabs: '++id, tabId, action, timeStamp, userId, studyId, taskId, groupId, tabIndex, windowId, title, url',
-            userExtensionInteraction: '++id, action, timeStamp, userId, studyId, taskId',
+            answers: 'questionId, userId, studyId, taskId, answer',
+            tabs: '++id, tabId, tabUuid, action, timeStamp, userId, studyId, taskId, groupId, tabIndex, windowId, title, url, query, searchEngineName',
+            userExtensionInteractions: '++id, action, timeStamp, userId, studyId, taskId',
             currentTaskId: 'id, taskId',
             extensionState: 'id, state',
-            serpHtml: '++id,timeStamp, innerHtml, innerText'
+            serpHtml: '++id, tabId, tabUuid, timeStamp, innerHtml, innerText'
         });
     }
 
@@ -215,7 +215,7 @@ class DataBase extends Dexie {
             taskId: fgLoggingConstants.taskId
         }
 
-        dataBase.userExtensionInteraction.add(log)
+        dataBase.userExtensionInteractions.add(log)
             .then()
             .catch(error => console.error("dataBase logUserExtensionInteraction: error while logging the action:", action, "the error is", error));
     }
