@@ -1,6 +1,5 @@
 package de.ude.backend;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import de.ude.backend.exceptions.custom_exceptions.NoUserFoundException;
 import de.ude.backend.exceptions.custom_exceptions.RegistrationCodeNotValid;
 import de.ude.backend.model.RegistrationCode;
@@ -59,7 +58,7 @@ public class BackendController {
     }
 
     @GetMapping("/createUsers/{numberOfUsers}")
-    public ResponseEntity<List<User>> createdUserIds(@PathVariable int numberOfUsers) throws JsonProcessingException {
+    public ResponseEntity<List<User>> createdUserIds(@PathVariable int numberOfUsers) {
         List<User> users = userService.createUserIds(numberOfUsers);
 
         log.info("Created {} new users: {}.", numberOfUsers, users);
