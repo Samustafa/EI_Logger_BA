@@ -12,7 +12,7 @@ interface Props {
 }
 
 export function Notification({notificationType, message, open, setOpen}: Props) {
-    const color = notificationType === "error" ? "red" : "green";
+    const color = notificationType === "error" ? "red" : "#0EED2F";
 
     return (
         <Snackbar

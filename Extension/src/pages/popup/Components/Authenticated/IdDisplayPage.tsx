@@ -5,6 +5,7 @@ import {buttonStyle} from "@pages/popup/Consts/Styles";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {dataBase} from "@pages/popup/database";
 import {goToPage} from "@pages/popup/UtilityFunctions";
+import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 
 export function IdDisplayPage() {
 
@@ -13,6 +14,9 @@ export function IdDisplayPage() {
 
     const [doesStudyExist, setDoesStudyExist] = useState<boolean>(false);
     const [hasTasks, setHasTasks] = useState<boolean>(false);
+
+    const [error, setError] = useState<string>(!id ? "Error while displaying the text" : "");
+    const [open, setOpen] = useState<boolean>(false);
 
     useEffect(function fetchDoesStudyExistAndHasTasks() {
         dataBase.getDoesStudyExist()
@@ -27,8 +31,6 @@ export function IdDisplayPage() {
     function handleNext() {
         !doesStudyExist ? goToPage('FETCHING_STUDY', navigate)
             : hasTasks ? goToPage('TASKS_PAGE', navigate) : goToPage('LOGGER_READY', navigate)
-
-
     }
 
     return (
@@ -45,8 +47,8 @@ export function IdDisplayPage() {
                 the study!</p>
             <p>You will need your ID, if you decide to log-in from another device!</p>
             <p>You&lsquo;ll be able to call your id from the app</p>
-            <button className={buttonStyle} onClick={() => handleNext()}>Next
-            </button>
+            <button className={buttonStyle} onClick={() => handleNext()}>Next</button>
+            <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
         </>
     );
 }
