@@ -6,12 +6,13 @@ import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
 import {dataBase} from "@pages/popup/database";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {useLocation, useNavigate} from "react-router-dom";
-import {connectToBGPort, extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
+import {connectToBGPort, goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {Port} from "@pages/popup/Types";
 import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
 import WarningDialog from "@pages/popup/SharedComponents/WarningDialog";
 import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
 import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
+import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 
 export function LoggerReadyPage() {
     const location = useLocation();
@@ -19,10 +20,10 @@ export function LoggerReadyPage() {
 
     const [isLogging, setIsLogging] = useState<boolean>(location.state as boolean);
     const [port, setPort] = useState<Port | null>(null);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string>('');
     const [openWarningDialog, setOpenWarningDialog] = useState<boolean>(false);
     const [hasTasks, setHasTasks] = useState<boolean>(false);
-
+    const [open, setOpen] = useState<boolean>(false);
     const warningText = "Are you sure you want to finish?\n Once finished you won't be able to log anymore";
 
     useEffect(function fetchHasTasksAndConnectPort() {
@@ -32,7 +33,7 @@ export function LoggerReadyPage() {
         function fetchHasTasks() {
             dataBase.getHasTasks()
                 .then(setHasTasks)
-                .catch(error => console.error("LoggerReadyPage fetchHasTasks", error));
+                .catch(error => handleErrorFromAsync(error, setError, setOpen, "LoggerReadyPage fetchHasTasks"));
         }
 
         function connectPort() {
@@ -47,7 +48,7 @@ export function LoggerReadyPage() {
 
             dataBase.doesTaskHasQuestionnaire(fgLoggingConstants.taskId, 'post')
                 .then((hasPostQuestionnaire) => changeStateAndNavigate(hasPostQuestionnaire))
-                .catch((error) => extractAndSetError(error, setError));
+                .catch((error) => handleErrorFromAsync(error, setError, setOpen));
         } else {
             goToPage('UPLOAD_PAGE', navigate);
         }
@@ -85,9 +86,9 @@ export function LoggerReadyPage() {
     return (
         <div>
             {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-            {isLogging && <Logging setLogging={setIsLogging} setError={setError} port={port!}/>}
+            {isLogging && <Logging setLogging={setIsLogging} setError={setError} setOpen={setOpen} port={port!}/>}
             {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-            {!isLogging && <Paused setLogging={setIsLogging} setError={setError} port={port!}/>}
+            {!isLogging && <Paused setLogging={setIsLogging} setOpen={setOpen} setError={setError} port={port!}/>}
             <div>
                 {renderBackButton(hasTasks)}
                 <button className={isLogging ? buttonDisabledStyle : buttonStyle}
@@ -101,6 +102,7 @@ export function LoggerReadyPage() {
             </div>
             <WarningDialog warningText={warningText} open={openWarningDialog} setOpen={setOpenWarningDialog}
                            acceptFunction={handleFinishedTask}/>
+            <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
         </div>
     );
 }
