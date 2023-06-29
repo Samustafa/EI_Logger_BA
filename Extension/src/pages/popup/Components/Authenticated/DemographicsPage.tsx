@@ -6,9 +6,9 @@ import dayjs from "dayjs";
 import {IDemographics} from "@pages/popup/Interfaces";
 import {dataBase} from "@pages/popup/database";
 import {useNavigate} from "react-router-dom";
-import {extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
-import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
+import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {SexType} from "@pages/popup/Types";
+import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 
 export function DemographicsPage() {
 
@@ -63,6 +63,8 @@ export function DemographicsPage() {
         <CustomizedMenus sex={sex} setSex={setSex} error={Boolean(sexError)}/>
     </>
 
+    const [open, setOpen] = useState<boolean>(false);
+
 
     useEffect(function logOpenedDemographics() {
         dataBase.logUserExtensionInteraction('OPENED:DEMOGRAPHICS')
@@ -71,7 +73,7 @@ export function DemographicsPage() {
     useEffect(function loadSavedDataIfExists() {
         dataBase.getDemographics()
             .then((demographics) => initializeForms(demographics))
-            .catch((error) => extractAndSetError(error, setGeneralError))
+            .catch((error) => handleErrorFromAsync(error, setGeneralError, setOpen))
 
         function initializeForms(demographics: IDemographics) {
             setSex(demographics.sex);
@@ -83,7 +85,7 @@ export function DemographicsPage() {
     useEffect(function fetchHasTasks() {
         dataBase.getHasTasks()
             .then(setHasTasks)
-            .catch(error => extractAndSetError(error, setGeneralError));
+            .catch(error => handleErrorFromAsync(error, setGeneralError, setOpen));
     }, []);
 
     function isFormValid() {
@@ -127,7 +129,7 @@ export function DemographicsPage() {
 
         dataBase.setDemographics(demographics)
             .then(() => handlePostSave())
-            .catch((error) => extractAndSetError(error, setGeneralError))
+            .catch((error) => handleErrorFromAsync(error, setGeneralError, setOpen))
 
         function handlePostSave() {
             dataBase.logUserExtensionInteraction('SUBMITTED:DEMOGRAPHICS');
@@ -149,7 +151,8 @@ export function DemographicsPage() {
                                onClick={handleSubmit}/>
             </form>
 
-            <ErrorMessage error={generalError + birthDateError + sexError + jobError}/>
+            <Notification notificationType={"error"} message={generalError + birthDateError + sexError + jobError}
+                          open={open} setOpen={setOpen}/>
         </>
     );
 }
