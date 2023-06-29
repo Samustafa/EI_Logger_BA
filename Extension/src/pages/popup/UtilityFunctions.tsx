@@ -18,19 +18,31 @@ import browser from "webextension-polyfill";
 import {dataBase} from "@pages/popup/database";
 import Paths from "@pages/popup/Consts/Paths";
 import {NavigateFunction} from "react-router-dom";
+import React, {Dispatch} from "react";
 
 dayjs.extend(utc);
 
+export function extractAndSetError(error: any, setError: Dispatch<React.SetStateAction<string>>, message: string) {
+    console.error(error)
+
+    const serverException: IApiException = error?.response?.data;
+    const errorMessage = serverException?.message || error?.message || error?.toString();
+
+    setError(message + ' ' + errorMessage);
+}
 
 /**
  * Extracts the server exception from response or extracts error message if server didn't respond
  * @param error
  * @param setError
+ * @param setOpen
+ * @param message
  */
-export function extractAndSetError(error: any, setError: (error: string) => void) {
-    console.error(error)
-    const serverException: IApiException = error.response?.data;
-    setError(serverException ? serverException.message : error.message);
+
+
+export function handleErrorFromAsync(error: any, setError: Dispatch<React.SetStateAction<string>>, setOpen: Dispatch<React.SetStateAction<boolean>>, message = '') {
+    extractAndSetError(error, setError, message);
+    setOpen(true);
 }
 
 export function castToChildQuestion(question: Question): QuestionType {
