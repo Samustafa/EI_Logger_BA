@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {getStudy} from "@pages/popup/ServerAPI";
 import {Backdrop, CircularProgress} from "@mui/material";
-import {extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
-import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
+import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {useNavigate} from "react-router-dom";
 import {dataBase} from "@pages/popup/database";
 import {
@@ -16,11 +15,13 @@ import {
 import {Study} from "@pages/popup/model/Study";
 import {Task} from "@pages/popup/model/Task";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
+import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 
 export function FetchingStudyData() {
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string>('');
     const [retryFlag, setRetryFlag] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
     const navigate = useNavigate();
 
 
@@ -29,18 +30,19 @@ export function FetchingStudyData() {
 
         getStudy()
             .then(saveStudyAndNavigate)
-            .catch(error => extractAndSetError(error, setError))
+            .catch(error => handleErrorFromAsync(error, setError, setOpen))
             .finally(() => setLoading(false));
 
         async function saveStudyAndNavigate(study: Study) {
-            await saveStudy(study)
+            await saveStudy(study).catch(error => handleErrorFromAsync(error, setError, setOpen));
 
             const hasTasks = study.tasks.length > 0;
             const hasDemographics = await dataBase.getHasDemographics();
             transitionToNextPage(hasDemographics, hasTasks);
 
             async function saveStudy(study: Study) {
-                await saveStudyInDatabase(new Study(study.studyId, study.name, study.hasDemographics, study.tasks));
+                await saveStudyInDatabase(new Study(study.studyId, study.name, study.hasDemographics, study.tasks))
+                    .catch(error => handleErrorFromAsync(error, setError, setOpen));
                 fgLoggingConstants.studyId = study.studyId;
 
                 async function saveStudyInDatabase(studyData: Study) {
@@ -52,7 +54,8 @@ export function FetchingStudyData() {
                         rangeQuestions
                     } = extractStudyData(studyData);
 
-                    await dataBase.saveStudyInfo(study, tasks, multipleChoiceQuestions, textQuestions, rangeQuestions);
+                    await dataBase.saveStudyInfo(study, tasks, multipleChoiceQuestions, textQuestions, rangeQuestions)
+                        .catch(error => handleErrorFromAsync(error, setError, setOpen));
 
                     function extractStudyData(studyData: Study) {
                         const study: IStudy = {
@@ -102,7 +105,7 @@ export function FetchingStudyData() {
             >
                 <CircularProgress color="inherit"/>
             </Backdrop>
-            <ErrorMessage error={error}/>
+            <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
             {error && <button onClick={retry}>Retry</button>}
         </>
     );
