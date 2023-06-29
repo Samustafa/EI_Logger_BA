@@ -1,23 +1,26 @@
 import React, {FormEvent, useState} from "react";
-import {errorDivStyle, input36Style} from "@pages/popup/Consts/Styles";
+import {input36Style} from "@pages/popup/Consts/Styles";
 import {useNavigate} from "react-router-dom";
 import {LoadingButton} from "@pages/popup/SharedComponents/LoadingButton";
 import {login, registerUser} from "@pages/popup/ServerAPI";
 import {dataBase} from "@pages/popup/database";
 import {Input36Component} from "@pages/popup/SharedComponents/Input36Component";
-import {extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
+import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
+import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 //99746344-7382-4d7c-9e60-6ed3a3cef427
 export default function LandingPage() {
 
     const [userId, setUserId] = useState<string>("");
-    const [loginError, setLoginError] = useState<string | null>(null);
+    const [loginError, setLoginError] = useState<string>('');
 
 
     const [registrationCode, setRegistrationCode] = useState<string>("");
-    const [registrationError, setRegistrationError] = useState<string | null>(null);
+    const [registrationError, setRegistrationError] = useState<string>('');
 
     const [isValidating, setIsValidating] = useState<boolean>(false);
+
+    const [open, setOpen] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -33,8 +36,8 @@ export default function LandingPage() {
     }
 
     function clearErrors() {
-        setRegistrationError(null);
-        setLoginError(null);
+        setRegistrationError('');
+        setLoginError('');
     }
 
     function handleRegister(event: FormEvent<HTMLFormElement>) {
@@ -42,7 +45,7 @@ export default function LandingPage() {
 
         registerUser(registrationCode)
             .then(userId => handlePostRegister(userId))
-            .catch(error => extractAndSetError(error, setRegistrationError))
+            .catch(error => handleErrorFromAsync(error, setRegistrationError, setOpen))
             .finally(() => enableButtons());
 
         function handlePreRegister() {
@@ -50,12 +53,13 @@ export default function LandingPage() {
             clearErrors();
             disableButtons();
             setUserId("");
+            setOpen(false);
         }
 
         function handlePostRegister(userId: string) {
             dataBase.setExtensionState('DISPLAYING_ID')
                 .then(saveStateAndNavigate)
-                .catch(error => extractAndSetError(error, setRegistrationError));
+                .catch(error => handleErrorFromAsync(error, setRegistrationError, setOpen));
 
             function saveStateAndNavigate() {
                 dataBase.setUserId(userId)
@@ -71,7 +75,7 @@ export default function LandingPage() {
 
         login(userId)
             .then(() => handlePostLogIn())
-            .catch((error) => extractAndSetError(error, setLoginError))
+            .catch((error) => handleErrorFromAsync(error, setLoginError, setOpen))
             .finally(() => enableButtons());
 
         function handlePreLogIn() {
@@ -79,6 +83,7 @@ export default function LandingPage() {
             clearErrors();
             disableButtons();
             setRegistrationCode("");
+            setOpen(false);
         }
 
         function handlePostLogIn() {
@@ -112,10 +117,8 @@ export default function LandingPage() {
                                type={'submit'}/>
             </form>
 
-            {registrationError &&
-                <div className={errorDivStyle} data-testid="error_text">{registrationError}</div>}
-            {loginError &&
-                <div className={errorDivStyle} data-testid="error_text">{loginError}</div>}
+            <Notification notificationType={'error'} message={loginError + registrationError} open={open}
+                          setOpen={setOpen}/>
         </>
     );
 }
