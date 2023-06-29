@@ -4,65 +4,48 @@ import {useEffect, useState} from "react";
 import {ITask} from "@pages/popup/Interfaces";
 import {useNavigate} from "react-router-dom";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
-import {Snackbar} from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import {RightArrowIcon} from "@pages/popup/svg/RightArrowIcon";
 import {buttonStyle} from "@pages/popup/Consts/Styles";
-import {extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
+import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
 import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
+import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 
 
 export function TasksPage() {
 
     const [iTasks, setITasks] = useState<ITask[]>([]);
     const [open, setOpen] = useState(false);
-    const [messageToClipboard, setSnackBarMessage] = useState<string>("");
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string>('');
 
 
     useEffect(function fetchTasks() {
-        dataBase.getITasks().then((iTasks) => {
-            setITasks(iTasks);
-        })
-            .catch(error => handleErrorFromAsync(error, 'Couldn\'t fetch tasks'));
+        dataBase.getITasks().then((iTasks) => setITasks(iTasks))
+            .catch(error => handleErrorFromAsync(error, setError, setOpen, 'Couldn\'t fetch tasks'));
     }, []);
 
-    function activateSnackBarWithMessage(message: string) {
-        setSnackBarMessage(message)
-        setOpen(true);
-    }
 
     function handleLogOut() {
-        activateSnackBarWithMessage("Not implemented yet");
+        setError("Not implemented yet");
     }
 
     function handleUpload() {
-        activateSnackBarWithMessage("Not implemented yet");
+        setError("Not implemented yet");
     }
 
-    function handleErrorFromAsync(caughtError: any, displayMessage: string) {
-        extractAndSetError(caughtError, setError);
-        activateSnackBarWithMessage(displayMessage + error);
-    }
 
     return (
         <div>
             <h1>Tasks</h1>
-            <Tasks iTasks={iTasks} handleErrorFromAsync={handleErrorFromAsync}/>
+            <Tasks iTasks={iTasks} setError={setError} setOpen={setOpen}/>
             <button className={buttonStyle} onClick={() => handleLogOut()}>log Out</button>
             <button className={buttonStyle} onClick={() => handleUpload()}>Upload</button>
             <DemographicsButton/>
             <DisplayIdButton/>
-            <Snackbar
-                message={messageToClipboard}
-                anchorOrigin={{vertical: "bottom", horizontal: "center"}}
-                autoHideDuration={2000}
-                onClose={() => setOpen(false)}
-                open={open}
-            />
+            <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
         </div>
     );
 
@@ -71,17 +54,18 @@ export function TasksPage() {
 
 interface Props {
     iTasks: ITask[];
-    handleErrorFromAsync: (caughtError: any, displayMessage: string) => void;
+    setError: React.Dispatch<React.SetStateAction<string>>;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function Tasks({iTasks, handleErrorFromAsync}: Props) {
+export function Tasks({iTasks, setError, setOpen}: Props) {
     const navigate = useNavigate();
 
     function handleListItemClick(taskId: string, index: number) {
 
         dataBase.setCurrentTaskId(taskId)
             .then(() => handlePostSet())
-            .catch(error => handleErrorFromAsync(error, 'Couldn\'t set current task id'));
+            .catch(error => handleErrorFromAsync(error, setError, setOpen, 'Couldn\'t set current task id'));
 
         async function handlePostSet() {
 
