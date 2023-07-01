@@ -61,13 +61,11 @@ export function QuestionnairePage() {
 
     }, [taskId])
 
-    function mapIQuestionAnswerToIAnswer(iQuestionAnswer: IQuestionAnswer, studyId: string, userId: string): IAnswer {
+    function mapIQuestionAnswerToIAnswer(iQuestionAnswer: IQuestionAnswer): IAnswer {
         return {
             questionId: iQuestionAnswer.questionId,
             taskId: taskId,
             answer: iQuestionAnswer.answer,
-            studyId: studyId,
-            userId: userId
         }
     }
 

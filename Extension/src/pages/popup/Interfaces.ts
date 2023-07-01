@@ -73,8 +73,6 @@ export interface IRangeQuestion extends IQuestion {
 
 export interface IAnswer {
     questionId: string;
-    userId: string;
-    studyId: string;
     taskId: string;
     answer: string;
 }
