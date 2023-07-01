@@ -48,15 +48,12 @@ export function QuestionnairePage() {
 
         function setInitialAnswers(questions: Question[]) {
             questions?.forEach(question => {
-                if (question instanceof TextQuestion) {
-                    updateAnswers(question.questionId, "");
-                } else if (question instanceof MultipleChoiceQuestion) {
+                if (question instanceof MultipleChoiceQuestion) {
                     updateAnswers(question.questionId, question.choices[0]);
                 } else if (question instanceof RangeQuestion) {
                     updateAnswers(question.questionId, '0');
                 }
             })
-
         }
 
     }, [taskId])
