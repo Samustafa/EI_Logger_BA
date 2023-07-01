@@ -80,13 +80,19 @@ export function QuestionnairePage() {
         } else {
             const iAnswers = answers.map(answer => mapIQuestionAnswerToIAnswer(answer));
             dataBase.submitQuestionnaire(taskId, iAnswers, questionnaireType)
-                .then(() => dataBase.setQuestionnaireSubmitted(taskId, questionnaireType))
                 .then(handlePostSubmit)
                 .catch((error) => handleErrorFromAsync(error, setError, setOpen, "Error submitting questionnaire"))
-                .finally(() => setIsValidating(false));
+                .finally(handleFinally);
         }
 
         function handlePostSubmit() {
+            dataBase.setQuestionnaireSubmitted(taskId, questionnaireType);
+
+            if (questionnaireType === 'post') dataBase.setTaskCompleted(fgLoggingConstants.taskId);
+        }
+
+        function handleFinally() {
+            setIsValidating(false);
             setIsSuccess(true);
             setIsNextDisabled(false);
         }
@@ -166,10 +172,19 @@ export function QuestionnairePage() {
         setAnswers(prev => addOrUpdateAnswers(prev, {questionId: questionId, answer: value}))
     }
 
+    function getBackButton(questionnaireType: string | undefined) {
+        return questionnaireType === 'pre' && < LoadingButton
+            text={"back"}
+            loadingText={"Loading..."}
+            isLoading={isValidating}
+            onClick={handleBack}
+        />
+
+    }
+
     return <>
         {getTitle(questionnaireType)}
-        <LoadingButton text={"back"} loadingText={"Loading..."} isLoading={isValidating} onClick={handleBack}/>
-
+        {getBackButton(questionnaireType)}
         {getQuestions()}
         <LoadingButton text={"Submit"} loadingText={"Loading..."} isLoading={isValidating}
                        onClick={handleSubmit}/>
