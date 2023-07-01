@@ -44,8 +44,6 @@ export function LoggerReadyPage() {
 
     function handleFinishedTask() {
         if (hasTasks) {
-            dataBase.setTaskCompleted(fgLoggingConstants.taskId);
-
             dataBase.doesTaskHasQuestionnaire(fgLoggingConstants.taskId, 'post')
                 .then((hasPostQuestionnaire) => changeStateAndNavigate(hasPostQuestionnaire))
                 .catch((error) => handleErrorFromAsync(error, setError, setOpen));
@@ -62,7 +60,9 @@ export function LoggerReadyPage() {
             }
 
             function goToTasksPage() {
-                dataBase.logUserExtensionInteraction('FINISHED:TASK')
+                dataBase.setTaskCompleted(fgLoggingConstants.taskId);
+                dataBase.logUserExtensionInteraction('FINISHED:TASK');
+
                 goToPage('TASKS_PAGE', navigate);
             }
         }
