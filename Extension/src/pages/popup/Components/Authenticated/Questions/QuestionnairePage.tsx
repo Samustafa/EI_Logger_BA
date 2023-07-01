@@ -71,14 +71,20 @@ export function QuestionnairePage() {
         setError("");
         setIsSuccess(false);
 
-        const studyId = fgLoggingConstants.studyId;
-        const userId = fgLoggingConstants.userId;
-        const iAnswers = answers.map(answer => mapIQuestionAnswerToIAnswer(answer, studyId, userId));
-        dataBase.submitQuestionnaire(taskId, iAnswers, questionnaireType)
-            .then(() => dataBase.setQuestionnaireSubmitted(taskId, questionnaireType))
-            .then(handlePostSubmit)
-            .catch((error) => handleErrorFromAsync(error, setError, setOpen, "Error submitting questionnaire"))
-            .finally(() => setIsValidating(false));
+        const answerCount = answers.length;
+        const questionCount = questions.length;
+        if (answerCount !== questionCount) {
+            setIsValidating(false);
+            setError(`Please answer all ${questionCount} questions`);
+            setOpen(true);
+        } else {
+            const iAnswers = answers.map(answer => mapIQuestionAnswerToIAnswer(answer));
+            dataBase.submitQuestionnaire(taskId, iAnswers, questionnaireType)
+                .then(() => dataBase.setQuestionnaireSubmitted(taskId, questionnaireType))
+                .then(handlePostSubmit)
+                .catch((error) => handleErrorFromAsync(error, setError, setOpen, "Error submitting questionnaire"))
+                .finally(() => setIsValidating(false));
+        }
 
         function handlePostSubmit() {
             setIsSuccess(true);
@@ -165,14 +171,15 @@ export function QuestionnairePage() {
     return <>
         {getTitle(questionnaireType)}
         <LoadingButton text={"back"} loadingText={"Loading..."} isLoading={isValidating} onClick={handleBack}/>
+
+        {getQuestions()}
+        <LoadingButton text={"Submit"} loadingText={"Loading..."} isLoading={isValidating}
+                       onClick={handleSubmit}/>
         <button className={isNextDisabled ? buttonDisabledStyle : buttonStyle}
                 onClick={handleNext}
                 disabled={isNextDisabled}>
             Next
         </button>
-        {getQuestions()}
-        <LoadingButton text={"Submit"} loadingText={"Loading..."} isLoading={isValidating}
-                       onClick={handleSubmit}/>
 
         <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
         <Notification notificationType={'success'} message={"Answers submitted!"} open={isSuccess}
