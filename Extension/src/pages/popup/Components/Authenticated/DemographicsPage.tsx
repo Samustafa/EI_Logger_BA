@@ -105,6 +105,8 @@ export function DemographicsPage() {
         if (!isDateValid(birthDate)) setBirthDateError('Invalid Date')
         if (!isSexSelected()) setSexError(' Invalid Sex')
         if (job === '') setJobError(' Invalid Job')
+
+        setOpen(true);
     }
 
     function clearErrors() {
