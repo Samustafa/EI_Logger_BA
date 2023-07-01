@@ -6,7 +6,6 @@ import {useAnswersContext} from "@pages/popup/Contexts";
 
 interface Props {
     question: RangeQuestion;
-    index: number;
     isValidating: boolean;
 }
 
@@ -16,7 +15,7 @@ interface Mark {
 }
 
 
-export function RangeQuestionComponent({question, index, isValidating}: Props) {
+export function RangeQuestionComponent({question, isValidating}: Props) {
     const max = question.range;
     const [value, setValue] = useState<number>(1);
 
@@ -33,7 +32,6 @@ export function RangeQuestionComponent({question, index, isValidating}: Props) {
     }
 
     return <>
-        <div>{index}) {question.questionText}</div>
         <div>
             <Slider
                 aria-label="answer-value"

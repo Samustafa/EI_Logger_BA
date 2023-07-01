@@ -5,11 +5,10 @@ import {useAnswersContext} from "@pages/popup/Contexts";
 
 interface Props {
     question: TextQuestion;
-    index: number;
     isValidating: boolean;
 }
 
-export function TextQuestionComponent({question, index, isValidating}: Props) {
+export function TextQuestionComponent({question, isValidating}: Props) {
 
     const [answer, setAnswer] = useState<string>("");
     const {updateAnswers} = useAnswersContext();
@@ -21,7 +20,6 @@ export function TextQuestionComponent({question, index, isValidating}: Props) {
     }
 
     return <>
-        <div>{index}) {question.questionText}</div>
         <input
             className={inputDefaultStyle}
             type="text"

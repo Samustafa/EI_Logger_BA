@@ -126,26 +126,23 @@ export function QuestionnairePage() {
     }
 
     function getTitle(questionnaireType: string | undefined) {
-        return questionnaireType === 'pre' ? <h1>Pre Questionnaire</h1> : <h1>Post Questionnaire</h1>;
+        return <div
+            className={"font-bold text-xl"}>{questionnaireType === 'pre' ? 'Pre Questionnaire ' : 'Post Questionnaire'}</div>
     }
 
-    function getQuestionFromParent(question: Question | undefined, index: number) {
+    function getQuestionFromParent(question: Question | undefined) {
         switch (question?.type) {
             case "MultipleChoiceQuestion":
                 return <MultipleChoiceQuestionComponent question={question as MultipleChoiceQuestion}
-                                                        index={index}
                                                         isValidating={isValidating}/>;
             case "TextQuestion":
                 return <TextQuestionComponent question={question as TextQuestion}
-                                              index={index}
                                               isValidating={isValidating}/>;
             case "RangeQuestion":
                 return <RangeQuestionComponent question={question as RangeQuestion}
-                                               index={index}
                                                isValidating={isValidating}/>;
             default:
                 return <TextQuestionComponent question={new TextQuestion("-1", "Error", -1)}
-                                              index={-1}
                                               isValidating={isValidating}/>;
 
         }
@@ -157,8 +154,9 @@ export function QuestionnairePage() {
         return <>
             <AnswersContext.Provider value={contextProviderValue}>
                 {questions?.map((iQuestion, index) =>
-                    <div key={iQuestion.questionId} className={"p-2 text-left"}>
-                        {getQuestionFromParent(iQuestion, index)}
+                    <div key={iQuestion.questionId} className={"m-4 p-2 text-left"}>
+                        <div className={"font-bold m-2"}>{index + 1}) {iQuestion.questionText}</div>
+                        {getQuestionFromParent(iQuestion)}
                     </div>)}
             </AnswersContext.Provider>
         </>

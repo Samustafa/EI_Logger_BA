@@ -1,15 +1,14 @@
 import {MultipleChoiceQuestion} from "@pages/popup/model/question/MultipleChoiceQuestion";
-import {FormControl, FormControlLabel, FormLabel, Radio, RadioGroup} from "@mui/material";
+import {FormControl, FormControlLabel, Radio, RadioGroup} from "@mui/material";
 import {ChangeEvent, useState} from "react";
 import {useAnswersContext} from "@pages/popup/Contexts";
 
 interface Props {
     question: MultipleChoiceQuestion;
-    index: number;
     isValidating: boolean;
 }
 
-export function MultipleChoiceQuestionComponent({question, index, isValidating}: Props) {
+export function MultipleChoiceQuestionComponent({question, isValidating}: Props) {
     const [value, setValue] = useState(question.choices[0]);
     const {updateAnswers} = useAnswersContext();
 
@@ -18,13 +17,10 @@ export function MultipleChoiceQuestionComponent({question, index, isValidating}:
         setValue(answer);
         updateAnswers(question.questionId, answer);
     };
-    console.log("MultipleChoiceQuestionComponent", question);
 
 
     return <>
-        <div>{index}) {question.questionText}</div>
         <FormControl disabled={isValidating}>
-            <FormLabel id="demo-controlled-radio-buttons-group" style={{color: '#FFFFFF'}}>Answers</FormLabel>
             <RadioGroup
                 row
                 aria-labelledby="demo-controlled-radio-buttons-group"
