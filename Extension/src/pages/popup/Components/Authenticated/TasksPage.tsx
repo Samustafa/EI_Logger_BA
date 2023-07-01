@@ -30,10 +30,12 @@ export function TasksPage() {
 
     function handleLogOut() {
         setError("Not implemented yet");
+        setOpen(true);
     }
 
     function handleUpload() {
         setError("Not implemented yet");
+        setOpen(true);
     }
 
 
