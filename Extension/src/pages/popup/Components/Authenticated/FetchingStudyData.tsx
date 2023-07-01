@@ -86,8 +86,13 @@ export function FetchingStudyData() {
             }
 
             function transitionToNextPage(hasDemographics: boolean, hasTasks: boolean) {
-                hasDemographics ? goToPage('DEMOGRAPHICS', navigate)
-                    : hasTasks ? goToPage('TASKS_PAGE', navigate) : goToPage('LOGGER_READY', navigate)
+                hasDemographics ?
+                    goToPage('DEMOGRAPHICS', navigate)
+                    : navigateBasedOnTaskExistence();
+
+                function navigateBasedOnTaskExistence() {
+                    hasTasks ? goToPage('TASKS_PAGE', navigate) : goToPage('LOGGER_READY', navigate);
+                }
             }
         }
 
