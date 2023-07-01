@@ -3,9 +3,7 @@ import {useEffect, useMemo, useState} from "react";
 import {dataBase} from "@pages/popup/database";
 import {IAnswer, IQuestionAnswer} from "@pages/popup/Interfaces";
 import {LoadingButton} from "@pages/popup/SharedComponents/LoadingButton";
-import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
-import {addOrUpdateAnswers, extractAndSetError, goToPage} from "@pages/popup/UtilityFunctions";
-import {SuccessMessage} from "@pages/popup/SharedComponents/SuccessMessage";
+import {addOrUpdateAnswers, goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {Question} from "@pages/popup/model/question/Question";
@@ -22,6 +20,7 @@ import {
     RangeQuestionComponent
 } from "@pages/popup/Components/Authenticated/Questions/QuestionType/RangeQuestionComponent";
 import {AnswersContext} from "@pages/popup/Contexts";
+import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 
 
 export function QuestionnairePage() {
@@ -37,7 +36,7 @@ export function QuestionnairePage() {
 
     const [error, setError] = useState<string>("");
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
-
+    const [open, setOpen] = useState<boolean>(false);
 
     useEffect(function fetchQuestionsThenSetInitialAnswers() {
         dataBase.getQuestionnaire(taskId, questionnaireType)
@@ -45,7 +44,7 @@ export function QuestionnairePage() {
                 setQuestions(questions);
                 setInitialAnswers(questions);
             })
-            .catch((error) => extractAndSetError(error, setError));
+            .catch((error) => handleErrorFromAsync(error, setError, setOpen, "Error fetching questions"));
 
         function setInitialAnswers(questions: Question[]) {
             questions?.forEach(question => {
@@ -72,7 +71,7 @@ export function QuestionnairePage() {
         }
     }
 
-    async function handleSubmit() {
+    function handleSubmit() {
         setIsValidating(true);
         setError("");
         setIsSuccess(false);
@@ -83,7 +82,7 @@ export function QuestionnairePage() {
         dataBase.submitQuestionnaire(taskId, iAnswers, questionnaireType)
             .then(() => dataBase.setQuestionnaireSubmitted(taskId, questionnaireType))
             .then(handlePostSubmit)
-            .catch((error) => extractAndSetError(error, setError))
+            .catch((error) => handleErrorFromAsync(error, setError, setOpen, "Error submitting questionnaire"))
             .finally(() => setIsValidating(false));
 
         function handlePostSubmit() {
@@ -103,10 +102,10 @@ export function QuestionnairePage() {
         function handleGoToLoggerPage() {
             dataBase.setExtensionState('LOGGER_READY')
                 .then(goToLoggerPage)
-                .catch(error => extractAndSetError(error, setError));
+                .catch(error => handleErrorFromAsync(error, setError, setOpen, "Error going to logger page"));
 
             function goToLoggerPage() {
-                dataBase.logUserExtensionInteraction('SUBMITTED:PRE_QUESTIONNAIRE')
+                dataBase.logUserExtensionInteraction('SUBMITTED:PRE_QUESTIONNAIRE');
                 goToPage('LOGGER_READY', navigate)
             }
         }
@@ -114,7 +113,7 @@ export function QuestionnairePage() {
         function handleGoToTasksPage() {
             dataBase.setExtensionState('TASKS_PAGE')
                 .then(goToTasksPage)
-                .catch(error => extractAndSetError(error, setError));
+                .catch(error => handleErrorFromAsync(error, setError, setOpen, "Error going to tasks page"));
 
             function goToTasksPage() {
                 dataBase.logUserExtensionInteraction('SUBMITTED:PRE_QUESTIONNAIRE')
@@ -168,24 +167,23 @@ export function QuestionnairePage() {
         setAnswers(prev => addOrUpdateAnswers(prev, {questionId: questionId, answer: value}))
     }
 
-    return (
-        <>
-            {getTitle(questionnaireType)}
-            <LoadingButton text={"back"} loadingText={"Loading..."} isLoading={isValidating} onClick={handleBack}/>
-            <button className={isNextDisabled ? buttonDisabledStyle : buttonStyle}
-                    onClick={handleNext}
-                    disabled={isNextDisabled}>
-                Next
-            </button>
-            {getQuestions()}
-            <LoadingButton text={"Submit"} loadingText={"Loading..."} isLoading={isValidating}
-                           onClick={handleSubmit}/>
+    return <>
+        {getTitle(questionnaireType)}
+        <LoadingButton text={"back"} loadingText={"Loading..."} isLoading={isValidating} onClick={handleBack}/>
+        <button className={isNextDisabled ? buttonDisabledStyle : buttonStyle}
+                onClick={handleNext}
+                disabled={isNextDisabled}>
+            Next
+        </button>
+        {getQuestions()}
+        <LoadingButton text={"Submit"} loadingText={"Loading..."} isLoading={isValidating}
+                       onClick={handleSubmit}/>
 
-            <ErrorMessage error={error}/>
-            <SuccessMessage isSuccess={isSuccess}/>
-        </>
-    )
-        ;
+        <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
+        <Notification notificationType={'success'} message={"Answers submitted!"} open={isSuccess}
+                      setOpen={setIsSuccess}/>
+    </>
+
 }
 
 
