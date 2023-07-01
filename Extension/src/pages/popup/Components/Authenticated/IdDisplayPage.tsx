@@ -1,10 +1,10 @@
 import {useNavigate} from "react-router-dom";
 import CopyToClipboardButton from "@pages/popup/SharedComponents/CopyToClipboardButton";
 import React, {useEffect, useState} from "react";
-import {buttonStyle} from "@pages/popup/Consts/Styles";
+import {buttonStyle, greenBoxStyle} from "@pages/popup/Consts/Styles";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {dataBase} from "@pages/popup/database";
-import {goToPage} from "@pages/popup/UtilityFunctions";
+import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 
 export function IdDisplayPage() {
@@ -21,31 +21,32 @@ export function IdDisplayPage() {
     useEffect(function fetchDoesStudyExistAndHasTasks() {
         dataBase.getDoesStudyExist()
             .then(doesStudyExist => setDoesStudyExist(doesStudyExist))
-            .catch(error => console.error("IdDisplayPage Couldn't fetch doesStudyExist", error));
+            .catch(error => handleErrorFromAsync(error, setError, setOpen, "IdDisplayPage Couldn't fetch doesStudyExist"));
 
         dataBase.getHasTasks()
             .then(hasTasks => setHasTasks(hasTasks))
-            .catch(error => console.error("IdDisplayPage Couldn't fetch hasTasks", error));
+            .catch(error => handleErrorFromAsync(error, setError, setOpen, "IdDisplayPage Couldn't fetch hasTasks"));
     }, [])
 
     function handleNext() {
-        !doesStudyExist ? goToPage('FETCHING_STUDY', navigate)
-            : hasTasks ? goToPage('TASKS_PAGE', navigate) : goToPage('LOGGER_READY', navigate)
+
+        !doesStudyExist ?
+            goToPage('FETCHING_STUDY', navigate)
+            : navigateBasedOnTaskExistence();
+
+        function navigateBasedOnTaskExistence() {
+            hasTasks ? goToPage('TASKS_PAGE', navigate) : goToPage('LOGGER_READY', navigate);
+        }
     }
 
     return (
         <>
-            <p>Registration Successful!</p>
-            <br/>
-            <div className={"bg-green-300 border-double border-4 border-sky-500 grid grid-rows-1 grid-flow-col gap-4"}>
+            <div className={greenBoxStyle}>
                 <p className="text-green-600 font-bold">{id ?? "Error while displaying the text"}</p>
                 <CopyToClipboardButton textToCopy={id ?? ""}/>
             </div>
             <br/>
-            <p>Please save your ID somewhere safe and don&lsquo;t share it with any person, even the people responsible
-                for
-                the study!</p>
-            <p>You will need your ID, if you decide to log-in from another device!</p>
+            <p>Please save your ID somewhere safe</p>
             <p>You&lsquo;ll be able to call your id from the app</p>
             <button className={buttonStyle} onClick={() => handleNext()}>Next</button>
             <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
