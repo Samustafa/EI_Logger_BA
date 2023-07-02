@@ -211,8 +211,6 @@ class DataBase extends Dexie {
         const log: IUserExtensionInteraction = {
             action: action,
             timeStamp: getUTCDateTime(),
-            userId: fgLoggingConstants.userId,
-            studyId: fgLoggingConstants.studyId,
             taskId: fgLoggingConstants.taskId,
             isUploaded: false,
         }
