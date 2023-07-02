@@ -1,8 +1,8 @@
 {
-  "name": "vite-web-extension",
-  "displayName": "Web Extension Boilerplate",
+  "name": "EI-Logger",
+  "displayName": "EI-Logger",
   "version": "1.1.0",
-  "description": "A simple chrome extension template with Vite, React, TypeScript and Tailwind CSS.",
+  "description": "Logging tool to help researchers, among other things, executing exploratory search evaluation studies",
   "license": "MIT",
   "repository": {
     "type": "git",
