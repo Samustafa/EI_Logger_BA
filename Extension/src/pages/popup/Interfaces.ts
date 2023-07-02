@@ -88,6 +88,7 @@ export interface IDemographics {
     birthDate: string;
     job: string;
     sex: SexType;
+    isUploaded: boolean;
 }
 
 export interface ITab {

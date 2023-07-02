@@ -229,7 +229,7 @@ class DataBase extends Dexie {
     }
 
     async getDemographics() {
-        const deFaultDemographics: IDemographics = {id: '0', job: "", sex: "sex", birthDate: ''};
+        const deFaultDemographics: IDemographics = {id: '0', job: "", sex: "sex", birthDate: '', isUploaded: false};
         const demographics = await this.demographics.toArray()
         return demographics[0] ?? deFaultDemographics;
     }
@@ -280,6 +280,42 @@ class DataBase extends Dexie {
             const yesterday = dayjs().subtract(1, 'day').utc().format("YYYY-MM-DD HH:mm:ss");
             return tab.timeStamp > yesterday;
         }
+    }
+
+    async getNotUploadedDemographics() {
+        const demographics = await dataBase.demographics.toArray();
+        return demographics.filter(demographic => !demographic.isUploaded);
+    }
+
+    async getNotUploadedTabs() {
+        const tabs = await dataBase.tabs.toArray();
+        return tabs.filter(tab => !tab.isUploaded);
+    }
+
+    async getNotUploadedAnswers() {
+        const answers = await dataBase.answers.toArray();
+        return answers.filter(answer => !answer.isUploaded);
+    }
+
+    async getNotUploadedUserExtensionInteractions() {
+        const s = await dataBase.userExtensionInteractions.toArray();
+        return s.filter(userExtensionInteraction => !userExtensionInteraction.isUploaded);
+    }
+
+    async getNotUploadedSerHtml() {
+        const serps = await dataBase.serpHtml.toArray();
+        return serps.filter(serp => !serp.isUploaded);
+
+    }
+
+    async getNumberOfObjectsToLoad() {
+        const demographics = await this.getNotUploadedDemographics();
+        const tabs = await this.getNotUploadedTabs();
+        const answers = await this.getNotUploadedAnswers();
+        const userExtensionInteractions = await this.getNotUploadedUserExtensionInteractions();
+        const serpHtml = await this.getNotUploadedSerHtml();
+
+        return demographics.length + tabs.length + answers.length + userExtensionInteractions.length + serpHtml.length;
     }
 }
 

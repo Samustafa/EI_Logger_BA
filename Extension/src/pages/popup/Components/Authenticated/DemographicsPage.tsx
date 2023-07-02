@@ -126,7 +126,8 @@ export function DemographicsPage() {
             id: demographicsPrimaryKey,
             birthDate: birthDate,
             job: job,
-            sex: sex
+            sex: sex,
+            isUploaded: false,
         }
 
         dataBase.setDemographics(demographics)

@@ -16,6 +16,7 @@ import {Notification} from "@pages/popup/Components/SharedComponents/Notificatio
 
 
 export function TasksPage() {
+    const navigate = useNavigate();
 
     const [iTasks, setITasks] = useState<ITask[]>([]);
     const [open, setOpen] = useState(false);
@@ -34,8 +35,7 @@ export function TasksPage() {
     }
 
     function handleUpload() {
-        setError("Not implemented yet");
-        setOpen(true);
+        goToPage('UPLOAD_PAGE', navigate);
     }
 
 
