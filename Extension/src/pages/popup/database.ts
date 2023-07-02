@@ -23,6 +23,7 @@ import {ExtensionState, QuestionnaireType, UserExtensionAction} from "@pages/pop
 import {getUTCDateTime} from "@pages/popup/UtilityFunctions";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {Question} from "@pages/popup/model/question/Question";
+import dayjs from "dayjs";
 
 class DataBase extends Dexie {
     user!: Table<IUser, string>;
@@ -270,6 +271,15 @@ class DataBase extends Dexie {
     async getDoesStudyExist() {
         const studies = await dataBase.study.toArray();
         return studies.length > 0;
+    }
+
+    async getOldTabsSinceYesterday() {
+        return dataBase.tabs.where('action').equals('TAB:OLD').and(filterByTimeStamp).toArray();
+
+        function filterByTimeStamp(tab: ITab) {
+            const yesterday = dayjs().subtract(1, 'day').utc().format("YYYY-MM-DD HH:mm:ss");
+            return tab.timeStamp > yesterday;
+        }
     }
 }
 

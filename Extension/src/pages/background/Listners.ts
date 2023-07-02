@@ -2,7 +2,7 @@ import browser from "webextension-polyfill";
 import {
     handleBookmarkCreated,
     handleBookmarkRemoved,
-    handleLogAllExistingTabs,
+    handleLogExistingTabs,
     handleOnCompleted,
     handleOnInstalled,
     handleTabActivated,
@@ -42,7 +42,7 @@ function connectBGPort(port: Port) {
 async function loggingPortMR(message: MessageType) {
     message = message as LoggingMessage;
     if (message === "START_LOGGING") {
-        handleLogAllExistingTabs();
+        handleLogExistingTabs();
         activateAllListens();
         setBadgeText('ON');
     } else if (message === "STOP_LOGGING") {

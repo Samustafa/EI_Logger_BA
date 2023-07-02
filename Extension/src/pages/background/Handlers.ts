@@ -252,11 +252,29 @@ function handleSaveTabAfterNewTabOrNewUrl(tab: Tab, tabAction: TabAction, query?
     openedTabsCache.set(iTab.tabId, {url: iTab.url, tabUuid: iTab.tabUuid});
 }
 
-export function handleLogAllExistingTabs() {
+export async function handleLogExistingTabs() {
 
-    tabs.query({})
-        .then(saveAllTabs)
-        .catch(error => console.error("handleLogAllExistingTabs", error));
+    const openedTabs = await tabs.query({})
+    const loggedTabs = await dataBase.getOldTabsSinceYesterday();
+
+    const tabsToLog = openedTabs.filter(filterOutLoggedTabs);
+    saveAllTabs(tabsToLog);
+
+    function filterOutLoggedTabs(tab: Tab) {
+
+        return !isTabLogged(tab);
+
+        function isTabLogged(tab: Tab) {
+            return loggedTabs.some(tabExists)
+
+            function tabExists(loggedTab: ITab) {
+                const sameId = loggedTab.tabId === tab.id;
+                const sameUrl = loggedTab.url === tab.url;
+                return sameId && sameUrl;
+            }
+        }
+
+    }
 
     function saveAllTabs(tabs: Tab[]) {
         tabs.forEach(saveTab)
