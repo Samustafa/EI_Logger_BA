@@ -63,6 +63,7 @@ export function QuestionnairePage() {
             questionId: iQuestionAnswer.questionId,
             taskId: taskId,
             answer: iQuestionAnswer.answer,
+            isUploaded: false,
         }
     }
 

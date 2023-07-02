@@ -45,19 +45,19 @@ class DataBase extends Dexie {
     constructor() {
         super('DataBase');
         this.version(1).stores({
-            user: 'id, userId',
-            study: 'studyId, hasDemographics',
-            task: 'taskId, text, iPreQuestions, iPostQuestions, isStarted, isCompleted, isPreQuestionsSubmitted, isPostQuestionsSubmitted',
-            multipleChoiceQuestion: 'questionId, questionText, type, choices',
-            rangeQuestion: 'questionId, questionText, type, range',
-            textQuestion: 'questionId, questionText, type, maxCharacters',
-            demographics: 'id, birthDate, job, sex',
-            answers: 'questionId, taskId, answer',
-            tabs: '++id, tabId, tabUuid, action, timeStamp, userId, studyId, taskId, groupId, tabIndex, windowId, title, url, query, searchEngineName',
-            userExtensionInteractions: '++id, action, timeStamp, userId, studyId, taskId',
-            currentTaskId: 'id, taskId',
-            extensionState: 'id, state',
-            serpHtml: '++id, tabId, tabUuid, timeStamp, innerHtml, innerText'
+            user: 'id',
+            study: 'studyId',
+            task: 'taskId',
+            multipleChoiceQuestion: 'questionId',
+            rangeQuestion: 'questionId',
+            textQuestion: 'questionId',
+            demographics: 'id, isUploaded',
+            answers: 'questionId, taskId, answer, isUploaded',
+            tabs: '++id, tabId, tabUuid, action, isUploaded',
+            userExtensionInteractions: '++id, isUploaded',
+            currentTaskId: 'id',
+            extensionState: 'id',
+            serpHtml: '++id, isUploaded'
         });
     }
 
@@ -208,12 +208,13 @@ class DataBase extends Dexie {
     }
 
     logUserExtensionInteraction(action: UserExtensionAction) {
-        const log = {
+        const log: IUserExtensionInteraction = {
             action: action,
             timeStamp: getUTCDateTime(),
             userId: fgLoggingConstants.userId,
             studyId: fgLoggingConstants.studyId,
-            taskId: fgLoggingConstants.taskId
+            taskId: fgLoggingConstants.taskId,
+            isUploaded: false,
         }
 
         dataBase.userExtensionInteractions.add(log)
@@ -251,7 +252,8 @@ class DataBase extends Dexie {
             tabUuid: tabUuid,
             timeStamp: getUTCDateTime(),
             innerHtml: innerHtml,
-            innerText: innerText
+            innerText: innerText,
+            isUploaded: false,
         }
         this.serpHtml.add(iHtml)
             .catch(error => console.error("dataBase addSerpHtml: error while adding the serp html:", "the error is", error));

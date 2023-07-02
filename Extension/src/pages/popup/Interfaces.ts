@@ -75,6 +75,7 @@ export interface IAnswer {
     questionId: string;
     taskId: string;
     answer: string;
+    isUploaded: boolean;
 }
 
 export interface IQuestionAnswer {
@@ -87,7 +88,6 @@ export interface IDemographics {
     birthDate: string;
     job: string;
     sex: SexType;
-
 }
 
 export interface ITab {
@@ -105,6 +105,7 @@ export interface ITab {
     url: string;
     query?: string;
     searchEngineName?: SearchEngineName;
+    isUploaded: boolean;
 }
 
 export interface IUserExtensionInteraction {
@@ -113,6 +114,7 @@ export interface IUserExtensionInteraction {
     userId?: string;
     studyId?: string;
     taskId?: string;
+    isUploaded: boolean;
 }
 
 export interface ISerpHtml {
@@ -121,4 +123,5 @@ export interface ISerpHtml {
     timeStamp: string;
     innerHtml: string;
     innerText: string;
+    isUploaded: boolean;
 }

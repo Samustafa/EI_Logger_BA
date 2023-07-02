@@ -96,6 +96,7 @@ export async function handleTabAttached(tabId: number, attachInfo: AttachInfo) {
         url: tab?.url ?? "",
         userId: bgLoggingConstants.userId,
         windowId: attachInfo.newWindowId,
+        isUploaded: false,
     };
     console.log("attached tab -->", iTab);
     dataBase.saveTabInfo(iTab);
@@ -116,6 +117,7 @@ export async function handleTabDetached(tabId: number, detachInfo: DetachInfo) {
         url: tab?.url ?? "",
         userId: bgLoggingConstants.userId,
         windowId: detachInfo.oldWindowId,
+        isUploaded: false,
     }
     dataBase.saveTabInfo(iTab);
 }
@@ -199,6 +201,7 @@ function prePareITabFromTab(tab: Tab, tabAction: TabAction, query?: string, sear
         url: tab?.pendingUrl ?? tab?.url ?? "",
         query: query,
         searchEngineName: searchEngineName,
+        isUploaded: false,
     }
 }
 
@@ -217,6 +220,7 @@ function prePareITabFromITab(tab: ITab, tabAction: TabAction): ITab {
         windowId: tab.windowId,
         title: tab.title,
         url: tab.url,
+        isUploaded: false,
     }
 }
 
@@ -243,6 +247,7 @@ async function prepareITabFromBookMark(bookmark: BookMark, tabAction: "TAB:BOOKM
         windowId: tab.windowId ?? -1,
         title: bookmark.title,
         url: bookmark.url ?? "",
+        isUploaded: false,
     };
 }
 
