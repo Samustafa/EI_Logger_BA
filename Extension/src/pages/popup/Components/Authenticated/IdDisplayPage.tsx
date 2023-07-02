@@ -43,14 +43,15 @@ export function IdDisplayPage() {
     return (
         <>
             <Title title={"Your ID"}/>
+            <div className={"h-1/4"}></div>
             <div className={greenBoxStyle}>
                 <span className="text-green-600 font-bold">{id ?? "Error while displaying the text"}
                     <CopyToClipboardButton textToCopy={id ?? ""}/></span>
 
             </div>
             <br/>
-            <p>Please save your ID somewhere safe</p>
-            <p>You&lsquo;ll be able to call your id from the app</p>
+            <p>Please save your ID somewhere safe.</p>
+            <p>You&lsquo;ll be able to call your id from the app later at any time.</p>
             <button className={buttonStyle} onClick={() => handleNext()}>Next</button>
             <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
         </>

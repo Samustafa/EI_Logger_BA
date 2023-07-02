@@ -13,6 +13,7 @@ import WarningDialog from "@pages/popup/SharedComponents/WarningDialog";
 import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
 import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
+import {Title} from "@pages/popup/Components/SharedComponents/Title";
 
 export function LoggerReadyPage() {
     const location = useLocation();
@@ -83,7 +84,10 @@ export function LoggerReadyPage() {
             isDisabled={isLogging}/></>)
     }
 
-    return (
+    return <>
+    {isLogging ? <Title title={"Logging"}/> : <Title title={"Logger is offline"}/>}
+
+        <div className={"h-1/4"}></div>
         <div>
             {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
             {isLogging && <Logging setLogging={setIsLogging} setError={setError} setOpen={setOpen} port={port!}/>}
@@ -104,5 +108,6 @@ export function LoggerReadyPage() {
                            acceptFunction={handleFinishedTask}/>
             <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
         </div>
-    );
+    </>
+
 }

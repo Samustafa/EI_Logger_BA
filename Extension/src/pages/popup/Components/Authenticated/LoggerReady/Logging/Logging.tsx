@@ -1,6 +1,6 @@
 import React from 'react';
 import {PauseButton} from "./PauseButton";
-import {display, handleErrorFromAsync, sendMessages} from "@pages/popup/UtilityFunctions";
+import {handleErrorFromAsync, sendMessages} from "@pages/popup/UtilityFunctions";
 import {Port} from "@pages/popup/Types";
 import {dataBase} from "@pages/popup/database";
 
@@ -25,10 +25,5 @@ export function Logging({setLogging, port, setError, setOpen}: Props) {
         }
     }
 
-    return (
-        <div>
-            {display("logger is online")}
-            <PauseButton onClick={() => stopLogging()}/>
-        </div>
-    );
+    return (<PauseButton onClick={() => stopLogging()}/>);
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import {PlayButton} from "./PlayButton";
-import {display, handleErrorFromAsync, sendMessages} from "@pages/popup/UtilityFunctions";
+import {handleErrorFromAsync, sendMessages} from "@pages/popup/UtilityFunctions";
 import {Port} from "@pages/popup/Types";
 import {dataBase} from "@pages/popup/database";
 
@@ -25,11 +25,6 @@ export function Paused({setLogging, port, setError, setOpen}: Props) {
         }
     }
 
-    return (
-        <>
-            {display("logger is offline")}
-            <PlayButton onClick={() => startLogging()}/>
-        </>
-    );
+    return (<PlayButton onClick={() => startLogging()}/>);
 }
 
