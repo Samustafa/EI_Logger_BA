@@ -21,30 +21,21 @@ export function TasksPage() {
     const [iTasks, setITasks] = useState<ITask[]>([]);
     const [open, setOpen] = useState(false);
     const [error, setError] = useState<string>('');
-
-
+    
     useEffect(function fetchTasks() {
         dataBase.getITasks().then((iTasks) => setITasks(iTasks))
             .catch(error => handleErrorFromAsync(error, setError, setOpen, 'Couldn\'t fetch tasks'));
     }, []);
-
-
-    function handleLogOut() {
-        setError("Not implemented yet");
-        setOpen(true);
-    }
 
     function handleUpload() {
         setError("Not implemented yet");
         setOpen(true);
     }
 
-
     return (
         <>
             <Title title={"Tasks"}/>
             <Tasks iTasks={iTasks} setError={setError} setOpen={setOpen}/>
-            <button className={buttonStyle} onClick={() => handleLogOut()}>log Out</button>
             <button className={buttonStyle} onClick={() => handleUpload()}>Upload</button>
             <DemographicsButton/>
             <DisplayIdButton/>
