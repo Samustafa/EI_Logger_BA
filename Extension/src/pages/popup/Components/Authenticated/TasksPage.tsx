@@ -13,6 +13,7 @@ import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
 import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
+import {Title} from "@pages/popup/Components/SharedComponents/Title";
 
 
 export function TasksPage() {
@@ -40,15 +41,15 @@ export function TasksPage() {
 
 
     return (
-        <div>
-            <h1>Tasks</h1>
+        <>
+            <Title title={"Tasks"}/>
             <Tasks iTasks={iTasks} setError={setError} setOpen={setOpen}/>
             <button className={buttonStyle} onClick={() => handleLogOut()}>log Out</button>
             <button className={buttonStyle} onClick={() => handleUpload()}>Upload</button>
             <DemographicsButton/>
             <DisplayIdButton/>
             <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
-        </div>
+        </>
     );
 
 }
@@ -101,7 +102,7 @@ export function Tasks({iTasks, setError, setOpen}: Props) {
         {iTasks.map((iTask: ITask, index) =>
             (<ListItemButton key={iTask.taskId} disabled={iTask.isCompleted}
                              onClick={() => handleListItemClick(iTask.taskId, index)}>
-                <ListItemText primary={iTask.text}/><RightArrowIcon/>
+                <ListItemText primary={iTask.text}/><span className={"p-2"}><RightArrowIcon/></span>
             </ListItemButton>))}
     </List>);
 }

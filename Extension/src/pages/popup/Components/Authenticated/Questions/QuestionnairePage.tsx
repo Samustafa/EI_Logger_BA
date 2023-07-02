@@ -1,5 +1,5 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {dataBase} from "@pages/popup/database";
 import {IAnswer, IQuestionAnswer} from "@pages/popup/Interfaces";
 import {LoadingButton} from "@pages/popup/SharedComponents/LoadingButton";
@@ -21,6 +21,7 @@ import {
 } from "@pages/popup/Components/Authenticated/Questions/QuestionType/RangeQuestionComponent";
 import {AnswersContext} from "@pages/popup/Contexts";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
+import {Title} from "@pages/popup/Components/SharedComponents/Title";
 
 
 export function QuestionnairePage() {
@@ -132,8 +133,8 @@ export function QuestionnairePage() {
     }
 
     function getTitle(questionnaireType: string | undefined) {
-        return <div
-            className={"font-bold text-xl"}>{questionnaireType === 'pre' ? 'Pre Questionnaire ' : 'Post Questionnaire'}</div>
+        const title = questionnaireType === 'pre' ? 'Pre Questionnaire' : 'Post Questionnaire';
+        return <Title title={title}/>
     }
 
     function getQuestionFromParent(question: Question | undefined) {

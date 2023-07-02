@@ -6,6 +6,7 @@ import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {dataBase} from "@pages/popup/database";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
+import {Title} from "@pages/popup/Components/SharedComponents/Title";
 
 export function IdDisplayPage() {
 
@@ -41,9 +42,11 @@ export function IdDisplayPage() {
 
     return (
         <>
+            <Title title={"Your ID"}/>
             <div className={greenBoxStyle}>
-                <p className="text-green-600 font-bold">{id ?? "Error while displaying the text"}</p>
-                <CopyToClipboardButton textToCopy={id ?? ""}/>
+                <span className="text-green-600 font-bold">{id ?? "Error while displaying the text"}
+                    <CopyToClipboardButton textToCopy={id ?? ""}/></span>
+
             </div>
             <br/>
             <p>Please save your ID somewhere safe</p>
