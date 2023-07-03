@@ -14,7 +14,7 @@ export function Input36Component({isError, value, changeValue, isDisabled, name}
         className={isError ? inputErrorStyle : inputDefaultStyle}
         type="text"
         name={name}
-        id="registrationCode"
+        id={name}
         placeholder={"12345678-1234-1234-1234-123456789abc"}
         required={true}
         autoComplete={"one-time-code"}

@@ -1,5 +1,5 @@
 import React, {FormEvent, useState} from "react";
-import {input36Style} from "@pages/popup/Consts/Styles";
+import {labelStyle} from "@pages/popup/Consts/Styles";
 import {useNavigate} from "react-router-dom";
 import {LoadingButton} from "@pages/popup/SharedComponents/LoadingButton";
 import {login, registerUser} from "@pages/popup/ServerAPI";
@@ -96,18 +96,18 @@ export default function LandingPage() {
 
     return (
         <>
-            <form id={loginForm} onSubmit={handleLogin}>
-                <label className={input36Style} htmlFor={loginForm}>User ID:</label>
-                <Input36Component isError={!!loginError}
-                                  value={userId}
-                                  changeValue={setUserId}
-                                  isDisabled={isValidating}
-                                  name={loginForm}/>
-                <LoadingButton text={'Login'} loadingText={'Validating...'} isLoading={isValidating} type={'submit'}/>
-            </form>
+            {/*<form id={loginForm} onSubmit={handleLogin}>*/}
+            {/*    <label className={input36Style} htmlFor={loginForm}>User ID:</label>*/}
+            {/*    <Input36Component isError={!!loginError}*/}
+            {/*                      value={userId}*/}
+            {/*                      changeValue={setUserId}*/}
+            {/*                      isDisabled={isValidating}*/}
+            {/*                      name={loginForm}/>*/}
+            {/*    <LoadingButton text={'Login'} loadingText={'Validating...'} isLoading={isValidating} type={'submit'}/>*/}
+            {/*</form>*/}
 
             <form id={registrationForm} onSubmit={handleRegister}>
-                <label className={input36Style} htmlFor={registrationForm}>Registration Code:</label>
+                <label className={labelStyle} htmlFor={registrationForm}>Registration Code</label>
                 <Input36Component isError={!!registrationError}
                                   value={registrationCode}
                                   changeValue={setRegistrationCode}
