@@ -77,7 +77,7 @@ export default function CustomizedMenus({sex, setSex, error}: Props) {
     return (
         <div>
             <Button
-                id="demo-customized-button"
+                id="sex-button"
                 aria-controls={open ? 'demo-customized-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}

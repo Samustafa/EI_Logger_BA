@@ -1,4 +1,4 @@
-import {inputDefaultStyle, inputErrorStyle} from "@pages/popup/Consts/Styles";
+import {inputDefaultStyle, inputErrorStyle, labelStyle} from "@pages/popup/Consts/Styles";
 import React, {useEffect, useState} from "react";
 import {LoadingButton} from "@pages/popup/SharedComponents/LoadingButton";
 import CustomizedMenus from "@pages/popup/SharedComponents/CustomizedMenus";
@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {SexType} from "@pages/popup/Types";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
+import {Title} from "@pages/popup/Components/SharedComponents/Title";
 
 export function DemographicsPage() {
 
@@ -23,8 +24,8 @@ export function DemographicsPage() {
     const [birthDate, setBirthDate] = useState<string>("");
     const [birthDateError, setBirthDateError] = useState<string>('');
     const birthDatePlaceHolder = "Insert Birth Date";
-    const ageSection = <>
-        <label htmlFor={birthDateInput}>Birth Date</label>
+    const ageSection = <div className={"pb-1 pt-6"}>
+        <label className={labelStyle} htmlFor={birthDateInput}>Birth Date</label>
         <input
             form={formId}                      //to associate with the form
             id={birthDateInput}                 //to associate with the label
@@ -36,14 +37,14 @@ export function DemographicsPage() {
             placeholder={birthDatePlaceHolder}
             autoFocus={true}
         />
-    </>
+    </div>
 
     const jobInput = "jobInput";
     const [job, setJob] = useState<string>("");
     const [jobError, setJobError] = useState<string>('');
     const jobPlaceHolder = "Insert Job";
-    const jobSection = <>
-        <label htmlFor={jobInput}>Job</label>
+    const jobSection = <div className={"p-1"}>
+        <label className={labelStyle} htmlFor={jobInput}>Job</label>
         <input
             form={formId}                      //to associate with the form
             id={jobInput}                 //to associate with the label
@@ -54,14 +55,14 @@ export function DemographicsPage() {
             type={"text"}
             placeholder={jobPlaceHolder}
         />
-    </>
+    </div>
 
     const [sex, setSex] = useState<SexType>("sex")
     const [sexError, setSexError] = useState<string>('');
-    const sexSection = <>
-        <label>Choose Sex</label>
+    const sexSection = <div className={"p-1"}>
+        <label className={labelStyle} htmlFor={"sex-button"}>Choose Sex</label>
         <CustomizedMenus sex={sex} setSex={setSex} error={Boolean(sexError)}/>
-    </>
+    </div>
 
     const [open, setOpen] = useState<boolean>(false);
 
@@ -142,6 +143,7 @@ export function DemographicsPage() {
 
     return (
         <>
+            <Title title={"Demographics"}/>
             <form id={formId}>
                 {ageSection}
                 <br/>
