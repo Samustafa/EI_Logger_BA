@@ -135,7 +135,7 @@ export function goToPage(extensionState: ExtensionState | undefined, navigate: N
             break;
         case "LOGGER_READY":
             dataBase.setExtensionState(extensionState)
-                .then(() => navigate(Paths.loggerPage))
+                .then(() => navigate(Paths.loggerPage, {state: false}))
                 .catch(error => console.error("goToPage", extensionState, error));
             break;
         case "LOGGING":
