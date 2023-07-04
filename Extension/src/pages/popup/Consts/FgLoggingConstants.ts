@@ -25,6 +25,7 @@ class LoggingConstants {
         this._studyId = value;
         const port = this._port ?? connectToBGPort('loggingConstantsPort');
         sendMessages(port, {studyId: value});
+        this.disconnectPort()
     }
 
     get userId(): string {
@@ -34,7 +35,8 @@ class LoggingConstants {
     set userId(value: string) {
         this._userId = value;
         const port = this._port ?? connectToBGPort('loggingConstantsPort');
-        sendMessages(port, {userId: value})
+        sendMessages(port, {userId: value});
+        this.disconnectPort();
     }
 
     get taskId(): string {
@@ -44,7 +46,8 @@ class LoggingConstants {
     set taskId(value: string) {
         this._taskId = value;
         const port = this._port ?? connectToBGPort('loggingConstantsPort');
-        sendMessages(port, {taskId: value})
+        sendMessages(port, {taskId: value});
+        this.disconnectPort();
     }
 
     private _initializePort() {
@@ -59,6 +62,10 @@ class LoggingConstants {
         this.taskId = taskId;
     }
 
+    disconnectPort() {
+        this._port?.disconnect();
+        this._port = undefined;
+    }
 
 }
 
