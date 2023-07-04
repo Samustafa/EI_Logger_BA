@@ -253,7 +253,10 @@ export async function handleLogExistingTabs() {
     const loggedTabs: TabIdentifier[] = await dataBase.getTabsSinceYesterday();
 
     const tabsToLog = openedTabs.filter(filterOutLoggedTabs);
+
+    addExistingTabsToCache(tabsToLog);
     saveAllTabs(tabsToLog);
+
 
     function filterOutLoggedTabs(tab: Tab) {
 
@@ -278,6 +281,12 @@ export async function handleLogExistingTabs() {
             const iTab = prePareITabFromTab(tab, "TAB:OLD");
             dataBase.saveTabInfo(iTab);
         }
+    }
+
+    function addExistingTabsToCache(tabsToLog: Tab[]) {
+        tabsToLog.forEach(tab => {
+            openedTabsCache.set(tab.id as number, {url: tab.url as string, tabUuid: uuid()});
+        })
     }
 }
 
