@@ -14,6 +14,7 @@ import {DemographicsButton} from "@pages/popup/Components/SharedComponents/Demog
 import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 import {Title} from "@pages/popup/Components/SharedComponents/Title";
+import {InformationBox} from "@pages/popup/Components/SharedComponents/InformationBox";
 
 
 export function TasksPage() {
@@ -21,7 +22,7 @@ export function TasksPage() {
     const [iTasks, setITasks] = useState<ITask[]>([]);
     const [open, setOpen] = useState(false);
     const [error, setError] = useState<string>('');
-    
+
     useEffect(function fetchTasks() {
         dataBase.getITasks().then((iTasks) => setITasks(iTasks))
             .catch(error => handleErrorFromAsync(error, setError, setOpen, 'Couldn\'t fetch tasks'));
@@ -35,6 +36,8 @@ export function TasksPage() {
     return (
         <>
             <Title title={"Tasks"}/>
+            <InformationBox
+                informationText={"Choose a task to solve. Don't forget to start the Logger before starting."}/>
             <Tasks iTasks={iTasks} setError={setError} setOpen={setOpen}/>
             <button className={buttonStyle} onClick={() => handleUpload()}>Upload</button>
             <DemographicsButton/>
@@ -91,9 +94,14 @@ export function Tasks({iTasks, setError, setOpen}: Props) {
 
     return (<List component="nav" aria-label="main mailbox folders">
         {iTasks.map((iTask: ITask, index) =>
-            (<ListItemButton key={iTask.taskId} disabled={iTask.isCompleted}
+            (<ListItemButton className={"flex items-center"} key={iTask.taskId}
+                             disabled={iTask.isCompleted}
                              onClick={() => handleListItemClick(iTask.taskId, index)}>
-                <ListItemText primary={iTask.text}/><span className={"p-2"}><RightArrowIcon/></span>
+
+                <div className={"font-bold m-2 text-l"}>{index + 1})</div>
+                <ListItemText primary={iTask.text}/>
+                <div className={"p-2"}><RightArrowIcon/></div>
+
             </ListItemButton>))}
     </List>);
 }
