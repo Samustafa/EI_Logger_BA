@@ -13,6 +13,7 @@ import {
     Tab,
     TabAction,
     TabCacheInfo,
+    TabIdentifier,
     TabWithGroupId
 } from "@pages/popup/Types";
 import {ITab} from "@pages/popup/Interfaces";
@@ -249,7 +250,7 @@ function handleSaveTabAfterNewTabOrNewUrl(tab: Tab, tabAction: TabAction, query?
 export async function handleLogExistingTabs() {
 
     const openedTabs = await tabs.query({})
-    const loggedTabs = await dataBase.getOldTabsSinceYesterday();
+    const loggedTabs: TabIdentifier[] = await dataBase.getTabsSinceYesterday();
 
     const tabsToLog = openedTabs.filter(filterOutLoggedTabs);
     saveAllTabs(tabsToLog);
@@ -261,7 +262,7 @@ export async function handleLogExistingTabs() {
         function isTabLogged(tab: Tab) {
             return loggedTabs.some(tabExists)
 
-            function tabExists(loggedTab: ITab) {
+            function tabExists(loggedTab: TabIdentifier) {
                 const sameId = loggedTab.tabId === tab.id;
                 const sameUrl = loggedTab.url === tab.url;
                 return sameId && sameUrl;

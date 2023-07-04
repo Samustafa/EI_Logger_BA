@@ -132,3 +132,5 @@ export type TabCacheInfo = {
     url: string;
     tabUuid: string;
 }
+
+export type TabIdentifier = { tabId: number, url: string }

@@ -19,7 +19,7 @@ import {
 import {MultipleChoiceQuestion} from "@pages/popup/model/question/MultipleChoiceQuestion";
 import {TextQuestion} from "@pages/popup/model/question/TextQuestion";
 import {RangeQuestion} from "@pages/popup/model/question/RangeQuestion";
-import {ExtensionState, QuestionnaireType, UserExtensionAction} from "@pages/popup/Types";
+import {ExtensionState, QuestionnaireType, TabIdentifier, UserExtensionAction} from "@pages/popup/Types";
 import {getUTCDateTime} from "@pages/popup/UtilityFunctions";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {Question} from "@pages/popup/model/question/Question";
@@ -273,8 +273,13 @@ class DataBase extends Dexie {
         return studies.length > 0;
     }
 
-    async getOldTabsSinceYesterday() {
-        return dataBase.tabs.where('action').equals('TAB:OLD').and(filterByTimeStamp).toArray();
+    async getTabsSinceYesterday(): Promise<TabIdentifier[]> {
+        const tabs = await dataBase.tabs.toArray();
+        return tabs.filter(filterByTimeStamp).map(mapToIdAndUrl);
+
+        function mapToIdAndUrl(tab: ITab): TabIdentifier {
+            return {tabId: tab.tabId, url: tab.url};
+        }
 
         function filterByTimeStamp(tab: ITab) {
             const yesterday = dayjs().subtract(1, 'day').utc().format("YYYY-MM-DD HH:mm:ss");
