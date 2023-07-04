@@ -97,7 +97,6 @@ export async function handleTabAttached(tabId: number, attachInfo: AttachInfo) {
         userId: bgLoggingConstants.userId,
         windowId: attachInfo.newWindowId,
     };
-    console.log("attached tab -->", iTab);
     dataBase.saveTabInfo(iTab);
 }
 
@@ -145,12 +144,10 @@ function logTabAndLogHtmlIfSerp(tab: Tab) {
 
         function getQueryKeyWordIfExists(url: string) {
             queryKeyWords.some(keyword => {
-                console.log("trying ", keyword)
                 const isQuery = url.includes(keyword);
 
                 if (!isQuery) return false;
 
-                console.log("bingo");
                 queryKeyWord = keyword;
                 return true;
             });
@@ -161,14 +158,11 @@ function logTabAndLogHtmlIfSerp(tab: Tab) {
             let searchEngineName: SearchEngineName | undefined = undefined;
             searchEngineSerpInfos.get(queryKeyWord)?.some((searchEngineSerpInfo) => {
                 const isSerp = searchEngineSerpInfo.isUrlSERP(url);
-                console.log("isSerp: " + isSerp)
 
                 if (!isSerp) return false;
 
-                console.log("")
                 query = searchEngineSerpInfo.getQuery(url);
                 searchEngineName = searchEngineSerpInfo.searchEngineName;
-                console.log(query)
                 return true;
             })
             return {query, searchEngineName};

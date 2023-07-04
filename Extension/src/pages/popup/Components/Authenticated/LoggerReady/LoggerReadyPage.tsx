@@ -19,7 +19,7 @@ import {InformationBox} from "@pages/popup/Components/SharedComponents/Informati
 export function LoggerReadyPage() {
     const location = useLocation();
     const navigate = useNavigate();
-    console.log("location.state", location.state)
+
     const [isLogging, setIsLogging] = useState<boolean>(location.state as boolean);
     const [port, setPort] = useState<Port | null>(null);
     const [error, setError] = useState<string>('');
