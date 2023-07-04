@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {IconButton} from "@mui/material";
 import {CopyIcon} from "@pages/popup/svg/CopyIcon";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
@@ -14,10 +14,6 @@ const CopyToClipboardButton = ({textToCopy}: Props) => {
         setOpen(true);
         navigator.clipboard.writeText(textToCopy);
     };
-
-    useEffect(function autoCopyOnRender() {
-        handleClick();
-    }, []);
 
     return (
         <>
