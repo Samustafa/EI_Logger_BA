@@ -8,4 +8,5 @@ export const inputErrorStyle = "shadow appearance-none border border-red-500 rou
 export const errorDivStyle = "bg-red-100 border border-red-400 text-red-700 rounded relative";
 export const successDivStyle = "bg-green-100 border border-green-400 text-black rounded relative";
 export const greenBoxStyle = "content-center bg-green-300 border-double border-4 border-sky-500 grid grid-rows-1 grid-flow-col gap-4 ";
+export const greyBoxStyle = "flex items-center bg-zinc-700 border-4 p-1 mt-6 mb-6";
 

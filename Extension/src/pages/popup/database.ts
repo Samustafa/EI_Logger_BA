@@ -281,6 +281,11 @@ class DataBase extends Dexie {
             return tab.timeStamp > yesterday;
         }
     }
+
+    async getTaskText(taskId: string) {
+        const task = await dataBase.task.get(taskId);
+        return task?.text ?? "";
+    }
 }
 
 export const dataBase = new DataBase();

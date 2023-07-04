@@ -14,11 +14,12 @@ import {DemographicsButton} from "@pages/popup/Components/SharedComponents/Demog
 import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 import {Title} from "@pages/popup/Components/SharedComponents/Title";
+import {InformationBox} from "@pages/popup/Components/SharedComponents/InformationBox";
 
 export function LoggerReadyPage() {
     const location = useLocation();
     const navigate = useNavigate();
-
+    console.log("location.state", location.state)
     const [isLogging, setIsLogging] = useState<boolean>(location.state as boolean);
     const [port, setPort] = useState<Port | null>(null);
     const [error, setError] = useState<string>('');
@@ -26,6 +27,7 @@ export function LoggerReadyPage() {
     const [hasTasks, setHasTasks] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
     const warningText = "Are you sure you want to finish?\n Once finished you won't be able to log anymore";
+    const [taskText, setTaskText] = useState<string>('');
 
     useEffect(function fetchHasTasksAndConnectPort() {
         fetchHasTasks();
@@ -42,6 +44,13 @@ export function LoggerReadyPage() {
             setPort(port);
         }
     }, []);
+
+    useEffect(function fetchTaskText() {
+        dataBase.getTaskText(fgLoggingConstants.taskId)
+            .then((taskText) => setTaskText(taskText))
+            .catch(error => handleErrorFromAsync(error, setError, setOpen, "Couldn't fetch task text"));
+    }, []);
+
 
     function handleFinishedTask() {
         if (hasTasks) {
@@ -85,10 +94,9 @@ export function LoggerReadyPage() {
     }
 
     return <>
-    {isLogging ? <Title title={"Logging"}/> : <Title title={"Logger is offline"}/>}
-
-        <div className={"h-1/4"}></div>
-        <div>
+        {isLogging ? <Title title={"Logging"}/> : <Title title={"Logger is offline"}/>}
+        <InformationBox informationText={taskText}/>
+        <div className={"p-2"}>
             {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
             {isLogging && <Logging setLogging={setIsLogging} setError={setError} setOpen={setOpen} port={port!}/>}
             {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
