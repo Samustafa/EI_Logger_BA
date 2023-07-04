@@ -54,20 +54,13 @@ export function handleTabRemoved(tabId: number) {
             dataBase.saveTabInfo(prePareITabFromITab(iTab, "TAB:CLOSED"));
             openedTabsCache.delete(tabId);
         })
-        .catch((e) => console.error("handleTabRemoved " + JSON.stringify(e)))
+        .catch((e) => console.warn("handleTabRemoved " + JSON.stringify(e), "probably the tab was closed before it completed loading and thus the extension didn't log it and therefore couldn't log its close event"))
 }
 
 export function handleTabActivated(onActivatedActiveInfoType: OnActivatedActiveInfoType) {
     dataBase.getLastTabWithId(onActivatedActiveInfoType.tabId)
         .then((iTab) => {
-            if (iTab) {
-                dataBase.saveTabInfo(prePareITabFromITab(iTab, "TAB:ACTIVATED"))
-            } else {
-                tabs.get(onActivatedActiveInfoType.tabId)
-                    .then(tab => handleSaveTabAfterNewTabOrNewUrl(tab, "TAB:CREATED"))
-                    .catch(error => console.error("handleTabActivated " + error));
-            }
-
+            if (iTab) dataBase.saveTabInfo(prePareITabFromITab(iTab, "TAB:ACTIVATED"))
         })
         .catch((e) => console.error("handleTabActivated " + e))
 }
@@ -127,6 +120,12 @@ function logTabAndLogHtmlIfSerp(tab: Tab) {
     const {query, searchEngineName} = getSeNameAndQueryIfSerp(tab.url as string, tab.id as number);
 
     handleSaveTabAfterNewTabOrNewUrl(tab, tabAction, query, searchEngineName);
+    if (tabAction === "TAB:CREATED" && tab.active) {
+        handleTabActivated({
+            tabId: tab.id as number,
+            windowId: tab.windowId as number
+        }); //this means a new tab was created and directly activated. Depending on the OnActivated event will cause faulty data, because the onCompleted event will be anyway fired afterward and will therefore cause faulty data
+    }
 
     const isSerp = !!query && !!searchEngineName
     if (!isSerp) return;
