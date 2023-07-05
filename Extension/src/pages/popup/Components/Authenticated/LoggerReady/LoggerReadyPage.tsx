@@ -6,22 +6,19 @@ import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
 import {dataBase} from "@pages/popup/database";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {useLocation, useNavigate} from "react-router-dom";
-import {connectToBGPort, goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
-import {Port} from "@pages/popup/Types";
-import {ErrorMessage} from "@pages/popup/SharedComponents/ErrorMessage";
 import WarningDialog from "@pages/popup/SharedComponents/WarningDialog";
 import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
 import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 import {Title} from "@pages/popup/Components/SharedComponents/Title";
 import {InformationBox} from "@pages/popup/Components/SharedComponents/InformationBox";
+import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 
 export function LoggerReadyPage() {
     const location = useLocation();
     const navigate = useNavigate();
 
     const [isLogging, setIsLogging] = useState<boolean>(location.state as boolean);
-    const [port, setPort] = useState<Port | null>(null);
     const [error, setError] = useState<string>('');
     const [openWarningDialog, setOpenWarningDialog] = useState<boolean>(false);
     const [hasTasks, setHasTasks] = useState<boolean>(false);
@@ -29,19 +26,13 @@ export function LoggerReadyPage() {
     const warningText = "Are you sure you want to finish the task?\n Once finished you won't be able to work on this task anymore";
     const [taskText, setTaskText] = useState<string>('');
 
-    useEffect(function fetchHasTasksAndConnectPort() {
+    useEffect(function fetchHasTasks() {
         fetchHasTasks();
-        connectPort();
 
         function fetchHasTasks() {
             dataBase.getHasTasks()
                 .then(setHasTasks)
                 .catch(error => handleErrorFromAsync(error, setError, setOpen, "LoggerReadyPage fetchHasTasks"));
-        }
-
-        function connectPort() {
-            const port = connectToBGPort("loggingPort");
-            setPort(port);
         }
     }, []);
 
@@ -97,10 +88,9 @@ export function LoggerReadyPage() {
         {isLogging ? <Title title={"Logging"}/> : <Title title={"Logger is offline"}/>}
         <InformationBox informationText={taskText}/>
         <div className={"p-2"}>
-            {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-            {isLogging && <Logging setLogging={setIsLogging} setError={setError} setOpen={setOpen} port={port!}/>}
-            {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-            {!isLogging && <Paused setLogging={setIsLogging} setOpen={setOpen} setError={setError} port={port!}/>}
+            {isLogging && <Logging setLogging={setIsLogging} setError={setError} setOpen={setOpen}/>}
+            {!isLogging && <Paused setLogging={setIsLogging} setOpen={setOpen} setError={setError}/>}
+
             <div>
                 {renderBackButton(hasTasks)}
                 <button className={isLogging ? buttonDisabledStyle : buttonStyle}
@@ -112,6 +102,7 @@ export function LoggerReadyPage() {
 
                 <ErrorMessage error={error}/>
             </div>
+
             <WarningDialog warningText={warningText} open={openWarningDialog} setOpen={setOpenWarningDialog}
                            acceptFunction={handleFinishedTask}/>
             <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
