@@ -32,7 +32,7 @@ export async function getStudy(): Promise<Study> {
     const johnsonTask = new Task("2", johnsonTaskText,
         [new RangeQuestion("1", "From one to ten, how fast, in your opinion, will you find the answer?", 10)],
         [new MultipleChoiceQuestion("2", "After trying to use the internet to get your information, would you rather get that information from", ["The internet", "A social network like Facebook or Reddit where you post your question and expect people to answer", "Through a travelling agency"]), new TextQuestion("3", "What was the hardest part of finding your answer?", 1000)]);
-    const johnsonStudy = new Study("2", "Johnson", true, [penicillinTask, johnsonTask]);
+    const johnsonStudy = new Study("2", "Johnson", false, [penicillinTask, johnsonTask]);
 
     return johnsonStudy;
 }

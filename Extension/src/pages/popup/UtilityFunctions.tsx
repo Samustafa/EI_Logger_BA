@@ -87,7 +87,7 @@ export function connectToBGPort(portName: PortNameBG): Port {
     return browser.runtime.connect({name: portName});
 }
 
-export function sendMessageToCS(tabId: number, tabUuid: string, message: ContentScriptMessage) {
+export function sendMessageToCS(tabId: number, serpIdentifier: string, message: ContentScriptMessage) {
 
     if (message === "LOG_HTML_OF_SERP") {
         browser.tabs.sendMessage(tabId, message)
@@ -98,7 +98,7 @@ export function sendMessageToCS(tabId: number, tabUuid: string, message: Content
     function handleContentMessageResponse(response: ContentScriptResponse) {
         const innerHTML = response.innerHTML;
         const innerText = response.innerText;
-        dataBase.addSerpHtml(tabId, tabUuid, innerHTML, innerText);
+        dataBase.addSerpHtml(serpIdentifier, innerHTML, innerText);
     }
 }
 

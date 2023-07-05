@@ -91,6 +91,7 @@ export interface IDemographics {
 }
 
 export interface ITab {
+    serpIdentifier?: string;
     tabId: number;
     tabUuid: string;
     action: TabAction;
@@ -112,8 +113,7 @@ export interface IUserExtensionInteraction {
 }
 
 export interface ISerpHtml {
-    tabId: number;
-    tabUuid: string;
+    serpIdentifier: string;
     timeStamp: string;
     innerHtml: string;
     innerText: string;

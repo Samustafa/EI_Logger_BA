@@ -37,7 +37,7 @@ export function handleOnCompleted(details: OnCompletedDetailsType) {
 
     tabs.get(details.tabId)
         .then(tab => logTabAndLogHtmlIfSerp(tab))
-        .catch(e => console.error("handleOnCompleted " + JSON.stringify(e)));
+        .catch(error => console.warn("handleOnCompleted " + error));
 }
 
 export function handleTabUpdated(id: number, changeInfo: OnUpdatedChangeInfoType, tab: Tab) {
@@ -115,7 +115,11 @@ function logTabAndLogHtmlIfSerp(tab: Tab) {
     const tabAction: TabAction = openedTabsCache.has(tab?.id ?? -1) ? "TAB:URL_CHANGED" : "TAB:CREATED";
     const {query, searchEngineName} = getSeNameAndQueryIfSerp(tab.url as string, tab.id as number);
 
-    handleSaveTabAfterNewTabOrNewUrl(tab, tabAction, query, searchEngineName);
+
+    const isSerp = !!query && !!searchEngineName
+    const serpIdentifier = isSerp ? uuid() : undefined;
+
+    handleSaveTabAfterNewTabOrNewUrl(tab, tabAction, query, searchEngineName, serpIdentifier);
     if (tabAction === "TAB:CREATED" && tab.active) {
         handleTabActivated({
             tabId: tab.id as number,
@@ -123,7 +127,6 @@ function logTabAndLogHtmlIfSerp(tab: Tab) {
         }); //this means a new tab was created and directly activated. Depending on the OnActivated event will cause faulty data, because the onCompleted event will be anyway fired afterward and will therefore cause faulty data
     }
 
-    const isSerp = !!query && !!searchEngineName
     if (!isSerp) return;
 
     logHtmlOfSerp();
@@ -166,12 +169,11 @@ function logTabAndLogHtmlIfSerp(tab: Tab) {
     }
 
     function logHtmlOfSerp() {
-        const tabUuid = openedTabsCache.get(tab.id as number)?.tabUuid as string;
-        sendMessageToCS(tab.id as number, tabUuid, "LOG_HTML_OF_SERP");
+        sendMessageToCS(tab.id as number, serpIdentifier as string, "LOG_HTML_OF_SERP");
     }
 }
 
-function prePareITabFromTab(tab: Tab, tabAction: TabAction, query?: string, searchEngineName?: SearchEngineName): ITab {
+function prePareITabFromTab(tab: Tab, tabAction: TabAction, query?: string, searchEngineName?: SearchEngineName, serpIdentifier?: string): ITab {
     const tabExtended = tab as TabWithGroupId;
 
     return {
@@ -187,6 +189,7 @@ function prePareITabFromTab(tab: Tab, tabAction: TabAction, query?: string, sear
         url: tab?.pendingUrl ?? tab?.url ?? "",
         query: query,
         searchEngineName: searchEngineName,
+        serpIdentifier: serpIdentifier,
     }
 }
 
@@ -230,8 +233,8 @@ async function prepareITabFromBookMark(bookmark: BookMark, tabAction: "TAB:BOOKM
     };
 }
 
-function handleSaveTabAfterNewTabOrNewUrl(tab: Tab, tabAction: TabAction, query?: string, searchEngineName?: SearchEngineName) {
-    const iTab = prePareITabFromTab(tab, tabAction, query, searchEngineName);
+function handleSaveTabAfterNewTabOrNewUrl(tab: Tab, tabAction: TabAction, query?: string, searchEngineName?: SearchEngineName, serpIdentifier?: string) {
+    const iTab = prePareITabFromTab(tab, tabAction, query, searchEngineName, serpIdentifier);
     dataBase.saveTabInfo(iTab);
     openedTabsCache.set(iTab.tabId, {url: iTab.url, tabUuid: iTab.tabUuid});
 }

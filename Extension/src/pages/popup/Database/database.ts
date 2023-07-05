@@ -53,11 +53,11 @@ class DataBase extends Dexie {
             textQuestion: 'questionId, questionText, type, maxCharacters',
             demographics: 'id, birthDate, job, sex',
             answers: 'questionId, taskId, answer',
-            tabs: '++id, tabId, tabUuid, action, timeStamp, taskId, groupId, tabIndex, windowId, title, url, query, searchEngineName',
             userExtensionInteractions: '++id, action, timeStamp, taskId',
             currentTaskId: 'id, taskId',
             extensionState: 'id, state',
-            serpHtml: '++id, tabId, tabUuid, timeStamp, innerHtml, innerText'
+            tabs: '++id, tabId, tabUuid, action, timeStamp, taskId, groupId, tabIndex, windowId, title, url, serpIdentifier, query, searchEngineName',
+            serpHtml: 'serpIdentifier, timeStamp, innerHtml, innerText'
         });
     }
 
@@ -240,16 +240,15 @@ class DataBase extends Dexie {
             .catch(error => console.error("dataBase setTaskStarted: error while setting the task as started:", taskId, "the error is", error));
     }
 
-    addSerpHtml(tabId: number, tabUuid: string, innerHtml: string, innerText: string) {
+    addSerpHtml(serpIdentifier: string, innerHtml: string, innerText: string) {
         const iHtml: ISerpHtml = {
-            tabId: tabId,
-            tabUuid: tabUuid,
+            serpIdentifier: serpIdentifier,
             timeStamp: getUTCDateTime(),
             innerHtml: innerHtml,
             innerText: innerText
         }
         this.serpHtml.add(iHtml)
-            .catch(error => console.error("dataBase addSerpHtml: error while adding the serp html:", "the error is", error));
+            .catch(error => console.error("dataBase addSerpHtml: error while adding the serp html:", iHtml, "the error is", error));
     }
 
     async getHasDemographics() {
