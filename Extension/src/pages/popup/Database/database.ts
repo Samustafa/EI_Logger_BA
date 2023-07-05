@@ -21,7 +21,7 @@ import {TextQuestion} from "@pages/popup/model/question/TextQuestion";
 import {RangeQuestion} from "@pages/popup/model/question/RangeQuestion";
 import {ExtensionState, QuestionnaireType, TabIdentifier, UserExtensionAction} from "@pages/popup/Types";
 import {getUTCDateTime} from "@pages/popup/UtilityFunctions";
-import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
+import {fgLoggingConstants} from "@pages/popup/Constants/FgLoggingConstants";
 import {Question} from "@pages/popup/model/question/Question";
 import dayjs from "dayjs";
 

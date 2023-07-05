@@ -1,4 +1,4 @@
-import {inputDefaultStyle, inputErrorStyle} from "@pages/popup/Consts/Styles";
+import {inputDefaultStyle, inputErrorStyle} from "@pages/popup/Constants/Styles";
 import React from "react";
 
 interface Props {

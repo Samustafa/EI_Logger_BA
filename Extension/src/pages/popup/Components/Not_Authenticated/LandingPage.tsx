@@ -1,12 +1,12 @@
 import React, {FormEvent, useState} from "react";
-import {labelStyle} from "@pages/popup/Consts/Styles";
+import {labelStyle} from "@pages/popup/Constants/Styles";
 import {useNavigate} from "react-router-dom";
 import {LoadingButton} from "@pages/popup/Components/SharedComponents/LoadingButton";
 import {login, registerUser} from "@pages/popup/ServerAPI";
 import {dataBase} from "@pages/popup/Database/database";
 import {Input36Component} from "@pages/popup/Components/SharedComponents/Input36Component";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
-import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
+import {fgLoggingConstants} from "@pages/popup/Constants/FgLoggingConstants";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 //99746344-7382-4d7c-9e60-6ed3a3cef427
 export default function LandingPage() {

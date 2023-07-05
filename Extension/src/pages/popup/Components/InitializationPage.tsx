@@ -3,9 +3,9 @@ import React, {useEffect, useState} from "react";
 import {Backdrop, CircularProgress} from "@mui/material";
 import {dataBase} from "@pages/popup/Database/database";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
-import {buttonStyle} from "@pages/popup/Consts/Styles";
+import {buttonStyle} from "@pages/popup/Constants/Styles";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
-import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
+import {fgLoggingConstants} from "@pages/popup/Constants/FgLoggingConstants";
 
 export function InitializationPage() {
     console.log("InitializationPage")

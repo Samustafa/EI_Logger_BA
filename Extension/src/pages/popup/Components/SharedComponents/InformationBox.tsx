@@ -1,4 +1,4 @@
-import {greyBoxStyle} from "@pages/popup/Consts/Styles";
+import {greyBoxStyle} from "@pages/popup/Constants/Styles";
 import {InformationIcon} from "@pages/popup/Components/SharedComponents/SvgComponents/InformationIcon";
 import * as React from "react";
 

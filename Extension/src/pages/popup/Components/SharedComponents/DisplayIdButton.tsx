@@ -1,4 +1,4 @@
-import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
+import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Constants/Styles";
 import * as React from "react";
 import {useNavigate} from "react-router-dom";
 import {goToPage} from "@pages/popup/UtilityFunctions";

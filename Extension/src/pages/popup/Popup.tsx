@@ -1,8 +1,8 @@
 import {Route, Routes} from "react-router-dom";
 import React from "react";
 import LandingPage from "@pages/popup/Components/Not_Authenticated/LandingPage";
-import Paths from "@pages/popup/Consts/Paths";
-import {generalStyle} from "@pages/popup/Consts/Styles";
+import Paths from "@pages/popup/Constants/Paths";
+import {generalStyle} from "@pages/popup/Constants/Styles";
 import {IdDisplayPage} from "@pages/popup/Components/Authenticated/IdDisplayPage";
 import {TasksPage} from "@pages/popup/Components/Authenticated/TasksPage";
 import {FetchingStudyData} from "@pages/popup/Components/Authenticated/FetchingStudyData";

@@ -1,4 +1,4 @@
-import {inputDefaultStyle, inputErrorStyle, labelStyle} from "@pages/popup/Consts/Styles";
+import {inputDefaultStyle, inputErrorStyle, labelStyle} from "@pages/popup/Constants/Styles";
 import React, {useEffect, useState} from "react";
 import {LoadingButton} from "@pages/popup/Components/SharedComponents/LoadingButton";
 import CustomizedMenus from "@pages/popup/Components/SharedComponents/CustomizedMenus";

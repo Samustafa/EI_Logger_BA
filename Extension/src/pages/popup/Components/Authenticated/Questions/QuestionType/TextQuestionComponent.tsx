@@ -1,5 +1,5 @@
 import {TextQuestion} from "@pages/popup/model/question/TextQuestion";
-import {inputDefaultStyle} from "@pages/popup/Consts/Styles";
+import {inputDefaultStyle} from "@pages/popup/Constants/Styles";
 import {ChangeEvent, useState} from "react";
 import {useAnswersContext} from "@pages/popup/Contexts";
 

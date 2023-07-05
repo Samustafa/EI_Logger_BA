@@ -1,5 +1,5 @@
 import React from "react";
-import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
+import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Constants/Styles";
 
 interface Props {
     text: string

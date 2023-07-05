@@ -14,7 +14,7 @@ import {
 } from "@pages/popup/Database/DatabaseInterfaces";
 import {Study} from "@pages/popup/model/Study";
 import {Task} from "@pages/popup/model/Task";
-import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
+import {fgLoggingConstants} from "@pages/popup/Constants/FgLoggingConstants";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 
 export function FetchingStudyData() {

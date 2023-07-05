@@ -16,7 +16,7 @@ import utc from "dayjs/plugin/utc";
 import dayjs from "dayjs";
 import browser from "webextension-polyfill";
 import {dataBase} from "@pages/popup/Database/database";
-import Paths from "@pages/popup/Consts/Paths";
+import Paths from "@pages/popup/Constants/Paths";
 import {NavigateFunction} from "react-router-dom";
 import React, {Dispatch} from "react";
 
