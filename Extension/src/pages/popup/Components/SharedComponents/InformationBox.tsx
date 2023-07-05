@@ -1,5 +1,5 @@
 import {greyBoxStyle} from "@pages/popup/Consts/Styles";
-import {InformationIcon} from "@pages/popup/svg/InformationIcon";
+import {InformationIcon} from "@pages/popup/Components/SharedComponents/SvgComponents/InformationIcon";
 import * as React from "react";
 
 export function InformationBox({informationText}: { informationText: string }) {

@@ -4,7 +4,7 @@ import {alpha, styled} from '@mui/material/styles';
 import Menu, {MenuProps} from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import {buttonStyle} from "@pages/popup/Consts/Styles";
-import {ArrowDownIcon} from "@pages/popup/svg/ArrowDownIcon";
+import {ArrowDownIcon} from "@pages/popup/Components/SharedComponents/SvgComponents/ArrowDownIcon";
 import {Button} from "@mui/material";
 
 const StyledMenu = styled((props: MenuProps) => (

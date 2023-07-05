@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {IconButton} from "@mui/material";
-import {CopyIcon} from "@pages/popup/svg/CopyIcon";
+import {CopyIcon} from "@pages/popup/Components/SharedComponents/SvgComponents/CopyIcon";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 
 interface Props {

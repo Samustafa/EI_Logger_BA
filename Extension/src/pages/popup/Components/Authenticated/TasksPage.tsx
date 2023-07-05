@@ -7,7 +7,7 @@ import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import {RightArrowIcon} from "@pages/popup/svg/RightArrowIcon";
+import {RightArrowIcon} from "@pages/popup/Components/SharedComponents/SvgComponents/RightArrowIcon";
 import {buttonStyle} from "@pages/popup/Consts/Styles";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
