@@ -23,7 +23,7 @@ class SearchEngineSerpInfo {
         if (this.hasPostQuerySymbol) {
             const postQuerySymbol = "&";
             const queryWithSeparator = url.split(this.queryKeyWord)[1].split(postQuerySymbol)[0];
-            return queryWithSeparator.replace(this.queryStringSeparator, this.whiteSpace);
+            return queryWithSeparator.replaceAll(this.queryStringSeparator, this.whiteSpace);
         } else {
             const queryWithSeparator = url.split(this.queryKeyWord)[1];
             return queryWithSeparator.replace(this.queryStringSeparator, this.whiteSpace);
