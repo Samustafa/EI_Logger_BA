@@ -1,5 +1,5 @@
 import {QuestionTypeAsString} from "@pages/popup/Types";
-import {IQuestion} from "@pages/popup/Interfaces";
+import {IQuestion} from "@pages/popup/Database/DatabaseInterfaces";
 
 export abstract class Question {
     private _questionId: string;

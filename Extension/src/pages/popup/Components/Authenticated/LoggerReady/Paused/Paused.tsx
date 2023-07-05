@@ -1,7 +1,7 @@
 import React from 'react';
 import {PlayButton} from "./PlayButton";
 import {connectToBGPort, handleErrorFromAsync, sendMessages} from "@pages/popup/UtilityFunctions";
-import {dataBase} from "@pages/popup/database";
+import {dataBase} from "@pages/popup/Database/database";
 
 interface Props {
     setLogging: React.Dispatch<React.SetStateAction<boolean>>;

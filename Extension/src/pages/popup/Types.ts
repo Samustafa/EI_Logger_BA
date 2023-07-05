@@ -2,7 +2,7 @@ import {TextQuestion} from "@pages/popup/model/question/TextQuestion";
 import {MultipleChoiceQuestion} from "@pages/popup/model/question/MultipleChoiceQuestion";
 import {RangeQuestion} from "@pages/popup/model/question/RangeQuestion";
 import browser from "webextension-polyfill";
-import {IQuestionAnswer} from "@pages/popup/Interfaces";
+import {IQuestionAnswer} from "@pages/popup/Database/DatabaseInterfaces";
 
 export type QuestionTypeAsString = "TextQuestion" | "MultipleChoiceQuestion" | "RangeQuestion";
 export type QuestionType = TextQuestion | MultipleChoiceQuestion | RangeQuestion;

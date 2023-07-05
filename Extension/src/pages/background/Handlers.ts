@@ -16,8 +16,8 @@ import {
     TabIdentifier,
     TabWithGroupId
 } from "@pages/popup/Types";
-import {ITab} from "@pages/popup/Interfaces";
-import {dataBase} from "@pages/popup/database";
+import {ITab} from "@pages/popup/Database/DatabaseInterfaces";
+import {dataBase} from "@pages/popup/Database/database";
 import browser, {tabs} from "webextension-polyfill";
 import {getUTCDateTime, sendMessageToCS} from "@pages/popup/UtilityFunctions";
 import {bgLoggingConstants} from "@pages/background/BGLoggingConstants";

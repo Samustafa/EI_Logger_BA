@@ -1,5 +1,5 @@
 import {Question} from "@pages/popup/model/question/Question";
-import {ITextQuestion} from "@pages/popup/Interfaces";
+import {ITextQuestion} from "@pages/popup/Database/DatabaseInterfaces";
 
 export class TextQuestion extends Question {
 

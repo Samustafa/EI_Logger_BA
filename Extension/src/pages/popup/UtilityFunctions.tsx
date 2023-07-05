@@ -1,4 +1,4 @@
-import {IApiException, IQuestionAnswer} from "@pages/popup/Interfaces";
+import {IApiException, IQuestionAnswer} from "@pages/popup/Database/DatabaseInterfaces";
 import {
     ContentScriptMessage,
     ContentScriptResponse,
@@ -15,7 +15,7 @@ import {Question} from "@pages/popup/model/question/Question";
 import utc from "dayjs/plugin/utc";
 import dayjs from "dayjs";
 import browser from "webextension-polyfill";
-import {dataBase} from "@pages/popup/database";
+import {dataBase} from "@pages/popup/Database/database";
 import Paths from "@pages/popup/Consts/Paths";
 import {NavigateFunction} from "react-router-dom";
 import React, {Dispatch} from "react";

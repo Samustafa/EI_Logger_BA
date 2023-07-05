@@ -3,7 +3,7 @@ import {getStudy} from "@pages/popup/ServerAPI";
 import {Backdrop, CircularProgress} from "@mui/material";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {useNavigate} from "react-router-dom";
-import {dataBase} from "@pages/popup/database";
+import {dataBase} from "@pages/popup/Database/database";
 import {
     IMultipleChoiceQuestion,
     IQuestion,
@@ -11,7 +11,7 @@ import {
     IStudy,
     ITask,
     ITextQuestion
-} from "@pages/popup/Interfaces";
+} from "@pages/popup/Database/DatabaseInterfaces";
 import {Study} from "@pages/popup/model/Study";
 import {Task} from "@pages/popup/model/Task";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";

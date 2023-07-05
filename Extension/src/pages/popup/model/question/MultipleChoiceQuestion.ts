@@ -1,5 +1,5 @@
 import {Question} from "@pages/popup/model/question/Question";
-import {IMultipleChoiceQuestion} from "@pages/popup/Interfaces";
+import {IMultipleChoiceQuestion} from "@pages/popup/Database/DatabaseInterfaces";
 
 export class MultipleChoiceQuestion extends Question {
 

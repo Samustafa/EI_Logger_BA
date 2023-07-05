@@ -1,6 +1,6 @@
 import {Question} from "@pages/popup/model/question/Question";
 import {castToChildQuestion} from "@pages/popup/UtilityFunctions";
-import {IQuestion} from "@pages/popup/Interfaces";
+import {IQuestion} from "@pages/popup/Database/DatabaseInterfaces";
 
 export class Task {
     private _taskId: string;

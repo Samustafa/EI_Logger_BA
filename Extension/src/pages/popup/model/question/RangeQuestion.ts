@@ -1,5 +1,5 @@
 import {Question} from "@pages/popup/model/question/Question";
-import {IRangeQuestion} from "@pages/popup/Interfaces";
+import {IRangeQuestion} from "@pages/popup/Database/DatabaseInterfaces";
 
 export class RangeQuestion extends Question {
     private _range: number;

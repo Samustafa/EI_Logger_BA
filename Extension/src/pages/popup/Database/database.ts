@@ -15,7 +15,7 @@ import {
     ITextQuestion,
     IUser,
     IUserExtensionInteraction
-} from "@pages/popup/Interfaces";
+} from "@pages/popup/Database/DatabaseInterfaces";
 import {MultipleChoiceQuestion} from "@pages/popup/model/question/MultipleChoiceQuestion";
 import {TextQuestion} from "@pages/popup/model/question/TextQuestion";
 import {RangeQuestion} from "@pages/popup/model/question/RangeQuestion";

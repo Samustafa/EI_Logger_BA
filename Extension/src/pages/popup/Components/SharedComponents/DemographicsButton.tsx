@@ -1,7 +1,7 @@
 import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {dataBase} from "@pages/popup/database";
+import {dataBase} from "@pages/popup/Database/database";
 import {useNavigate} from "react-router-dom";
 import {goToPage} from "@pages/popup/UtilityFunctions";
 

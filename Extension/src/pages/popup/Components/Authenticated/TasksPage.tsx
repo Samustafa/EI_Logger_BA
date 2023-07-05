@@ -1,7 +1,7 @@
-import {dataBase} from "@pages/popup/database";
+import {dataBase} from "@pages/popup/Database/database";
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {ITask} from "@pages/popup/Interfaces";
+import {ITask} from "@pages/popup/Database/DatabaseInterfaces";
 import {useNavigate} from "react-router-dom";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import List from "@mui/material/List";

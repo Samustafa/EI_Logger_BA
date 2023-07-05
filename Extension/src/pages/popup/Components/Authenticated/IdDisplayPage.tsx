@@ -3,7 +3,7 @@ import CopyToClipboardButton from "@pages/popup/Components/SharedComponents/Copy
 import React, {useEffect, useState} from "react";
 import {buttonStyle, greenBoxStyle} from "@pages/popup/Consts/Styles";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
-import {dataBase} from "@pages/popup/database";
+import {dataBase} from "@pages/popup/Database/database";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 import {Title} from "@pages/popup/Components/SharedComponents/Title";
