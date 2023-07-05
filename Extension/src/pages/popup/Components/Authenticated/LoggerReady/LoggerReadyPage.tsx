@@ -99,8 +99,6 @@ export function LoggerReadyPage() {
                     Finished Task
                 </button>
                 {demographicsButton(hasTasks)}
-
-                <ErrorMessage error={error}/>
             </div>
 
             <WarningDialog warningText={warningText} open={openWarningDialog} setOpen={setOpenWarningDialog}
