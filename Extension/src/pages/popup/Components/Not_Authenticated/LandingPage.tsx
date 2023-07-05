@@ -7,6 +7,7 @@ import {dataBase} from "@pages/popup/Database/database";
 import {Input36Component} from "@pages/popup/Components/SharedComponents/Input36Component";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
+import {Title} from "@pages/popup/Components/SharedComponents/Title";
 //99746344-7382-4d7c-9e60-6ed3a3cef427
 export default function LandingPage() {
 
@@ -93,6 +94,7 @@ export default function LandingPage() {
 
     return (
         <>
+            <Title title={"EI-Logger Main Page"}/>
             {/*<form id={loginForm} onSubmit={handleLogin}>*/}
             {/*    <label className={input36Style} htmlFor={loginForm}>User ID:</label>*/}
             {/*    <Input36Component isError={!!loginError}*/}
@@ -103,7 +105,7 @@ export default function LandingPage() {
             {/*    <LoadingButton text={'Login'} loadingText={'Validating...'} isLoading={isValidating} type={'submit'}/>*/}
             {/*</form>*/}
 
-            <form id={registrationForm} onSubmit={handleRegister}>
+            <form className={"m-3"} id={registrationForm} onSubmit={handleRegister}>
                 <label className={labelStyle} htmlFor={registrationForm}>Registration Code</label>
                 <Input36Component isError={!!registrationError}
                                   value={registrationCode}
