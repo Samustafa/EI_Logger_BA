@@ -12,7 +12,7 @@ const CopyToClipboardButton = ({textToCopy}: Props) => {
 
     const handleClick = () => {
         setOpen(true);
-        navigator.clipboard.writeText(textToCopy);
+        navigator.clipboard.writeText(textToCopy).then().catch(error => console.log(error));
     };
 
     return (
