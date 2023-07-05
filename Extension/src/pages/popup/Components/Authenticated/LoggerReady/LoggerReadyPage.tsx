@@ -26,7 +26,7 @@ export function LoggerReadyPage() {
     const [openWarningDialog, setOpenWarningDialog] = useState<boolean>(false);
     const [hasTasks, setHasTasks] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
-    const warningText = "Are you sure you want to finish?\n Once finished you won't be able to log anymore";
+    const warningText = "Are you sure you want to finish the task?\n Once finished you won't be able to work on this task anymore";
     const [taskText, setTaskText] = useState<string>('');
 
     useEffect(function fetchHasTasksAndConnectPort() {
