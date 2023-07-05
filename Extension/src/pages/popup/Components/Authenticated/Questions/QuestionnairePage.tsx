@@ -124,7 +124,7 @@ export function QuestionnairePage() {
                 .catch(error => handleErrorFromAsync(error, setError, setOpen, "Error going to tasks page"));
 
             function goToTasksPage() {
-                dataBase.logUserExtensionInteraction('SUBMITTED:PRE_QUESTIONNAIRE')
+                dataBase.logUserExtensionInteraction('SUBMITTED:POST_QUESTIONNAIRE');
                 dataBase.logUserExtensionInteraction("FINISHED:TASK");
                 goToPage('TASKS_PAGE', navigate);
             }
