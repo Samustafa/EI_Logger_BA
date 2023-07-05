@@ -58,8 +58,6 @@ async function loggingPortMR(message: MessageType) {
 function loggingConstantsMR(message: MessageType) {
     message = message as LoggingConstantsMessage;
 
-    bgLoggingConstants.studyId = message.studyId ?? bgLoggingConstants.studyId;
-    bgLoggingConstants.userId = message.userId ?? bgLoggingConstants.userId;
     bgLoggingConstants.taskId = message.taskId ?? bgLoggingConstants.taskId;
 }
 

@@ -14,7 +14,6 @@ import {
 } from "@pages/popup/Database/DatabaseInterfaces";
 import {Study} from "@pages/popup/model/Study";
 import {Task} from "@pages/popup/model/Task";
-import {fgLoggingConstants} from "@pages/popup/Constants/FgLoggingConstants";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 
 export function FetchingStudyData() {
@@ -43,7 +42,6 @@ export function FetchingStudyData() {
             async function saveStudy(study: Study) {
                 await saveStudyInDatabase(new Study(study.studyId, study.name, study.hasDemographics, study.tasks))
                     .catch(error => handleErrorFromAsync(error, setError, setOpen));
-                fgLoggingConstants.studyId = study.studyId;
 
                 async function saveStudyInDatabase(studyData: Study) {
                     const {

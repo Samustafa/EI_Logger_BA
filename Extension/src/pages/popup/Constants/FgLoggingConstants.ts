@@ -6,27 +6,15 @@ import {connectToBGPort, sendMessages} from "@pages/popup/UtilityFunctions";
  * This class is used to store the logging constants that are used in the Popup and communicates them to the background
  */
 class LoggingConstants {
-    private _studyId?: string;
     private _userId?: string;
     private _taskId?: string;
     private _port?: Port;
 
-    constructor(studyId?: string, userId?: string, taskId?: string) {
-        this._studyId = studyId;
+    constructor(userId?: string, taskId?: string) {
         this._userId = userId;
         this._taskId = taskId;
     }
 
-    get studyId(): string {
-        return <string>this._studyId;
-    }
-
-    set studyId(value: string) {
-        this._studyId = value;
-        const port = this._port ?? connectToBGPort('loggingConstantsPort');
-        sendMessages(port, {studyId: value});
-        this.disconnectPort()
-    }
 
     get userId(): string {
         return <string>this._userId;
@@ -34,9 +22,6 @@ class LoggingConstants {
 
     set userId(value: string) {
         this._userId = value;
-        const port = this._port ?? connectToBGPort('loggingConstantsPort');
-        sendMessages(port, {userId: value});
-        this.disconnectPort();
     }
 
     get taskId(): string {
@@ -54,11 +39,9 @@ class LoggingConstants {
         this._port = connectToBGPort('loggingConstantsPort');
     }
 
-
-    initialize({userId, studyId, taskId}: { userId: string, studyId: string, taskId: string }) {
+    initialize({userId, taskId}: { userId: string, taskId: string }) {
         if (!this._port) this._initializePort();
         this.userId = userId;
-        this.studyId = studyId;
         this.taskId = taskId;
     }
 
@@ -66,7 +49,6 @@ class LoggingConstants {
         this._port?.disconnect();
         this._port = undefined;
     }
-
 }
 
-export const fgLoggingConstants = new LoggingConstants(undefined, undefined, undefined);
+export const fgLoggingConstants = new LoggingConstants(undefined, undefined);
