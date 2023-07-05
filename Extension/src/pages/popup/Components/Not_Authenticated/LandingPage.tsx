@@ -1,10 +1,10 @@
 import React, {FormEvent, useState} from "react";
 import {labelStyle} from "@pages/popup/Consts/Styles";
 import {useNavigate} from "react-router-dom";
-import {LoadingButton} from "@pages/popup/SharedComponents/LoadingButton";
+import {LoadingButton} from "@pages/popup/Components/SharedComponents/LoadingButton";
 import {login, registerUser} from "@pages/popup/ServerAPI";
 import {dataBase} from "@pages/popup/database";
-import {Input36Component} from "@pages/popup/SharedComponents/Input36Component";
+import {Input36Component} from "@pages/popup/Components/SharedComponents/Input36Component";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";

@@ -6,7 +6,7 @@ import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
 import {dataBase} from "@pages/popup/database";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
 import {useLocation, useNavigate} from "react-router-dom";
-import WarningDialog from "@pages/popup/SharedComponents/WarningDialog";
+import WarningDialog from "@pages/popup/Components/SharedComponents/WarningDialog";
 import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
 import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";

@@ -1,7 +1,7 @@
 import {inputDefaultStyle, inputErrorStyle, labelStyle} from "@pages/popup/Consts/Styles";
 import React, {useEffect, useState} from "react";
-import {LoadingButton} from "@pages/popup/SharedComponents/LoadingButton";
-import CustomizedMenus from "@pages/popup/SharedComponents/CustomizedMenus";
+import {LoadingButton} from "@pages/popup/Components/SharedComponents/LoadingButton";
+import CustomizedMenus from "@pages/popup/Components/SharedComponents/CustomizedMenus";
 import dayjs from "dayjs";
 import {IDemographics} from "@pages/popup/Interfaces";
 import {dataBase} from "@pages/popup/database";

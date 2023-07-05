@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import CopyToClipboardButton from "@pages/popup/SharedComponents/CopyToClipboardButton";
+import CopyToClipboardButton from "@pages/popup/Components/SharedComponents/CopyToClipboardButton";
 import React, {useEffect, useState} from "react";
 import {buttonStyle, greenBoxStyle} from "@pages/popup/Consts/Styles";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";

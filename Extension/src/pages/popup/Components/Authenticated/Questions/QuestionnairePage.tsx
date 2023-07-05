@@ -2,7 +2,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useMemo, useState} from "react";
 import {dataBase} from "@pages/popup/database";
 import {IAnswer, IQuestionAnswer} from "@pages/popup/Interfaces";
-import {LoadingButton} from "@pages/popup/SharedComponents/LoadingButton";
+import {LoadingButton} from "@pages/popup/Components/SharedComponents/LoadingButton";
 import {addOrUpdateAnswers, goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {buttonDisabledStyle, buttonStyle} from "@pages/popup/Consts/Styles";
 import {fgLoggingConstants} from "@pages/popup/Consts/FgLoggingConstants";
