@@ -37,7 +37,7 @@ export function TasksPage() {
         <>
             <Title title={"Tasks"}/>
             <InformationBox
-                informationText={"Choose a task to solve. Don't forget to start the Logger before starting."}/>
+                informationText={"Choose a task to solve. After starting a task don't forget to start the Logger inside the task."}/>
             <Tasks iTasks={iTasks} setError={setError} setOpen={setOpen}/>
             <button className={buttonStyle} onClick={() => handleUpload()}>Upload</button>
             <DemographicsButton/>

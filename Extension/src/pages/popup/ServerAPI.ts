@@ -30,7 +30,7 @@ export async function getStudy(): Promise<Study> {
 
     const johnsonTaskText = "Mr Johnson and his family are planning a trip to Paris. Please write a summary of the following: What cultural events are there (for example on August 2023)? What sightseeing to do? Please also cover hotels, flights, travelling to Paris, and weather.";
     const johnsonTask = new Task("2", johnsonTaskText,
-        [new RangeQuestion("1", "From one to five, how fast, in your opinion, will you find the answer?", 10)],
+        [new RangeQuestion("1", "From one to ten, how fast, in your opinion, will you find the answer?", 10)],
         [new MultipleChoiceQuestion("2", "After trying to use the internet to get your information, would you rather get that information from", ["The internet", "A social network like Facebook or Reddit where you post your question and expect people to answer", "Through a travelling agency"]), new TextQuestion("3", "What was the hardest part of finding your answer?", 1000)]);
     const johnsonStudy = new Study("2", "Johnson", true, [penicillinTask, johnsonTask]);
 
