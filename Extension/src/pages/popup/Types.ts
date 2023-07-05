@@ -6,32 +6,25 @@ import {IQuestionAnswer} from "@pages/popup/Interfaces";
 
 export type QuestionTypeAsString = "TextQuestion" | "MultipleChoiceQuestion" | "RangeQuestion";
 export type QuestionType = TextQuestion | MultipleChoiceQuestion | RangeQuestion;
-
 export type MessageType = LoggingMessage | LoggingConstantsMessage;
 export type LoggingMessage = "START_LOGGING" | "STOP_LOGGING";
 export type LoggingConstantsMessage = { studyId?: string, userId?: string, taskId?: string };
 export type ContentScriptMessage = "LOG_HTML_OF_SERP"
 export type PortNameBG = "loggingPort" | "loggingConstantsPort";
-export type PortNameCS = "logHTML";
-
 export type SexType = "male" | "female" | "diverse" | "sex";
-
 export type BadgeText = 'ON' | 'OFF'
-
 export type QuestionnaireType = 'pre' | 'post';
-
 export type ExtensionState =
     'NOT_AUTHENTICATED'
-    | 'DISPLAYING_ID'    //id
-    | 'DEMOGRAPHICS'  //old demographics
+    | 'DISPLAYING_ID'
+    | 'DEMOGRAPHICS'
     | 'TASKS_PAGE'
-    | 'PRE_QUESTIONNAIRE' //taskId
-    | 'LOGGER_READY'      //taskId
-    | 'POST_QUESTIONNAIRE'//taskId
+    | 'PRE_QUESTIONNAIRE'
+    | 'LOGGER_READY'
+    | 'POST_QUESTIONNAIRE'
     | 'LOGGING'
     | 'FETCHING_STUDY'
-    | 'UPLOAD_PAGE';          //taskId
-
+    | 'UPLOAD_PAGE';
 export type OnUpdatedChangeInfoType = browser.Tabs.OnUpdatedChangeInfoType;
 export type Tab = browser.Tabs.Tab;
 export type TabWithGroupId = Tab & { groupId: number };
