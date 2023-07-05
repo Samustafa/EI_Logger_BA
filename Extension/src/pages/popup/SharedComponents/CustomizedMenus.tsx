@@ -49,8 +49,8 @@ const StyledMenu = styled((props: MenuProps) => (
 }));
 
 interface Props {
-    sex: "m" | "f" | "sex",
-    setSex: Dispatch<SetStateAction<"m" | "f" | "sex">>,
+    sex: "male" | "female" | "diverse" | "sex",
+    setSex: Dispatch<SetStateAction<"male" | "female" | "diverse" | "sex">>,
     error: boolean
 }
 
@@ -65,12 +65,17 @@ export default function CustomizedMenus({sex, setSex, error}: Props) {
     };
 
     function setMale() {
-        setSex("m")
+        setSex("male")
         handleClose()
     }
 
     function setFemale() {
-        setSex("f")
+        setSex("female")
+        handleClose()
+    }
+
+    function setDiverse() {
+        setSex("diverse")
         handleClose()
     }
 
@@ -96,8 +101,9 @@ export default function CustomizedMenus({sex, setSex, error}: Props) {
                 open={open}
                 onClose={handleClose}
             >
-                <MenuItem onClick={setMale} disableRipple>{"M"}</MenuItem>
-                <MenuItem onClick={setFemale} disableRipple>{"F"}</MenuItem>
+                <MenuItem onClick={setMale} disableRipple>{"male"}</MenuItem>
+                <MenuItem onClick={setFemale} disableRipple>{"female"}</MenuItem>
+                <MenuItem onClick={setDiverse} disableRipple>{"diverse"}</MenuItem>
             </StyledMenu>
         </div>
     );

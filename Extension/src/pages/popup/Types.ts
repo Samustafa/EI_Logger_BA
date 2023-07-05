@@ -14,7 +14,7 @@ export type ContentScriptMessage = "LOG_HTML_OF_SERP"
 export type PortNameBG = "loggingPort" | "loggingConstantsPort";
 export type PortNameCS = "logHTML";
 
-export type SexType = "m" | "f" | "sex";
+export type SexType = "male" | "female" | "diverse" | "sex";
 
 export type BadgeText = 'ON' | 'OFF'
 
