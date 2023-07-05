@@ -95,8 +95,6 @@ export interface ITab {
     tabUuid: string;
     action: TabAction;
     timeStamp: string;
-    userId: string
-    studyId: string;
     taskId: string;
     groupId: number
     tabIndex: number;
@@ -110,8 +108,6 @@ export interface ITab {
 export interface IUserExtensionInteraction {
     action: UserExtensionAction;
     timeStamp: string;
-    userId?: string;
-    studyId?: string;
     taskId?: string;
 }
 

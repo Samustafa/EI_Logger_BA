@@ -53,8 +53,8 @@ class DataBase extends Dexie {
             textQuestion: 'questionId, questionText, type, maxCharacters',
             demographics: 'id, birthDate, job, sex',
             answers: 'questionId, taskId, answer',
-            tabs: '++id, tabId, tabUuid, action, timeStamp, userId, studyId, taskId, groupId, tabIndex, windowId, title, url, query, searchEngineName',
-            userExtensionInteractions: '++id, action, timeStamp, userId, studyId, taskId',
+            tabs: '++id, tabId, tabUuid, action, timeStamp, taskId, groupId, tabIndex, windowId, title, url, query, searchEngineName',
+            userExtensionInteractions: '++id, action, timeStamp, taskId',
             currentTaskId: 'id, taskId',
             extensionState: 'id, state',
             serpHtml: '++id, tabId, tabUuid, timeStamp, innerHtml, innerText'
@@ -208,11 +208,9 @@ class DataBase extends Dexie {
     }
 
     logUserExtensionInteraction(action: UserExtensionAction) {
-        const log = {
+        const log: IUserExtensionInteraction = {
             action: action,
             timeStamp: getUTCDateTime(),
-            userId: fgLoggingConstants.userId,
-            studyId: fgLoggingConstants.studyId,
             taskId: fgLoggingConstants.taskId
         }
 
