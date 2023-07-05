@@ -98,14 +98,13 @@ export type SearchEngineName = 'google'
     | 'archive way back machine';
 
 export type QueryKeyWord =
-    '?q='
-    | '&q='
+    'q='
     | '&text='
     | 'baidu&wd='
     | 'eingabe='
     | 'input?i='
     | 'search_query='
-    | '?p='
+    | 'p='
     | 'web?query='
     | '20230000000000*/'
     | 'search?query='
