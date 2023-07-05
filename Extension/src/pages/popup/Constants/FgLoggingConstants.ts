@@ -6,22 +6,11 @@ import {connectToBGPort, sendMessages} from "@pages/popup/UtilityFunctions";
  * This class is used to store the logging constants that are used in the Popup and communicates them to the background
  */
 class LoggingConstants {
-    private _userId?: string;
     private _taskId?: string;
     private _port?: Port;
 
-    constructor(userId?: string, taskId?: string) {
-        this._userId = userId;
+    constructor(taskId?: string) {
         this._taskId = taskId;
-    }
-
-
-    get userId(): string {
-        return <string>this._userId;
-    }
-
-    set userId(value: string) {
-        this._userId = value;
     }
 
     get taskId(): string {
@@ -39,9 +28,8 @@ class LoggingConstants {
         this._port = connectToBGPort('loggingConstantsPort');
     }
 
-    initialize({userId, taskId}: { userId: string, taskId: string }) {
+    initialize(taskId: string) {
         if (!this._port) this._initializePort();
-        this.userId = userId;
         this.taskId = taskId;
     }
 
@@ -51,4 +39,4 @@ class LoggingConstants {
     }
 }
 
-export const fgLoggingConstants = new LoggingConstants(undefined, undefined);
+export const fgLoggingConstants = new LoggingConstants(undefined);

@@ -2,7 +2,6 @@ import {useNavigate} from "react-router-dom";
 import CopyToClipboardButton from "@pages/popup/Components/SharedComponents/CopyToClipboardButton";
 import React, {useEffect, useState} from "react";
 import {buttonStyle, greenBoxStyle} from "@pages/popup/Constants/Styles";
-import {fgLoggingConstants} from "@pages/popup/Constants/FgLoggingConstants";
 import {dataBase} from "@pages/popup/Database/database";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
@@ -10,13 +9,14 @@ import {Title} from "@pages/popup/Components/SharedComponents/Title";
 
 export function IdDisplayPage() {
 
-    const id = fgLoggingConstants.userId;
     const navigate = useNavigate();
+
+    const [userId, setUserId] = useState<string>("");
 
     const [doesStudyExist, setDoesStudyExist] = useState<boolean>(false);
     const [hasTasks, setHasTasks] = useState<boolean>(false);
 
-    const [error, setError] = useState<string>(!id ? "Error while displaying the text" : "");
+    const [error, setError] = useState<string>("");
     const [open, setOpen] = useState<boolean>(false);
 
     useEffect(function fetchDoesStudyExistAndHasTasks() {
@@ -27,6 +27,12 @@ export function IdDisplayPage() {
         dataBase.getHasTasks()
             .then(hasTasks => setHasTasks(hasTasks))
             .catch(error => handleErrorFromAsync(error, setError, setOpen, "IdDisplayPage Couldn't fetch hasTasks"));
+    }, [])
+
+    useEffect(function fetchUserId() {
+        dataBase.getUserId()
+            .then(userId => setUserId(userId))
+            .catch(error => handleErrorFromAsync(error, setError, setOpen, "IdDisplayPage Couldn't fetch userId"));
     }, [])
 
     function handleNext() {
@@ -45,8 +51,8 @@ export function IdDisplayPage() {
             <Title title={"Your ID"}/>
             <div className={"h-1/4"}></div>
             <div className={greenBoxStyle}>
-                <span className="text-green-600 font-bold">{id ?? "Error while displaying the text"}
-                    <CopyToClipboardButton textToCopy={id ?? ""}/></span>
+                <span className="text-green-600 font-bold">{userId ?? "Error while displaying the text"}
+                    <CopyToClipboardButton textToCopy={userId ?? ""}/></span>
 
             </div>
             <br/>

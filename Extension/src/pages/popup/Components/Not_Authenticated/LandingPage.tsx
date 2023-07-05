@@ -6,7 +6,6 @@ import {login, registerUser} from "@pages/popup/ServerAPI";
 import {dataBase} from "@pages/popup/Database/database";
 import {Input36Component} from "@pages/popup/Components/SharedComponents/Input36Component";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
-import {fgLoggingConstants} from "@pages/popup/Constants/FgLoggingConstants";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 //99746344-7382-4d7c-9e60-6ed3a3cef427
 export default function LandingPage() {
@@ -64,7 +63,6 @@ export default function LandingPage() {
             function saveStateAndNavigate() {
                 dataBase.setUserId(userId)
                 dataBase.logUserExtensionInteraction("SIGNED:UP");
-                fgLoggingConstants.userId = userId;
                 goToPage('DISPLAYING_ID', navigate);
             }
         }
@@ -89,7 +87,6 @@ export default function LandingPage() {
         function handlePostLogIn() {
             dataBase.setUserId(userId);
             dataBase.logUserExtensionInteraction("SIGNED:IN");
-            fgLoggingConstants.userId = userId;
             goToPage('FETCHING_STUDY', navigate);
         }
     }

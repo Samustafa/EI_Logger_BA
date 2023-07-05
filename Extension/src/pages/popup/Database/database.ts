@@ -152,9 +152,9 @@ class DataBase extends Dexie {
         return studies[0]?.studyId;
     }
 
-    async getUserId(): Promise<string | undefined> {
+    async getUserId(): Promise<string> {
         const users = await dataBase.user.toArray();
-        return users[0]?.userId;
+        return users[0]?.userId ?? "";
     }
 
     async getCurrentTaskId(): Promise<string | undefined> {
@@ -186,10 +186,7 @@ class DataBase extends Dexie {
     }
 
     async getLoggingConstants() {
-        const userId = await this.getUserId() ?? "";
-        const studyId = await this.getStudyId() ?? "";
-        const taskId = await this.getCurrentTaskId() ?? "";
-        return {userId: userId, studyId: studyId, taskId: taskId};
+        return await this.getCurrentTaskId() ?? "";
     }
 
     saveTabInfo(iTab: ITab) {
