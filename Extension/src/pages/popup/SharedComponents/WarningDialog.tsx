@@ -17,10 +17,10 @@ const BootstrapDialog = styled(Dialog)(({theme}) => ({
     },
 }));
 
-export interface DialogTitleProps {
+interface DialogTitleProps {
     id: string;
     children?: React.ReactNode;
-    onClose: () => void;
+    onClose?: () => void;
 }
 
 function BootstrapDialogTitle(props: DialogTitleProps) {
@@ -77,8 +77,8 @@ export default function WarningDialog({
                 aria-labelledby="customized-dialog-title"
                 open={open}
             >
-                <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-                    Warning!
+                <BootstrapDialogTitle id="customized-dialog-title">
+                    Keep in mind
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
                     <Typography gutterBottom>{warningText}</Typography>
