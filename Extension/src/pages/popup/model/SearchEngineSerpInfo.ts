@@ -6,7 +6,7 @@ class SearchEngineSerpInfo {
     queryStringSeparator: QueryStringSeparator;
     hasPostQuerySymbol: boolean;
     whiteSpace = " ";
-
+    postQuerySymbol = "&";
 
     constructor(searchEngineName: SearchEngineName, hasPostQuerySymbol: boolean, queryKeyWord: QueryKeyWord, queryStringSeparator: QueryStringSeparator) {
         this.searchEngineName = searchEngineName;
@@ -16,13 +16,16 @@ class SearchEngineSerpInfo {
     }
 
     isUrlSERP(url: string): boolean {
-        return url.includes(this.searchEngineName) && url.includes(this.queryKeyWord);
+        if (this.hasPostQuerySymbol) {
+            return url.includes(this.searchEngineName) && url.includes(this.queryKeyWord) && url.includes(this.postQuerySymbol);
+        } else {
+            return url.includes(this.searchEngineName) && url.includes(this.queryKeyWord);
+        }
     }
 
     getQuery(url: string): string {
         if (this.hasPostQuerySymbol) {
-            const postQuerySymbol = "&";
-            const queryWithSeparator = url.split(this.queryKeyWord)[1].split(postQuerySymbol)[0];
+            const queryWithSeparator = url.split(this.queryKeyWord)[1].split(this.postQuerySymbol)[0];
             return queryWithSeparator.replaceAll(this.queryStringSeparator, this.whiteSpace);
         } else {
             const queryWithSeparator = url.split(this.queryKeyWord)[1];
