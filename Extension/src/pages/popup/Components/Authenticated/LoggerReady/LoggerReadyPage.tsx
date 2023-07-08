@@ -71,23 +71,21 @@ export function LoggerReadyPage() {
     }
 
     function renderBackButton(hasTasks: boolean) {
-        return (<>{hasTasks &&
+        return <>{hasTasks &&
             <button className={isLogging ? buttonDisabledStyle : buttonStyle}
                     disabled={isLogging}
                     onClick={() => goToPage('TASKS_PAGE', navigate)}>
                 Back
-            </button>}</>);
+            </button>}</>
     }
 
-    function demographicsButton(hasTasks: boolean) {
+    function renderDemographicsAndIdDisplayButton(hasTasks: boolean) {
         return (!hasTasks && <><DemographicsButton isDisabled={isLogging}/> <DisplayIdButton
             isDisabled={isLogging}/></>)
     }
 
-    return <>
-        {isLogging ? <Title title={"Logging"}/> : <Title title={"Logger is offline"}/>}
-        <InformationBox informationText={taskText}/>
-        <div className={"p-2"}>
+    function renderButtons(isLogging: boolean, hasTasks: boolean) {
+        return <div className={"p-2"}>
             {isLogging && <Logging setLogging={setIsLogging} setError={setError} setOpen={setOpen}/>}
             {!isLogging && <Paused setLogging={setIsLogging} setOpen={setOpen} setError={setError}/>}
 
@@ -98,13 +96,22 @@ export function LoggerReadyPage() {
                         onClick={() => setOpenWarningDialog(true)}>
                     Finished Task
                 </button>
-                {demographicsButton(hasTasks)}
+                {renderDemographicsAndIdDisplayButton(hasTasks)}
             </div>
+        </div>
+    }
 
+    function renderInformationBox(hasTasks: boolean) {
+        return hasTasks ? <InformationBox informationText={taskText}/> : <div className={"p-1 mt-6 mb-6"}></div>
+    }
+
+    return <>
+        {isLogging ? <Title title={"Logging"}/> : <Title title={"Logger is offline"}/>}
+        {renderInformationBox(hasTasks)}
+        {renderButtons(isLogging, hasTasks)}
             <WarningDialog warningText={warningText} open={openWarningDialog} setOpen={setOpenWarningDialog}
                            acceptFunction={handleFinishedTask}/>
             <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
-        </div>
     </>
 
 }
