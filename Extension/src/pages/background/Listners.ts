@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import {
+    clearCache,
     handleBookmarkCreated,
     handleBookmarkRemoved,
     handleLogExistingTabs,
@@ -48,6 +49,7 @@ async function loggingPortMR(message: MessageType) {
     } else if (message === "STOP_LOGGING") {
         disRegardAllListeners();
         setBadgeText('OFF');
+        clearCache();
     }
 }
 

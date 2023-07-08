@@ -246,7 +246,7 @@ export async function handleLogExistingTabs() {
 
     const tabsToLog = openedTabs.filter(filterOutLoggedTabs);
 
-    addExistingTabsToCache(tabsToLog);
+    addExistingTabsToCache(openedTabs);
     saveAllTabs(tabsToLog);
 
 
@@ -286,5 +286,9 @@ export function setBadgeText(badgeText: BadgeText) {
     browser.action.setBadgeText({text: badgeText})
         .then(() => console.log("set badge to", badgeText))
         .catch(error => console.error("setBadgeText", error));
+}
+
+export function clearCache() {
+    openedTabsCache.clear();
 }
 
