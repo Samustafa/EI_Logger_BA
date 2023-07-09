@@ -1,5 +1,6 @@
 package de.ude.backend.service;
 
+import de.ude.backend.model.DTO.UserDTO;
 import de.ude.backend.model.User;
 import de.ude.backend.service.repository.UserRepo;
 import lombok.AllArgsConstructor;
@@ -19,20 +20,20 @@ public class UserService {
      *
      * @return User as JSON String
      */
-    public User registerUser() {
+    public User registerUser(String studyId) {
         UUID uuid = UUID.randomUUID();
-        User user = new User(uuid.toString());
+        User user = new User(uuid.toString(), studyId);
 
         userRepo.save(user);
         return user;
     }
 
-    public List<User> createUserIds(int numberOfUsers) {
+    public List<User> createUserIds(int numberOfUsers, String studyId) {
         ArrayList<User> users = new ArrayList<>();
 
         for (int i = 0; i < numberOfUsers; i++) {
             UUID uuid = UUID.randomUUID();
-            User user = new User(uuid.toString());
+            User user = new User(uuid.toString(), studyId);
             users.add(user);
         }
 
@@ -42,6 +43,15 @@ public class UserService {
 
     public boolean userExists(String userId) {
         return userRepo.existsById(userId);
+    }
+
+    public List<UserDTO> convertUsersToDTOs(List<User> users) {
+
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            userDTOs.add(new UserDTO(user.getUserId()));
+        }
+        return userDTOs;
     }
 }
 

@@ -4,6 +4,7 @@ import de.ude.backend.exceptions.custom_exceptions.NoStudyFoundException;
 import de.ude.backend.exceptions.custom_exceptions.NoUserFoundException;
 import de.ude.backend.exceptions.custom_exceptions.RegistrationCodeNotValid;
 import de.ude.backend.model.DTO.RegistrationCodeDTO;
+import de.ude.backend.model.DTO.UserDTO;
 import de.ude.backend.model.RegistrationCode;
 import de.ude.backend.model.Study;
 import de.ude.backend.model.User;
@@ -30,15 +31,15 @@ public class BackendController {
     private final StudyService studyService;
 
     @PostMapping("/registerUser/{registrationCode}")
-    public ResponseEntity<User> registerUser(@PathVariable String registrationCode) throws RegistrationCodeNotValid {
-        if (!registrationCodeService.isRegistrationCodeExist(registrationCode))
-            throw new RegistrationCodeNotValid("Registration Code not valid.");
-
+    public ResponseEntity<UserDTO> registerUser(@PathVariable String registrationCode) throws RegistrationCodeNotValid {
+        String studyId = registrationCodeService.getStudyIdByRegistrationCode(registrationCode);
         registrationCodeService.deleteRegistrationCode(registrationCode);
-        User user = userService.registerUser();
+
+        User user = userService.registerUser(studyId);
+        UserDTO userDTO = new UserDTO(user.getUserId());
 
         log.info("registerNewUserIfRegistrationCodeIsValid(): User added: " + user.getUserId());
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @GetMapping("/authenticateUser/{userId}")
@@ -63,12 +64,16 @@ public class BackendController {
         return new ResponseEntity<>(registrationCodeDTOs, HttpStatus.OK);
     }
 
-    @GetMapping("/createUsers/{numberOfUsers}")
-    public ResponseEntity<List<User>> createdUserIds(@PathVariable int numberOfUsers) {
-        List<User> users = userService.createUserIds(numberOfUsers);
+    @GetMapping("/createUsers/{studyId}/{numberOfUsers}")
+    public ResponseEntity<List<UserDTO>> createdUserIds(@PathVariable int numberOfUsers, @PathVariable String studyId) {
+        if (!studyService.doesStudyExist(studyId))
+            throw new NoStudyFoundException("Study with ID " + studyId + " not found.");
 
-        log.info("Created {} new users: {}.", numberOfUsers, users);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        List<User> users = userService.createUserIds(numberOfUsers, studyId);
+        List<UserDTO> userDTOs = userService.convertUsersToDTOs(users);
+
+        log.info("Created {} new users: {}.", numberOfUsers, userDTOs);
+        return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 
     @PostMapping("/createStudy")

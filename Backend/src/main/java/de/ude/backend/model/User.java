@@ -16,4 +16,6 @@ public class User {
     @NonNull
     @Id
     private final String userId;
+    @NonNull
+    private String studyId;
 }

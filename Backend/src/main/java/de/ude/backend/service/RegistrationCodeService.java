@@ -1,5 +1,6 @@
 package de.ude.backend.service;
 
+import de.ude.backend.exceptions.custom_exceptions.RegistrationCodeNotValid;
 import de.ude.backend.model.DTO.RegistrationCodeDTO;
 import de.ude.backend.model.RegistrationCode;
 import de.ude.backend.service.repository.RegistrationCodeRepo;
@@ -36,10 +37,6 @@ public class RegistrationCodeService {
         return registrationCodes;
     }
 
-    public boolean isRegistrationCodeExist(String id) {
-        return registrationCodeRepo.existsById(id);
-    }
-
     public void deleteRegistrationCode(String id) {
         registrationCodeRepo.deleteById(id);
     }
@@ -52,5 +49,12 @@ public class RegistrationCodeService {
         }
 
         return registrationCodeDTOs;
+    }
+
+    public String getStudyIdByRegistrationCode(String registrationCode) throws RegistrationCodeNotValid {
+        RegistrationCode code = registrationCodeRepo.findById(registrationCode).orElseThrow(() -> new RegistrationCodeNotValid("Registration code not found"));
+        System.out.println("passed first");
+        System.out.println(code.toString());
+        return code.getStudyId();
     }
 }
