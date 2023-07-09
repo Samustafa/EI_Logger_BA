@@ -27,7 +27,8 @@ export function FetchingStudyData() {
     useEffect(function fetchStudy() {
         setLoading(true);
 
-        getStudy()
+        dataBase.getUserId()
+            .then(getStudy)
             .then(saveStudyAndNavigate)
             .catch(error => handleErrorFromAsync(error, setError, setOpen))
             .finally(() => setLoading(false));

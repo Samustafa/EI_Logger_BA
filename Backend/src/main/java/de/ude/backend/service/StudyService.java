@@ -29,4 +29,8 @@ public class StudyService {
         Optional<Study> study = studyRepo.findById(studyId);
         return study.isPresent();
     }
+
+    public Study getStudyByStudyId(String studyId) {
+        return studyRepo.findById(studyId).orElseThrow(() -> new RuntimeException("Study not found"));
+    }
 }

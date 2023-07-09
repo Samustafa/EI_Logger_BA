@@ -1,5 +1,6 @@
 package de.ude.backend.service;
 
+import de.ude.backend.exceptions.custom_exceptions.NoUserFoundException;
 import de.ude.backend.model.DTO.UserDTO;
 import de.ude.backend.model.User;
 import de.ude.backend.service.repository.UserRepo;
@@ -52,6 +53,11 @@ public class UserService {
             userDTOs.add(new UserDTO(user.getUserId()));
         }
         return userDTOs;
+    }
+
+    public String getStudyIdByUserId(String userId) {
+        User user = userRepo.findById(userId).orElseThrow(() -> new NoUserFoundException("User not found"));
+        return user.getStudyId();
     }
 }
 

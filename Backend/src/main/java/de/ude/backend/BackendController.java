@@ -86,9 +86,11 @@ public class BackendController {
         studyService.deleteAllStudies();
     }
 
-    @GetMapping("/getTestStudy")
-    public ResponseEntity<Study> getTestStudy() {
-        return new ResponseEntity<>(studyService.getTestStudy(), HttpStatus.OK);
+    @GetMapping("/getStudy/{userId}")
+    public ResponseEntity<Study> getTestStudy(@PathVariable String userId) throws NoUserFoundException, NoStudyFoundException {
+        String studyId = userService.getStudyIdByUserId(userId);
+        Study study = studyService.getStudyByStudyId(studyId);
+        return new ResponseEntity<>(study, HttpStatus.OK);
     }
 }
 
