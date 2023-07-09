@@ -87,7 +87,7 @@ public class BackendController {
     }
 
     @GetMapping("/getStudy/{userId}")
-    public ResponseEntity<Study> getTestStudy(@PathVariable String userId) throws NoUserFoundException, NoStudyFoundException {
+    public ResponseEntity<Study> getStudy(@PathVariable String userId) throws NoUserFoundException, NoStudyFoundException {
         String studyId = userService.getStudyIdByUserId(userId);
         Study study = studyService.getStudyByStudyId(studyId);
         return new ResponseEntity<>(study, HttpStatus.OK);

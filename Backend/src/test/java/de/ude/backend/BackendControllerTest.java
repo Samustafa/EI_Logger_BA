@@ -1,7 +1,10 @@
 package de.ude.backend;
 
+import de.ude.backend.exceptions.custom_exceptions.NoStudyFoundException;
 import de.ude.backend.exceptions.custom_exceptions.NoUserFoundException;
 import de.ude.backend.exceptions.custom_exceptions.RegistrationCodeNotValid;
+import de.ude.backend.model.DTO.RegistrationCodeDTO;
+import de.ude.backend.model.DTO.UserDTO;
 import de.ude.backend.model.RegistrationCode;
 import de.ude.backend.model.Study;
 import de.ude.backend.model.User;
@@ -10,22 +13,21 @@ import de.ude.backend.service.StudyService;
 import de.ude.backend.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class BackendControllerTest {
-
-    private BackendController backendController;
-
     @Mock
     private UserService userService;
 
@@ -35,135 +37,207 @@ class BackendControllerTest {
     @Mock
     private StudyService studyService;
 
+    @InjectMocks
+    private BackendController backendController;
+
     @BeforeEach
-    void setUp() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
-        backendController = new BackendController(userService, registrationCodeService, studyService);
     }
 
     @Test
-    void registerUser_ValidRegistrationCode_ShouldReturnUserWithHttpStatusOK() throws RegistrationCodeNotValid {
-        // Arrange
-        String registrationCode = "validRegistrationCode";
-        User expectedUser = new User("userId");
-        when(registrationCodeService.isRegistrationCodeExist(registrationCode)).thenReturn(true);
-        when(userService.registerUser()).thenReturn(expectedUser);
+    void testRegisterUser_Success() throws RegistrationCodeNotValid {
+        String registrationCode = "abc123";
+        String studyId = "study123";
+        User user = new User("user123", studyId);
+        UserDTO expectedUserDTO = new UserDTO("user123");
 
-        // Act
-        ResponseEntity<User> response = backendController.registerUser(registrationCode);
+        when(registrationCodeService.getStudyIdByRegistrationCode(registrationCode)).thenReturn(studyId);
+        when(userService.registerUser(studyId)).thenReturn(user);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedUser, response.getBody());
-        verify(registrationCodeService).deleteRegistrationCode(registrationCode);
-        verify(userService).registerUser();
+        ResponseEntity<UserDTO> responseEntity = backendController.registerUser(registrationCode);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(expectedUserDTO.getUserId(), Objects.requireNonNull(responseEntity.getBody()).getUserId());
+        verify(registrationCodeService, times(1)).deleteRegistrationCode(registrationCode);
+        verify(userService, times(1)).registerUser(studyId);
     }
 
     @Test
-    void registerUser_InvalidRegistrationCode_ShouldThrowRegistrationCodeNotValidException() {
-        // Arrange
-        String registrationCode = "invalidRegistrationCode";
-        when(registrationCodeService.isRegistrationCodeExist(registrationCode)).thenReturn(false);
+    void testAuthenticateUser_UserExists() {
+        String userId = "user123";
 
-        // Act and Assert
-        assertThrows(RegistrationCodeNotValid.class, () -> backendController.registerUser(registrationCode));
-        verify(registrationCodeService, never()).deleteRegistrationCode(registrationCode);
-        verify(userService, never()).registerUser();
-    }
-
-    @Test
-    void authenticateUser_ExistingUserId_ShouldReturnHttpStatusOK() {
-        // Arrange
-        String userId = "existingUserId";
         when(userService.userExists(userId)).thenReturn(true);
 
-        // Act
-        HttpStatus response = backendController.authenticateUser(userId);
+        HttpStatus status = backendController.authenticateUser(userId);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response);
-        verify(userService).userExists(userId);
+        assertEquals(HttpStatus.OK, status);
+        verify(userService, times(1)).userExists(userId);
     }
 
     @Test
-    void authenticateUser_NonExistingUserId_ShouldThrowNoUserFoundException() {
-        // Arrange
-        String userId = "nonExistingUserId";
+    void testAuthenticateUser_UserNotFound() {
+        String userId = "user123";
+
         when(userService.userExists(userId)).thenReturn(false);
 
-        // Act and Assert
-        assertThrows(NoUserFoundException.class, () -> backendController.authenticateUser(userId));
-        verify(userService).userExists(userId);
+        NoUserFoundException exception =
+                org.junit.jupiter.api.Assertions.assertThrows(NoUserFoundException.class, () -> {
+                    backendController.authenticateUser(userId);
+                });
+
+        assertEquals("User not found.", exception.getMessage());
+        verify(userService, times(1)).userExists(userId);
     }
 
     @Test
-    void createAnonymousRegistrationCodes_ValidNumberOfRegistrationCodes_ShouldReturnRegistrationCodesWithHttpStatusOK() {
-        // Arrange
+    void testCreateAnonymousRegistrationCodes_StudyExists() {
         int numberOfRegistrationCodes = 5;
-        List<RegistrationCode> expectedRegistrationCodes = new ArrayList<>();
-        when(registrationCodeService.createAnonymousRegistrationCodes(numberOfRegistrationCodes)).thenReturn(expectedRegistrationCodes);
+        String studyId = "study123";
+        List<RegistrationCode> registrationCodes = Arrays.asList(new RegistrationCode("code1", studyId), new RegistrationCode("code2", studyId));
+        List<RegistrationCodeDTO> expectedDTOs = Arrays.asList(new RegistrationCodeDTO("code1"), new RegistrationCodeDTO("code2"));
 
-        // Act
-        ResponseEntity<List<RegistrationCode>> response = backendController.createAnonymousRegistrationCodes(numberOfRegistrationCodes);
+        when(studyService.doesStudyExist(studyId)).thenReturn(true);
+        when(registrationCodeService.createAnonymousRegistrationCodes(numberOfRegistrationCodes, studyId))
+                .thenReturn(registrationCodes);
+        when(registrationCodeService.convertRegistrationCodesToDTOs(registrationCodes)).thenReturn(expectedDTOs);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedRegistrationCodes, response.getBody());
-        verify(registrationCodeService).createAnonymousRegistrationCodes(numberOfRegistrationCodes);
+        ResponseEntity<List<RegistrationCodeDTO>> responseEntity =
+                backendController.createAnonymousRegistrationCodes(numberOfRegistrationCodes, studyId);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(expectedDTOs, responseEntity.getBody());
+        verify(studyService, times(1)).doesStudyExist(studyId);
+        verify(registrationCodeService, times(1)).createAnonymousRegistrationCodes(numberOfRegistrationCodes, studyId);
+        verify(registrationCodeService, times(1)).convertRegistrationCodesToDTOs(registrationCodes);
     }
 
     @Test
-    void createUsers_ValidNumberOfUsers_ShouldReturnUsersWithHttpStatusOK() {
-        // Arrange
+    void testCreateAnonymousRegistrationCodes_StudyNotFound() {
+        int numberOfRegistrationCodes = 5;
+        String studyId = "study123";
+
+        when(studyService.doesStudyExist(studyId)).thenReturn(false);
+
+        NoStudyFoundException exception =
+                org.junit.jupiter.api.Assertions.assertThrows(NoStudyFoundException.class, () -> {
+                    backendController.createAnonymousRegistrationCodes(numberOfRegistrationCodes, studyId);
+                });
+
+        assertEquals("Study with ID " + studyId + " not found.", exception.getMessage());
+        verify(studyService, times(1)).doesStudyExist(studyId);
+        verify(registrationCodeService, never()).createAnonymousRegistrationCodes(anyInt(), anyString());
+        verify(registrationCodeService, never()).convertRegistrationCodesToDTOs(anyList());
+    }
+
+    @Test
+    void testCreateUsers_StudyExists() {
         int numberOfUsers = 5;
-        List<User> expectedUsers = new ArrayList<>();
-        when(userService.createUserIds(numberOfUsers)).thenReturn(expectedUsers);
+        String studyId = "study123";
+        List<User> users = Arrays.asList(new User("user1", studyId), new User("user2", studyId));
+        List<UserDTO> expectedDTOs = Arrays.asList(new UserDTO("user1"), new UserDTO("user2"));
 
-        // Act
-        ResponseEntity<List<User>> response = backendController.createdUserIds(numberOfUsers);
+        when(studyService.doesStudyExist(studyId)).thenReturn(true);
+        when(userService.createUserIds(numberOfUsers, studyId)).thenReturn(users);
+        when(userService.convertUsersToDTOs(users)).thenReturn(expectedDTOs);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedUsers, response.getBody());
-        verify(userService).createUserIds(numberOfUsers);
+        ResponseEntity<List<UserDTO>> responseEntity =
+                backendController.createdUserIds(numberOfUsers, studyId);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(expectedDTOs, responseEntity.getBody());
+        verify(studyService, times(1)).doesStudyExist(studyId);
+        verify(userService, times(1)).createUserIds(numberOfUsers, studyId);
+        verify(userService, times(1)).convertUsersToDTOs(users);
     }
 
     @Test
-    void createStudy_ValidStudyObject_ShouldReturnStudyWithHttpStatusOK() {
-        // Arrange
+    void testCreateUsers_StudyNotFound() {
+        int numberOfUsers = 5;
+        String studyId = "study123";
+
+        when(studyService.doesStudyExist(studyId)).thenReturn(false);
+
+        NoStudyFoundException exception =
+                org.junit.jupiter.api.Assertions.assertThrows(NoStudyFoundException.class, () -> {
+                    backendController.createdUserIds(numberOfUsers, studyId);
+                });
+
+        assertEquals("Study with ID " + studyId + " not found.", exception.getMessage());
+        verify(studyService, times(1)).doesStudyExist(studyId);
+        verify(userService, never()).createUserIds(anyInt(), anyString());
+        verify(userService, never()).convertUsersToDTOs(anyList());
+    }
+
+    @Test
+    void testCreateStudy() {
         Study study = new Study("studyId", "studyName", true, new ArrayList<>());
+        ResponseEntity<Study> expectedResponseEntity = new ResponseEntity<>(study, HttpStatus.OK);
+
         when(studyService.createStudy(study)).thenReturn(study);
 
-        // Act
-        ResponseEntity<Study> response = backendController.createStudy(study);
+        ResponseEntity<Study> responseEntity = backendController.createStudy(study);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(study, response.getBody());
-        verify(studyService).createStudy(study);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(expectedResponseEntity.getBody(), responseEntity.getBody());
+        verify(studyService, times(1)).createStudy(study);
     }
 
     @Test
-    void deleteAllStudies_ShouldCallDeleteAllStudiesInStudyService() {
-        // Act
+    void testDeleteAllStudies() {
         backendController.deleteAllStudies();
-
-        // Assert
-        verify(studyService).deleteAllStudies();
+        verify(studyService, times(1)).deleteAllStudies();
     }
 
     @Test
-    void getTestStudy_ShouldReturnTestStudyWithHttpStatusOK() {
-        // Arrange
-        Study testStudy = new Study("studyId", "studyName", true, new ArrayList<>());
-        when(studyService.getTestStudy()).thenReturn(testStudy);
+    void testGetStudy_UserAndStudyExist() throws NoUserFoundException, NoStudyFoundException {
+        String userId = "user123";
+        String studyId = "study123";
+        Study study = new Study("studyId", "studyName", true, new ArrayList<>());
 
-        // Act
-        ResponseEntity<Study> response = backendController.getTestStudy();
+        when(userService.getStudyIdByUserId(userId)).thenReturn(studyId);
+        when(studyService.getStudyByStudyId(studyId)).thenReturn(study);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(testStudy, response.getBody());
-        verify(studyService).getTestStudy();
+        ResponseEntity<Study> responseEntity = backendController.getStudy(userId);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(study, responseEntity.getBody());
+        verify(userService, times(1)).getStudyIdByUserId(userId);
+        verify(studyService, times(1)).getStudyByStudyId(studyId);
+    }
+
+    @Test
+    void testGetStudy_UserNotFound() throws NoUserFoundException, NoStudyFoundException {
+        String userId = "user123";
+
+        when(userService.getStudyIdByUserId(userId)).thenThrow(new NoUserFoundException("User not found."));
+
+        NoUserFoundException exception =
+                org.junit.jupiter.api.Assertions.assertThrows(NoUserFoundException.class, () -> {
+                    backendController.getStudy(userId);
+                });
+
+        assertEquals("User not found.", exception.getMessage());
+        verify(userService, times(1)).getStudyIdByUserId(userId);
+        verify(studyService, never()).getStudyByStudyId(anyString());
+    }
+
+    @Test
+    void testGetStudy_StudyNotFound() throws NoUserFoundException, NoStudyFoundException {
+        String userId = "user123";
+        String studyId = "study123";
+
+        when(userService.getStudyIdByUserId(userId)).thenReturn(studyId);
+        when(studyService.getStudyByStudyId(studyId)).thenThrow(new NoStudyFoundException("Study not found."));
+
+        NoStudyFoundException exception =
+                org.junit.jupiter.api.Assertions.assertThrows(NoStudyFoundException.class, () -> {
+                    backendController.getStudy(userId);
+                });
+
+        assertEquals("Study not found.", exception.getMessage());
+        verify(userService, times(1)).getStudyIdByUserId(userId);
+        verify(studyService, times(1)).getStudyByStudyId(studyId);
     }
 }
+
