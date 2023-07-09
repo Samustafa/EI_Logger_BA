@@ -116,13 +116,8 @@ class DataBase extends Dexie {
         const isQuestionnaireTypeLegal = questionnaireType === 'pre' || questionnaireType === 'post';
         if (!isQuestionnaireTypeLegal) throw new Error("questionnaireType is not legal");
 
-        let questions: IQuestion[] = [];
-        await dataBase.task.get(taskId)
-            .then(iTask => {
-                if (questionnaireType === 'pre') questions = iTask?.iPreQuestions ?? []
-                else questions = iTask?.iPostQuestions ?? []
-            });
-        return questions;
+        const iTask = await dataBase.task.get(taskId)
+        return (questionnaireType === 'pre') ? iTask?.iPreQuestions ?? [] : iTask?.iPostQuestions ?? [];
     }
 
     async getQuestionnaire(taskId: string, questionnaireType: string | undefined) {
@@ -284,6 +279,11 @@ class DataBase extends Dexie {
     async getTaskText(taskId: string) {
         const task = await dataBase.task.get(taskId);
         return task?.text ?? "";
+    }
+
+    async getIsQuestionnaireSubmitted(taskId: string, questionnaireType: string) {
+        const iTask = await this.task.get(taskId);
+        return (questionnaireType === 'pre') ? iTask?.isPreQuestionsSubmitted ?? false : iTask?.isPostQuestionsSubmitted ?? false;
     }
 }
 

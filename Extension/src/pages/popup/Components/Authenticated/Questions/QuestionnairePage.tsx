@@ -59,6 +59,11 @@ export function QuestionnairePage() {
 
     }, [taskId])
 
+    useEffect(function updateIsNextDisabled() {
+        dataBase.getIsQuestionnaireSubmitted(taskId, questionnaireType as string).then((isSubmitted) => setIsNextDisabled(!isSubmitted))
+            .catch((error) => handleErrorFromAsync(error, setError, setOpen, "Error fetching isSubmitted"));
+    })
+
     function mapIQuestionAnswerToIAnswer(iQuestionAnswer: IQuestionAnswer): IAnswer {
         return {
             questionId: iQuestionAnswer.questionId,
