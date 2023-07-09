@@ -13,6 +13,7 @@ import {Notification} from "@pages/popup/Components/SharedComponents/Notificatio
 import {Title} from "@pages/popup/Components/SharedComponents/Title";
 import {InformationBox} from "@pages/popup/Components/SharedComponents/InformationBox";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
+import {UploadButton} from "@pages/popup/Components/SharedComponents/UploadButton";
 
 export function LoggerReadyPage() {
     const location = useLocation();
@@ -79,9 +80,17 @@ export function LoggerReadyPage() {
             </button>}</>
     }
 
+    function handleUpload() {
+        setError("Not implemented yet");
+        setOpen(true);
+    }
+
     function renderDemographicsAndIdDisplayButton(hasTasks: boolean) {
-        return (!hasTasks && <><DemographicsButton isDisabled={isLogging}/> <DisplayIdButton
-            isDisabled={isLogging}/></>)
+        return (!hasTasks && <>
+            <DemographicsButton isDisabled={isLogging}/>
+            <DisplayIdButton isDisabled={isLogging}/>
+            <UploadButton onClick={handleUpload} isDisabled={isLogging}/>
+        </>)
     }
 
     function renderButtons(isLogging: boolean, hasTasks: boolean) {
@@ -109,9 +118,9 @@ export function LoggerReadyPage() {
         {isLogging ? <Title title={"Logging"}/> : <Title title={"Logger is offline"}/>}
         {renderInformationBox(hasTasks)}
         {renderButtons(isLogging, hasTasks)}
-            <WarningDialog warningText={warningText} open={openWarningDialog} setOpen={setOpenWarningDialog}
-                           acceptFunction={handleFinishedTask}/>
-            <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
+        <WarningDialog warningText={warningText} open={openWarningDialog} setOpen={setOpenWarningDialog}
+                       acceptFunction={handleFinishedTask}/>
+        <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
     </>
 
 }

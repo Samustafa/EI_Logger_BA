@@ -8,13 +8,13 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import {RightArrowIcon} from "@pages/popup/Components/SharedComponents/SvgComponents/RightArrowIcon";
-import {buttonStyle} from "@pages/popup/Constants/Styles";
 import {goToPage, handleErrorFromAsync} from "@pages/popup/UtilityFunctions";
 import {DemographicsButton} from "@pages/popup/Components/SharedComponents/DemographicsButton";
 import {DisplayIdButton} from "@pages/popup/Components/SharedComponents/DisplayIdButton";
 import {Notification} from "@pages/popup/Components/SharedComponents/Notification";
 import {Title} from "@pages/popup/Components/SharedComponents/Title";
 import {InformationBox} from "@pages/popup/Components/SharedComponents/InformationBox";
+import {UploadButton} from "@pages/popup/Components/SharedComponents/UploadButton";
 
 
 export function TasksPage() {
@@ -39,7 +39,7 @@ export function TasksPage() {
             <InformationBox
                 informationText={"Choose a task to solve. After starting a task don't forget to start the Logger inside the task."}/>
             <Tasks iTasks={iTasks} setError={setError} setOpen={setOpen}/>
-            <button className={buttonStyle} onClick={() => handleUpload()}>Upload</button>
+            <UploadButton onClick={handleUpload}/>
             <DemographicsButton/>
             <DisplayIdButton/>
             <Notification notificationType={'error'} message={error} open={open} setOpen={setOpen}/>
