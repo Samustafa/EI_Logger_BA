@@ -15,4 +15,6 @@ public class RegistrationCode {
     @NonNull
     @Id
     private final String code;
+    @NonNull
+    private final String studyName;
 }

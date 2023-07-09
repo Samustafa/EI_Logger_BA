@@ -6,6 +6,8 @@ import de.ude.backend.service.repository.StudyRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class StudyService {
@@ -21,5 +23,10 @@ public class StudyService {
 
     public Study getTestStudy() {
         return studyRepo.findAll().iterator().next();
+    }
+
+    public boolean doesStudyExist(String studyId) {
+        Optional<Study> study = studyRepo.findById(studyId);
+        return study.isPresent();
     }
 }

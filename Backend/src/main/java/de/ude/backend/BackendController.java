@@ -1,7 +1,9 @@
 package de.ude.backend;
 
+import de.ude.backend.exceptions.custom_exceptions.NoStudyFoundException;
 import de.ude.backend.exceptions.custom_exceptions.NoUserFoundException;
 import de.ude.backend.exceptions.custom_exceptions.RegistrationCodeNotValid;
+import de.ude.backend.model.DTO.RegistrationCodeDTO;
 import de.ude.backend.model.RegistrationCode;
 import de.ude.backend.model.Study;
 import de.ude.backend.model.User;
@@ -49,12 +51,16 @@ public class BackendController {
         }
     }
 
-    @GetMapping("/createAnonymousRegistrationCodes/{numberOfRegistrationCodes}")
-    public ResponseEntity<List<RegistrationCode>> createAnonymousRegistrationCodes(@PathVariable int numberOfRegistrationCodes) {
-        List<RegistrationCode> registrationCodes = registrationCodeService.createAnonymousRegistrationCodes(numberOfRegistrationCodes);
+    @GetMapping("/createAnonymousRegistrationCodes/{studyId}/{numberOfRegistrationCodes}")
+    public ResponseEntity<List<RegistrationCodeDTO>> createAnonymousRegistrationCodes(@PathVariable int numberOfRegistrationCodes, @PathVariable String studyId) {
+        if (!studyService.doesStudyExist(studyId))
+            throw new NoStudyFoundException("Study with ID " + studyId + " not found.");
 
-        log.info("Created {} pending users: {}.", numberOfRegistrationCodes, registrationCodes);
-        return new ResponseEntity<>(registrationCodes, HttpStatus.OK);
+        List<RegistrationCode> registrationCodes = registrationCodeService.createAnonymousRegistrationCodes(numberOfRegistrationCodes, studyId);
+        List<RegistrationCodeDTO> registrationCodeDTOs = registrationCodeService.convertRegistrationCodesToDTOs(registrationCodes);
+
+        log.info("Created {} pending users: {}.", numberOfRegistrationCodes, registrationCodeDTOs);
+        return new ResponseEntity<>(registrationCodeDTOs, HttpStatus.OK);
     }
 
     @GetMapping("/createUsers/{numberOfUsers}")

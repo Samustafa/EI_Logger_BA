@@ -1,5 +1,6 @@
 package de.ude.backend.service;
 
+import de.ude.backend.model.DTO.RegistrationCodeDTO;
 import de.ude.backend.model.RegistrationCode;
 import de.ude.backend.service.repository.RegistrationCodeRepo;
 import lombok.AllArgsConstructor;
@@ -22,12 +23,12 @@ public class RegistrationCodeService {
      * @param numberOfRegistrationCodes to create
      * @return RegistrationCode as JSON String
      */
-    public List<RegistrationCode> createAnonymousRegistrationCodes(int numberOfRegistrationCodes) {
+    public List<RegistrationCode> createAnonymousRegistrationCodes(int numberOfRegistrationCodes, String studyName) {
         ArrayList<RegistrationCode> registrationCodes = new ArrayList<>();
 
         for (int i = 0; i < numberOfRegistrationCodes; i++) {
             UUID uuid = UUID.randomUUID();
-            var registrationCode = new RegistrationCode(uuid.toString());
+            var registrationCode = new RegistrationCode(uuid.toString(), studyName);
             registrationCodes.add(registrationCode);
         }
 
@@ -41,5 +42,15 @@ public class RegistrationCodeService {
 
     public void deleteRegistrationCode(String id) {
         registrationCodeRepo.deleteById(id);
+    }
+
+    public List<RegistrationCodeDTO> convertRegistrationCodesToDTOs(List<RegistrationCode> registrationCodes) {
+        ArrayList<RegistrationCodeDTO> registrationCodeDTOs = new ArrayList<>();
+
+        for (RegistrationCode registrationCode : registrationCodes) {
+            registrationCodeDTOs.add(new RegistrationCodeDTO(registrationCode.getCode()));
+        }
+
+        return registrationCodeDTOs;
     }
 }
