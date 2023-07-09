@@ -1,8 +1,8 @@
 package de.ude.backend.service;
 
 import de.ude.backend.exceptions.custom_exceptions.NoUserFoundException;
-import de.ude.backend.model.DTO.UserDTO;
 import de.ude.backend.model.User;
+import de.ude.backend.model.dto.UserDTO;
 import de.ude.backend.service.repository.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

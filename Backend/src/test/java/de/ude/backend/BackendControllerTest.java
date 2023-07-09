@@ -3,11 +3,11 @@ package de.ude.backend;
 import de.ude.backend.exceptions.custom_exceptions.NoStudyFoundException;
 import de.ude.backend.exceptions.custom_exceptions.NoUserFoundException;
 import de.ude.backend.exceptions.custom_exceptions.RegistrationCodeNotValid;
-import de.ude.backend.model.DTO.RegistrationCodeDTO;
-import de.ude.backend.model.DTO.UserDTO;
 import de.ude.backend.model.RegistrationCode;
 import de.ude.backend.model.Study;
 import de.ude.backend.model.User;
+import de.ude.backend.model.dto.RegistrationCodeDTO;
+import de.ude.backend.model.dto.UserDTO;
 import de.ude.backend.service.RegistrationCodeService;
 import de.ude.backend.service.StudyService;
 import de.ude.backend.service.UserService;
@@ -58,7 +58,7 @@ class BackendControllerTest {
         ResponseEntity<UserDTO> responseEntity = backendController.registerUser(registrationCode);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(expectedUserDTO.getUserId(), Objects.requireNonNull(responseEntity.getBody()).getUserId());
+        assertEquals(expectedUserDTO.userId(), Objects.requireNonNull(responseEntity.getBody()).userId());
         verify(registrationCodeService, times(1)).deleteRegistrationCode(registrationCode);
         verify(userService, times(1)).registerUser(studyId);
     }

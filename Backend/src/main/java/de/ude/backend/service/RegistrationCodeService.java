@@ -1,8 +1,8 @@
 package de.ude.backend.service;
 
 import de.ude.backend.exceptions.custom_exceptions.RegistrationCodeNotValid;
-import de.ude.backend.model.DTO.RegistrationCodeDTO;
 import de.ude.backend.model.RegistrationCode;
+import de.ude.backend.model.dto.RegistrationCodeDTO;
 import de.ude.backend.service.repository.RegistrationCodeRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
